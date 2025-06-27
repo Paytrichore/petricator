@@ -1,0 +1,4 @@
+# .gcloudignore
+# N’exclut rien d’important pour le build Angular
+node_modules/
+.git/
