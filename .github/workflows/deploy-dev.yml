@@ -27,7 +27,7 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev --substitutions=_ENV=dev
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev
 
       - name: Deploy to Cloud Run (dev)
         run: |

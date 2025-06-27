@@ -27,12 +27,12 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-prod --substitutions=_ENV=prod
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator
 
       - name: Deploy to Cloud Run (prod)
         run: |
-          gcloud run deploy petricator-prod \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-prod \
+          gcloud run deploy petricator \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator \
             --region europe-west1 \
             --platform managed \
             --allow-unauthenticated
