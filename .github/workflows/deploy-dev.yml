@@ -17,9 +17,6 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Who am I
-        run: gcloud auth list
-
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
@@ -33,10 +30,7 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          gcloud builds submit \
-            --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev \
-            --service-account=projects/${{ secrets.GCP_PROJECT_ID }}/serviceAccounts/812288085862-compute@developer.gserviceaccount.com \
-            --gcs-log-dir=gs://petricator_cloudbuild/logs
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev
 
       - name: Deploy to Cloud Run (dev)
         run: |
