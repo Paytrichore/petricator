@@ -1,0 +1,26 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <h2>Connexion</h2>
+  <label>
+    Email
+    <input type="email" formControlName="email" required>
+  </label>
+  @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+    <div style="color:red">
+      Email invalide
+    </div>
+  }
+  <label>
+    Mot de passe
+    <input type="password" formControlName="password" required>
+  </label>
+  @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+    <div style="color:red">
+      Mot de passe requis
+    </div>
+  }
+  <button type="submit" [disabled]="loginForm.invalid">Se connecter</button>
+  @if (error) {
+    <div style="color:red">{{ error }}</div>
+  }
+</form>
+<p>Pas encore inscrit(e) ? Par <a routerLink="/signup">ici</a> !</p>

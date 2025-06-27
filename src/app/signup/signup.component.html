@@ -1,0 +1,46 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <h2>Inscription</h2>
+  <label>
+    Pseudo
+    <input type="text" formControlName="username" required>
+  </label>
+  @if (loginForm.get('username')?.invalid && loginForm.get('username')?.touched) {
+    <div style="color:red">
+      Pseudo invalide.
+    </div>
+  }
+  <label>
+    Email
+    <input type="email" formControlName="email" required>
+  </label>
+  @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+    <div style="color:red">
+      Email invalide.
+    </div>
+  }
+  <label>
+    Mot de passe
+    <input type="password" formControlName="password" required>
+  </label>
+  @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+    <div style="color:red">
+      Mot de passe requis.
+    </div>
+  }
+  @if (error) {
+    <div style="color:red">{{ error }}</div>
+  }
+  <label>
+    Confirmation du mot de passe
+    <input type="password" formControlName="password" required>
+  </label>
+  @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+    <div style="color:red">
+      Le mot de passe est différent.
+    </div>
+  }
+  <button type="submit" [disabled]="loginForm.invalid">S'inscrire</button>
+  @if (error) {
+    <div style="color:red">{{ error }}</div>
+  }
+</form>
