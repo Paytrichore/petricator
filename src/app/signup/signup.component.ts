@@ -18,7 +18,6 @@ export class SignupComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private http: HttpClient
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -28,16 +27,11 @@ export class SignupComponent {
   }
 
   onSubmit() {
-    if (this.loginForm.invalid) return;
-    const { username, email, password } = this.loginForm.value;
-    this.http.post<{ access_token: string, user: any }>('https://papi-user-dev-812288085862.us-central1.run.app/auth/register', { username, email, password}).subscribe({
-      next: (res) => {
-        localStorage.setItem('access_token', res.access_token);
-        this.router.navigate(['/']);
-      },
-      error: err => {
-        this.error = err?.error?.message || 'Erreur lors de l\'inscription';
-      }
-    })
-  }
+  if (this.loginForm.invalid) return;
+  const { username, email, password } = this.loginForm.value;
+  this.authService.signup(username, email, password).subscribe({
+    next: () => this.router.navigate(['/']),
+    error: err => this.error = err?.error?.message || 'Erreur lors de l\'inscription'
+  });
+}
 }

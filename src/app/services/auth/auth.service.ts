@@ -1,29 +1,45 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private isLoggedIn = false;
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private apiUrl = environment.apiUrl;
 
-  constructor(private router: Router) {}
+  login(email: string, password: string): Observable<{ access_token: string, user: any }> {
+    return this.http.post<{ access_token: string, user: any }>(
+      `${this.apiUrl}/auth/login`,
+      { email, password }
+    ).pipe(
+      tap(res => {
+        localStorage.setItem('access_token', res.access_token);
+      })
+    );
+  }
 
-  login(email: string, password: string): boolean {
-    // Remplace cette logique par un appel API réel si besoin
-    if (email === 'test@test.com' && password === 'password') {
-      this.isLoggedIn = true;
-      return true;
-    }
-    return false;
+  signup(username: string, email: string, password: string): Observable<{ access_token: string, user: any }> {
+    return this.http.post<{ access_token: string, user: any }>(
+      `${this.apiUrl}/auth/register`,
+      { username, email, password }
+    ).pipe(
+      tap(res => {
+        localStorage.setItem('access_token', res.access_token);
+      })
+    );
   }
 
   logout() {
-    this.isLoggedIn = false;
+    localStorage.removeItem('access_token');
     this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
-    return this.isLoggedIn;
+    return !!localStorage.getItem('access_token');
   }
 }
