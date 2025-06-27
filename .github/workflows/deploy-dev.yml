@@ -21,6 +21,9 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
+  
+      - name: Who am I
+        run: gcloud auth list
 
       - name: Build Angular (dev)
         run: npm ci && npm run build
