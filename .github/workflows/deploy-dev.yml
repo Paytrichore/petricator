@@ -36,6 +36,7 @@ jobs:
           gcloud builds submit \
           --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev \
           --service-account=812288085862-compute@developer.gserviceaccount.com
+          --gcs-log-dir=gs://petricator_cloudbuild/logs
 
       - name: Deploy to Cloud Run (dev)
         run: |
