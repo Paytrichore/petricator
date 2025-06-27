@@ -30,7 +30,10 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev
+          gcloud builds submit \
+            --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev \
+            --service-account=projects/${{ secrets.GCP_PROJECT_ID }}/serviceAccounts/812288085862-compute@developer.gserviceaccount.com \
+            --gcs-log-dir=gs://petricator_cloudbuild/logs
 
       - name: Deploy to Cloud Run (dev)
         run: |
