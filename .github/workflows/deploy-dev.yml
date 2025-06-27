@@ -1,0 +1,35 @@
+name: Deploy to Cloud Run (dev)
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Build Angular (dev)
+        run: npm ci && npm run build
+
+      - name: Build and Push Docker image
+        run: |
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev --substitutions=_ENV=dev
+
+      - name: Deploy to Cloud Run (dev)
+        run: |
+          gcloud run deploy petricator-dev \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev \
+            --region europe-west1 \
+            --platform managed \
+            --allow-unauthenticated
