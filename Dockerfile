@@ -1,5 +1,5 @@
 ### STAGE 1: Build the Angular application ###
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -8,15 +8,15 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 # Use npm ci instead of npm install for consistent builds with package-lock.json
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package*.json ./
+RUN npm install
 
 # Copy the rest of your application code
 COPY . .
 
 # Build the Angular application for production
 # *** IMPORTANT: Replace 'petricator' with your actual Angular project name from angular.json ***
-RUN npm run build -- --output-path=./dist/petricator --configuration=development
+RUN npm run build -- --configuration=development
 
 ### STAGE 2: Serve the application with Nginx ###
 FROM nginx:alpine
