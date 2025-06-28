@@ -16,14 +16,14 @@ COPY . .
 
 # Build the Angular application for production
 # *** IMPORTANT: Replace 'petricator' with your actual Angular project name from angular.json ***
-RUN npm run build -- --output-path=./dist/petricator --configuration=production
+RUN npm run build -- --output-path=./dist/petricator --configuration=development
 
 ### STAGE 2: Serve the application with Nginx ###
 FROM nginx:alpine
 
 # Copy the built Angular application from the 'builder' stage
 # *** IMPORTANT: Replace 'petricator' with your actual Angular project name from angular.json ***
-COPY --from=builder /app/dist/petricator /usr/share/nginx/html
+COPY --from=builder /app/dist/petricator/browser /usr/share/nginx/html
 
 # Optional: Copy a custom Nginx configuration if you have one
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
