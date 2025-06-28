@@ -9,7 +9,7 @@ WORKDIR /app
 # Copy package.json and package-lock.json first to leverage Docker cache
 # Use npm ci instead of npm install for consistent builds with package-lock.json
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 # Copy the rest of your application code
 COPY . .
@@ -29,7 +29,7 @@ COPY --from=builder /app/dist/petricator/browser /usr/share/nginx/html
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose the port Nginx listens on
-EXPOSE 80
+EXPOSE 8080
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
