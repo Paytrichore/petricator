@@ -12,10 +12,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Auth to Google Cloud
-        uses: google-github-actions/auth@v2
+      - name: Authentifier avec GCP via OIDC
+        uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          token_format: access_token
+          workload_identity_provider: "projects/812288085862/locations/global/workloadIdentityPools/github-pool/providers/github"
+          service_account: "github-deploy-sa@petricator.iam.gserviceaccount.com"
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
