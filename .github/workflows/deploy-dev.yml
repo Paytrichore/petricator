@@ -1,4 +1,4 @@
-name: Deploy to Cloud Run (dev)
+name: Build & Deploy Angular App to GCP
 
 on:
   push:
@@ -6,46 +6,57 @@ on:
       - dev
 
 permissions:
-    id-token: write
-    contents: read
+  id-token: write     # 🔐 Pour OIDC
+  contents: read
+
+env:
+  PROJECT_ID: petricator
+  REGION: us-central11
+  SERVICE_NAME: angular-app
+  IMAGE: us-central1-docker.pkg.dev/petricator/petricator/petricator-dev
 
 jobs:
-
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Authentifier avec GCP via OIDC
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies & build Angular app
+        run: |
+          npm ci
+          npm run build -- --configuration=development
+
+      - name: Auth to Google Cloud via OIDC
         uses: google-github-actions/auth@v1
         with:
           token_format: access_token
           workload_identity_provider: "projects/812288085862/locations/global/workloadIdentityPools/github-pool/providers/github"
           service_account: "github-deploy-sa@petricator.iam.gserviceaccount.com"
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-  
-      - name: Who am I
-        run: gcloud auth list
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
 
-      - name: Build Angular (dev)
-        run: npm ci && npm run build
-
-      - name: Build and Push Docker image
+      - name: Configure Docker for Artifact Registry
         run: |
-          gcloud builds submit \
-            --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev \
-            --service-account=projects/${{ secrets.GCP_PROJECT_ID }}/serviceAccounts/812288085862-compute@developer.gserviceaccount.com \
-            --gcs-log-dir=gs://petricator_cloudbuild/logs
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
-      - name: Deploy to Cloud Run (dev)
+      - name: Build & push Docker image
         run: |
-          gcloud run deploy petricator-dev \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/petricator-dev \
-            --region europe-west1 \
+          docker build -t $IMAGE .
+          docker push $IMAGE
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy $SERVICE_NAME \
+            --image $IMAGE \
+            --region $REGION \
             --platform managed \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --project $PROJECT_ID
