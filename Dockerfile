@@ -23,6 +23,8 @@ FROM nginx:alpine
 
 # Copy the built Angular application from the 'builder' stage
 # *** IMPORTANT: Replace 'petricator' with your actual Angular project name from angular.json ***
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=builder /app/dist/petricator/browser /usr/share/nginx/html
 
 # Optional: Copy a custom Nginx configuration if you have one
