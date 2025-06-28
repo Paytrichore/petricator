@@ -31,7 +31,7 @@ COPY --from=builder /app/dist/petricator/browser /usr/share/nginx/html
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose the port Nginx listens on
-EXPOSE 8080
+# EXPOSE 8080
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
