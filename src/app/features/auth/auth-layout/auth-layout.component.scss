@@ -5,6 +5,9 @@
     height: 100vh;
 
     &__card {
-        background: lightgray;
+        background: var(--mat-sys-background);
+        border-radius: var(--mat-sys-corner-extra-large-top);
+        padding: 1em 3em 2em;
+        text-align: center;
     }
 }

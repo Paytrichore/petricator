@@ -1,0 +1,35 @@
+<mat-form-field class="basic-input">
+  <mat-label>{{ label }}</mat-label>
+  <input
+    #input
+    matInput
+    [attr.placeholder]="placeholder"
+    [errorStateMatcher]="stateMatcher"
+    [type]="type"
+    [(ngModel)]="value"
+    (input)="onChange(input.value)"
+  />
+  <mat-hint class="basic-input__hint-wrapper">
+    <ng-content select=".basic-input__hint--start"></ng-content>
+  </mat-hint>
+  <span class="basic-input__suffix" matSuffix>
+    <ng-content select=".basic-input__suffix"></ng-content>
+    @if (value) {
+      <button
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="value = ''; onChange('')"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </span>
+  @if (controlDir.control && controlDir.control.errors) {
+    <mat-error class="basic-input__errors">
+      @for (error of getErrors(controlDir.control); track error) {
+          {{ error }}
+      }
+    </mat-error>
+  }
+</mat-form-field>
