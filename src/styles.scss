@@ -21,3 +21,41 @@ a {
         color: var(--mat-sys-inverse-primary)
     }
 }
+
+:root {
+  --palette-morning-1: #f6d365;
+  --palette-morning-2: #fda085;
+  --palette-morning-3: #fbc2eb;
+  --palette-morning-4: #a1c4fd;
+  --palette-morning-5: #cfd9df;
+  --palette-morning-6: #e2d1c3;
+  --palette-morning-7: #f5f7fa;
+  --palette-morning-8: #f9f6f7;
+
+  --palette-noon-1: #a1c4fd;
+  --palette-noon-2: #c2e9fb;
+  --palette-noon-3: #b2f7ef;
+  --palette-noon-4: #f6f1d3;
+  --palette-noon-5: #e0c3fc;
+  --palette-noon-6: #f9f6f7;
+  --palette-noon-7: #d4fc79;
+  --palette-noon-8: #96e6a1;
+
+  --palette-evening-1: #f7971e;
+  --palette-evening-2: #ffd89b;
+  --palette-evening-3: #fcb69f;
+  --palette-evening-4: #a1c4fd;
+  --palette-evening-5: #667eea;
+  --palette-evening-6: #764ba2;
+  --palette-evening-7: #e0c3fc;
+  --palette-evening-8: #fbc2eb;
+
+  --palette-night-1: #232526;
+  --palette-night-2: #414345;
+  --palette-night-3: #141e30;
+  --palette-night-4: #355c7d;
+  --palette-night-5: #6c5b7b;
+  --palette-night-6: #283e51;
+  --palette-night-7: #485563;
+  --palette-night-8: #232526;
+}
