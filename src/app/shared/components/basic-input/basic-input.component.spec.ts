@@ -7,7 +7,6 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
 } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,7 +20,7 @@ import { By } from '@angular/platform-browser';
 import { BasicInputStateMatcher } from '../../helpers/validators/generics.validator';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Click } from 'src/app/tests/helpers/generics/click';
+import { Click } from '../../../tests/helpers/generics/click';
 
 describe('BasicInputComponent Integration-Testing', () => {
   let testHostComponent: TestHostComponent;
@@ -33,8 +32,8 @@ describe('BasicInputComponent Integration-Testing', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [TestHostComponent, BasicInputComponent],
       imports: [
+        TestHostComponent, BasicInputComponent,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         MatInputModule,
@@ -67,7 +66,7 @@ describe('BasicInputComponent Integration-Testing', () => {
     it('should display correct content in input field', async () => {
       // Arrange, Act
       const matInputValue = await matInput.getValue();
-      const parentControlValue: string = testHostComponent.formGroup.controls.control.value;
+      const parentControlValue: string = testHostComponent.formGroup.controls.control.value as string;
 
       // Assert
       expect(writeValueSpy).toHaveBeenCalledWith(parentControlValue);
@@ -90,7 +89,7 @@ describe('BasicInputComponent Integration-Testing', () => {
       await matInput.setValue('PanPanForever');
       const matInputValue = await matInput.getValue();
       testHostComponent.formGroup.controls.control.setValue(matInputValue);
-      const parentControlValue: string = testHostComponent.formGroup.controls.control.value;
+      const parentControlValue: string = testHostComponent.formGroup.controls.control.value as string;
 
       fixture.detectChanges();
 
@@ -138,8 +137,13 @@ describe('BasicInputComponent Integration-Testing', () => {
       testHostComponent.resetForm();
       testHostComponent.markAllAsTouched();
 
-      // Act
+      // Force le contrôle à être invalid
+      testHostComponent.formGroup.controls.control.setValue('');
+      testHostComponent.formGroup.controls.control.markAsTouched();
+      testHostComponent.formGroup.controls.control.updateValueAndValidity();
       fixture.detectChanges();
+
+      // Act
       const materialFormField = await loader.getHarness<MatFormFieldHarness>(MatFormFieldHarness);
       const hasErrors = await materialFormField.hasErrors();
       const errors = await materialFormField.getTextErrors();
@@ -148,7 +152,7 @@ describe('BasicInputComponent Integration-Testing', () => {
       expect(hasErrors).toBeTrue();
       expect(errors).toEqual(['Bambinou']);
       expect(errors).toEqual(
-        Object.values(basicInputDe.componentInstance.errors as ValidationErrors)
+        Object.values(basicInputDe.componentInstance.errors || {})
       );
     });
 
@@ -179,6 +183,8 @@ describe('BasicInputComponent Integration-Testing', () => {
       formControlName="control"
     ></app-basic-input>
   </form>`,
+  imports: [BasicInputComponent, ReactiveFormsModule],
+  standalone: true
 })
 class TestHostComponent {
   public label = 'formLabel';

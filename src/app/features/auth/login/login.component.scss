@@ -5,6 +5,10 @@
     justify-content: center;
     width: 400px;
 
+    @media (max-width: 991px) {
+        width: 100vw;
+    }
+
     &__button {
         width: max-content;
     }

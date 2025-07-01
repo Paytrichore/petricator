@@ -18,7 +18,7 @@ export const requiredValidator = (message: string): ValidatorFn => {
 
     if (typeof val === 'string') val = strip(val);
 
-    if (val === '') {
+    if (isEmptyValue(val)) {
       return {
         requiredValidator: message,
       };

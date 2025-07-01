@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ActivatedRoute } from '@angular/router';
 
 describe('NavComponent', () => {
   let component: NavComponent;
@@ -13,13 +14,16 @@ describe('NavComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [NavComponent],
       imports: [
+        NavComponent,
         MatButtonModule,
         MatIconModule,
         MatListModule,
         MatSidenavModule,
         MatToolbarModule,
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: {} }
       ]
     });
   }));
