@@ -34,15 +34,14 @@ module.exports = function (config) {
       }
     },
     customLaunchers: {
-      headlessChrome: {
-        base: "ChromeHeadless",
+      ChromeHeadlessCI: {
+        base: 'ChromeHeadless',
         flags: [
-          "--no-sandbox",
-          "--no-proxy-server",
-          "--proxy-auto-detect",
-          "--disable-web-security",
-          "--disable-gpu",
-          "--js-flags=--max-old-space-size=8196",
+          '--no-sandbox',
+          '--disable-gpu',
+          '--disable-software-rasterizer',
+          '--headless',
+          '--disable-dev-shm-usage',
         ],
       },
     },
@@ -50,9 +49,9 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ['ChromeHeadless'],
-    singleRun: true,
-    autoWatch: false,
+    browsers: [process.env.CI ? 'ChromeHeadlessCI' : 'Chrome'],
+    singleRun: !!process.env.CI,
+    autoWatch: !process.env.CI,
     restartOnFileChange: true,
     junitReporter: {
       outputDir: require("path").join(__dirname, "./coverage"),
