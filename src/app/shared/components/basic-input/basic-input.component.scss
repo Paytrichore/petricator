@@ -1,0 +1,50 @@
+:host {
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.basic-input {
+  margin-bottom: 5px;
+  width: 100%;
+
+  &__hint-wrapper {
+    max-width: 100%;
+
+    @media only screen and (max-width: 767.98px) {
+      display: none;
+    }
+  }
+
+  &__btn-container {
+    // Style utilisé par material pour gérer la taille des icones utilisés comme suffixe
+
+    font-size: 125%;
+
+    @media only screen and (max-width: 767.98px) {
+      display: none;
+    }
+  }
+
+  :host ::ng-deep &__hint {
+    &--start {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__errors {
+    padding-bottom: 10px;
+  }
+
+  &__suffix {
+    color: var(--text-primary-lighter-color);
+    margin-left: 10px;
+  }
+  // @include mat.form-field-color($altTheme);
+  // Comme il est prohibé d'utiliser le selecteur parent "&" avec :host-context()
+  // on répète ici le nom complet de la classe.
+}
+// TODO: Refer to the first todo of this file
+// :host-context(.basic-input__error--warning) {
+//   @include mat.form-field-color($altTheme);
+// }

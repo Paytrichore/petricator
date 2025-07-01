@@ -1,0 +1,28 @@
+.login {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 400px;
+
+    @media (max-width: 991px) {
+        width: 100vw;
+    }
+
+    &__button {
+        width: max-content;
+    }
+
+    &__error {
+        color: var(--mat-sys-error);
+        margin-bottom: 0px;
+    }
+
+     &__form {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 400px;
+    }
+}

@@ -1,0 +1,13 @@
+.auth-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    &__card {
+        background: var(--mat-sys-background);
+        border-radius: var(--mat-sys-corner-extra-large-top);
+        padding: 1em 3em 2em;
+        text-align: center;
+    }
+}
