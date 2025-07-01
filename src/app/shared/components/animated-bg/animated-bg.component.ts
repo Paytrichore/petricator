@@ -115,7 +115,8 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
     const canvas = this.canvasRef.nativeElement;
     this.width = canvas.width = window.innerWidth;
     this.height = canvas.height = window.innerHeight;
-    this.ctx = canvas.getContext('2d')!;
+    // Utilise willReadFrequently pour optimiser les accès getImageData
+    this.ctx = canvas.getContext('2d', { willReadFrequently: true })!;
     this.points = [];
     for (let i = 0; i < 8; i++) {
       const color = this.colors[Math.floor(Math.random() * this.colors.length)];
@@ -159,6 +160,9 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   private animate = () => {
     this.ctx.clearRect(0, 0, this.width, this.height);
     const now = Date.now();
+    this.ctx.save();
+    this.ctx.globalAlpha = 0.7;
+    this.ctx.globalCompositeOperation = 'lighter';
     for (const p of this.points) {
       const t = Math.min((now - p.morphTime) / this.morphDuration, 1);
       p.morphProgress = t;
@@ -169,12 +173,13 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       const grad = this.ctx.createRadialGradient(x, y, 0, x, y, r);
       grad.addColorStop(0, color);
       grad.addColorStop(1, 'transparent');
-      this.ctx.globalAlpha = 0.7;
       this.ctx.beginPath();
       this.ctx.arc(x, y, r, 0, 2 * Math.PI);
       this.ctx.closePath();
       this.ctx.fillStyle = grad;
+      this.ctx.filter = 'blur(64px)';
       this.ctx.fill();
+      this.ctx.filter = 'none';
       if (t >= 1) {
         p.x = p.tx;
         p.y = p.ty;
@@ -189,6 +194,8 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       }
     }
     this.ctx.globalAlpha = 1;
+    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.restore();
     this.animationId = requestAnimationFrame(this.animate);
   };
 }
