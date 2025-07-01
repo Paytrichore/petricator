@@ -1,13 +1,15 @@
+:host {
+    display: flex;
+    justify-content: center;
+}
+
+
 .login {
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 400px;
-
-    @media (max-width: 991px) {
-        width: 100vw;
-    }
 
     &__button {
         width: max-content;
@@ -22,7 +24,31 @@
         align-items: center;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: end;
         width: 400px;
     }
+
+    &__title {
+        width: 100%;
+        text-align: end;
+    }
+}
+
+// @media (max-width: 900px) {
+//   .login, .login__form {
+//     width: 90vw;
+//     min-width: unset;
+//     max-width: 100vw;
+//   }
+// }
+@media (max-width: 600px) {
+  .login {
+    height: 100vh;
+    justify-content: center;
+
+    &__form,
+    &__title {
+        width: 90%;
+    }
+  }
 }
