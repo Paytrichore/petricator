@@ -49,9 +49,9 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: [process.env.CI ? 'ChromeHeadlessCI' : 'Chrome'],
-    singleRun: !!process.env.CI,
-    autoWatch: !process.env.CI,
+    browsers: ['ChromeHeadlessCI'],
+    singleRun: true,
+    autoWatch: false,
     restartOnFileChange: true,
     junitReporter: {
       outputDir: require("path").join(__dirname, "./coverage"),
