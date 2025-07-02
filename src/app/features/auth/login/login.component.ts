@@ -65,16 +65,10 @@ export class LoginComponent {
         this.loading = false;
         if (this.error) {
           this.messageService.openSnackBar(this.error, true);
-          // this.snackBar.open(this.error, 'Fermer', {
-          //   duration: 40000,
-          //   panelClass: this.error ? ['snackbar--error'] : undefined
-          // });
         }
       }
     });
   }
 
-  onChange() {
-    console.log('Form changed:', this.loginForm.value);
-  }
+  onChange() {}
 }

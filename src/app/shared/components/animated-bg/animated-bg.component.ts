@@ -143,14 +143,33 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   }
 
   private lerpColor(a: string, b: string, t: number) {
-    const ah = parseInt(a.replace('#', ''), 16);
-    const bh = parseInt(b.replace('#', ''), 16);
-    const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
-    const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
-    const rr = Math.round(this.lerp(ar, br, t));
-    const rg = Math.round(this.lerp(ag, bg, t));
-    const rb = Math.round(this.lerp(ab, bb, t));
-    return `rgb(${rr},${rg},${rb})`;
+    // Supporte rgba(r, g, b, a) ou #rrggbb
+    const parse = (c: string) => {
+      if (c.startsWith('rgba')) {
+        const [r, g, b, a] = c.match(/\d+\.?\d*/g)!.map(Number);
+        return { r, g, b, a };
+      } else if (c.startsWith('rgb')) {
+        const [r, g, b] = c.match(/\d+/g)!.map(Number);
+        return { r, g, b, a: 1 };
+      } else if (c.startsWith('#')) {
+        const n = parseInt(c.replace('#', ''), 16);
+        return {
+          r: (n >> 16) & 0xff,
+          g: (n >> 8) & 0xff,
+          b: n & 0xff,
+          a: 1
+        };
+      }
+      // fallback noir
+      return { r: 0, g: 0, b: 0, a: 1 };
+    };
+    const ca = parse(a);
+    const cb = parse(b);
+    const rr = Math.round(this.lerp(ca.r, cb.r, t));
+    const rg = Math.round(this.lerp(ca.g, cb.g, t));
+    const rb = Math.round(this.lerp(ca.b, cb.b, t));
+    const ra = this.lerp(ca.a, cb.a, t);
+    return `rgba(${rr},${rg},${rb},${ra})`;
   }
 
   private resizeCanvas = () => {
