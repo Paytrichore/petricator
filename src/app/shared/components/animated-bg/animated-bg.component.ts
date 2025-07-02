@@ -91,7 +91,7 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       window.addEventListener('resize', this.resizeCanvas);
       this.colorSetInterval = setInterval(() => {
         this.setColorsForCurrentTime();
-      }, 60 * 1000);
+      }, 15 * 60 * 1000);
     });
   }
 

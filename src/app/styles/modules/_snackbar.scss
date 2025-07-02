@@ -1,0 +1,11 @@
+.snackbar {
+  &--error {
+    background-color: var(--mat-sys-background);
+    color: var(--mat-sys-error);
+  }
+
+  &--success {
+    background-color: var(--mat-sys-background);
+    color: var(--mat-sys-primary);
+  }
+}

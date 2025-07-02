@@ -1,0 +1,17 @@
+<span class="loader-spinner" aria-label="Chargement...">
+  <svg width="138" height="38" viewBox="0 0 138 38" style="border-radius: 20px; overflow: hidden;">
+    <g>
+      @for (y of [0,1,2,3,4]; track y) {
+        @for (x of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]; track x) {
+          <rect
+            [attr.x]="x * 8"
+            [attr.y]="y * 8"
+            width="8" height="8"
+            fill="#fff"
+            [attr.class]="'pixel pixel-' + x + '-' + y"
+          />
+        }
+      }
+    </g>
+  </svg>
+</span>

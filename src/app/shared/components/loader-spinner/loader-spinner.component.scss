@@ -1,0 +1,47 @@
+.loader-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  background: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+@keyframes pixel-blink {
+  0% { opacity: 0; }
+  20% { opacity: 0.15; }
+  60% { opacity: 0.25; }
+  80% { opacity: 0.35; }
+  100% { opacity: 0.50; }
+}
+
+.pixel {
+  opacity: 0;
+  animation: pixel-blink 1.2s infinite alternate;
+  fill: #fff;
+  filter: none;
+}
+
+// Génération des delays et durations pour chaque pixel
+$cols: 18;
+$rows: 5;
+$min-delay: 0.1;
+$max-delay: 1.0;
+$min-duration: 1.1;
+$max-duration: 1.8;
+
+@function random-float($min, $max) {
+  @return $min + random() * ($max - $min);
+}
+
+@for $y from 0 to $rows {
+  @for $x from 0 to $cols {
+    $delay: $min-delay + random() * ($max-delay - $min-delay);
+    $duration: $min-duration + random() * ($max-duration - $min-duration);
+    .pixel-#{$x}-#{$y} {
+      animation-delay: #{$delay}s;
+      animation-duration: #{$duration}s;
+    }
+  }
+}
