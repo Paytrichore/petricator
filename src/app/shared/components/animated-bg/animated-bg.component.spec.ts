@@ -32,20 +32,20 @@ describe('AnimatedBgComponent', () => {
     }) as any);
   });
 
-  it('should set up colorSetInterval and update colors every minute', fakeAsync(() => {
+  it('should set up colorSetInterval and update colors every 15 minutes', fakeAsync(() => {
     // Force l'heure à 8h (matin)
     spyOn(Date.prototype, 'getHours').and.returnValue(8);
     component.ngAfterViewInit();
     // Appel manuel pour initialiser colors (car le premier appel dans ngAfterViewInit n'utilise pas notre colorSets mocké)
     component['setColorsForCurrentTime']();
     expect(component['colors']).toEqual(['#morning']);
-    // Change l'heure à midi, tick 1min
+    // Change l'heure à midi, tick 15min
     (Date.prototype.getHours as any).and.returnValue(13);
-    tick(60 * 1000);
+    tick(15 * 60 * 1000);
     expect(component['colors']).toEqual(['#noon']);
-    // Change l'heure à 19h, tick 1min
+    // Change l'heure à 19h, tick 15min
     (Date.prototype.getHours as any).and.returnValue(19);
-    tick(60 * 1000);
+    tick(15 * 60 * 1000);
     expect(component['colors']).toEqual(['#evening']);
     // Nettoyage
     component.ngOnDestroy();
@@ -106,5 +106,30 @@ describe('AnimatedBgComponent', () => {
     const spy = spyOn(component as any, 'initCanvas');
     (component as any).resizeCanvas();
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('lerpColor should interpolate between two hex colors', () => {
+    const c = (component as any).lerpColor('#ff0000', '#00ff00', 0.5);
+    expect(c).toBe('rgba(128,128,0,1)');
+  });
+
+  it('lerpColor should interpolate between two rgba colors', () => {
+    const c = (component as any).lerpColor('rgba(255,0,0,1)', 'rgba(0,255,0,0.5)', 0.5);
+    expect(c).toBe('rgba(128,128,0,0.75)');
+  });
+
+  it('lerpColor should interpolate between two rgb colors', () => {
+    const c = (component as any).lerpColor('rgb(255,0,0)', 'rgb(0,0,255)', 0.5);
+    expect(c).toBe('rgba(128,0,128,1)');
+  });
+
+  it('lerpColor should interpolate between hex and rgba', () => {
+    const c = (component as any).lerpColor('#0000ff', 'rgba(255,255,0,0.5)', 0.5);
+    expect(c).toBe('rgba(128,128,128,0.75)');
+  });
+
+  it('lerpColor should fallback to black if format unknown', () => {
+    const c = (component as any).lerpColor('foo', 'bar', 0.5);
+    expect(c).toBe('rgba(0,0,0,1)');
   });
 });

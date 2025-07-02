@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
+@use "./app/styles/router";
 
 html, body { 
     height: 100%;
@@ -15,47 +16,49 @@ body {
 a {
     color: var(--mat-sys-primary);
     text-decoration: none;
+    transition: color 150ms;
 
     &:hover,
     &:focus {
-        color: var(--mat-sys-inverse-primary)
+        color: var(--mat-sys-inverse-primary);
+        transition: color 150ms;
     }
 }
 
 :root {
-  --palette-morning-1: #ffb347;
-  --palette-morning-2: #ffcc33;
-  --palette-morning-3: #ffec99;
-  --palette-morning-4: #f9f871;
-  --palette-morning-5: #f7b32b;
-  --palette-morning-6: #f76e11;
-  --palette-morning-7: #f73859;
-  --palette-morning-8: #a1ffce;
+  --palette-morning-1: rgba(255, 179, 71, 1);
+  --palette-morning-2: rgba(255, 204, 51, 1);
+  --palette-morning-3: rgba(255, 192, 77, 1);
+  --palette-morning-4: rgba(255, 215, 0, 1);
+  --palette-morning-5: rgba(247, 179, 43, 1);
+  --palette-morning-6: rgba(247, 110, 17, 1);
+  --palette-morning-7: rgba(247, 56, 89, 1);
+  --palette-morning-8: rgba(161, 255, 206, 1);
 
-  --palette-noon-1: #264653;
-  --palette-noon-2: #388e3c;
-  --palette-noon-3: #43a047;
-  --palette-noon-4: #f4b942;
-  --palette-noon-5: #ffb300;
-  --palette-noon-6: #ff7043;
-  --palette-noon-7: #a15c1b;
-  --palette-noon-8: #2a3a1c;
+  --palette-noon-1: rgba(38, 70, 83, 1);
+  --palette-noon-2: rgba(56, 142, 60, 1);
+  --palette-noon-3: rgba(67, 160, 71, 1);
+  --palette-noon-4: rgba(244, 185, 66, 1);
+  --palette-noon-5: rgba(255, 179, 0, 1);
+  --palette-noon-6: rgba(255, 112, 67, 1);
+  --palette-noon-7: rgba(161, 92, 27, 1);
+  --palette-noon-8: rgba(42, 58, 28, 1);
 
-  --palette-evening-1: #f7971e;
-  --palette-evening-2: #e09b3d;
-  --palette-evening-3: #f6723a;
-  --palette-evening-4: #3b5998;
-  --palette-evening-5: #667eea;
-  --palette-evening-6: #764ba2;
-  --palette-evening-7: #8d4585;
-  --palette-evening-8: #5f4b66;
+  --palette-evening-1: rgba(247, 151, 30, 1);
+  --palette-evening-2: rgba(224, 155, 61, 1);
+  --palette-evening-3: rgba(246, 114, 58, 1);
+  --palette-evening-4: rgba(59, 89, 152, 1);
+  --palette-evening-5: rgba(102, 126, 234, 1);
+  --palette-evening-6: rgba(118, 75, 162, 1);
+  --palette-evening-7: rgba(141, 69, 133, 1);
+  --palette-evening-8: rgba(95, 75, 102, 1);
 
-  --palette-night-1: #35395c;
-  --palette-night-2: #4a4e7d;
-  --palette-night-3: #2e3a87;
-  --palette-night-4: #355c7d;
-  --palette-night-5: #5a4eb1;
-  --palette-night-6: #3a5a8c;
-  --palette-night-7: #4e4eb7;
-  --palette-night-8: #6c4eb7;
+  --palette-night-1: rgba(53, 57, 92, 1);
+  --palette-night-2: rgba(74, 78, 125, 1);
+  --palette-night-3: rgba(46, 58, 135, 1);
+  --palette-night-4: rgba(53, 92, 125, 1);
+  --palette-night-5: rgba(90, 78, 177, 1);
+  --palette-night-6: rgba(58, 90, 140, 1);
+  --palette-night-7: rgba(78, 78, 183, 1);
+  --palette-night-8: rgba(108, 78, 183, 1);
 }

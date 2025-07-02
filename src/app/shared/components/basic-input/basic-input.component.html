@@ -5,7 +5,7 @@
     matInput
     [attr.placeholder]="placeholder"
     [errorStateMatcher]="stateMatcher"
-    [type]="type"
+    [type]="inputType"
     [(ngModel)]="value"
     (input)="onChange(input.value)"
   />
@@ -14,7 +14,18 @@
   </mat-hint>
   <span class="basic-input__suffix" matSuffix>
     <ng-content select=".basic-input__suffix"></ng-content>
-    @if (value) {
+    @if (isPassword) {
+      <button
+        mat-icon-button
+        type="button"
+        class="password-toggle"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="passwordVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+      >
+        <mat-icon>{{ passwordVisible ? 'visibility' : 'visibility_off' }}</mat-icon>
+      </button>
+    }
+    @if (clearable && value) {
       <button
         matSuffix
         mat-icon-button
