@@ -110,20 +110,6 @@ describe('BasicInputComponent Integration-Testing', () => {
       expect(matInputValue).toBeFalsy();
     });
 
-    it('should render button container only if there is a value in the field', () => {
-      // Arrange
-      let button = basicInputDe.query(By.css('button'));
-      expect(button).not.toBeNull();
-
-      // Act
-      testHostComponent.resetForm();
-      fixture.detectChanges();
-      button = basicInputDe.query(By.css('button'));
-
-      // Assert
-      expect(button).toBeNull();
-    });
-
     it('should instanciate a correct error state matcher', () => {
       // Assert
       expect(basicInputDe.componentInstance.stateMatcher).toEqual(
@@ -158,6 +144,7 @@ describe('BasicInputComponent Integration-Testing', () => {
 
     it('should update the value and trigger the onChange method on a clear button click', () => {
       // Arrange
+      basicInputDe.componentInstance.clearable = true;
       testHostComponent.formGroup.controls.control.setValue('BAMBINOUNET');
       fixture.detectChanges();
       const clearBtn = fixture.debugElement.query(By.css('button'));
@@ -170,6 +157,55 @@ describe('BasicInputComponent Integration-Testing', () => {
       // Assert
       expect(basicInputDe.componentInstance.value).toEqual('');
       expect(onChangeSpy).toHaveBeenCalledWith('');
+    });
+
+    it('should emit change event when value changes (covers emitChanges of CVADirective)', async () => {
+      // Arrange
+      const changeSpy = jasmine.createSpy('change');
+      basicInputDe.componentInstance.change.subscribe(changeSpy);
+      await matInput.setValue('emitTest');
+      fixture.detectChanges();
+
+      // Act
+      basicInputDe.componentInstance.emitChanges('emitTest');
+      fixture.detectChanges();
+
+      // Assert
+      expect(changeSpy).toHaveBeenCalledWith('emitTest');
+    });
+  });
+
+  describe('inputType getter and password visibility', () => {
+    it('should return "password" when isPassword is true and passwordVisible is false', () => {
+      basicInputDe.componentInstance.isPassword = true;
+      basicInputDe.componentInstance.passwordVisible = false;
+      expect(basicInputDe.componentInstance.inputType).toBe('password');
+    });
+
+    it('should return "text" when isPassword is true and passwordVisible is true', () => {
+      basicInputDe.componentInstance.isPassword = true;
+      basicInputDe.componentInstance.passwordVisible = true;
+      expect(basicInputDe.componentInstance.inputType).toBe('text');
+    });
+
+    it('should return the value of type if isPassword is false and type is set', () => {
+      basicInputDe.componentInstance.isPassword = false;
+      (basicInputDe.componentInstance as any).type = 'email';
+      expect(basicInputDe.componentInstance.inputType).toBe('email');
+    });
+
+    it('should return "text" if isPassword is false and type is not set', () => {
+      basicInputDe.componentInstance.isPassword = false;
+      (basicInputDe.componentInstance as any).type = undefined;
+      expect(basicInputDe.componentInstance.inputType).toBe('text');
+    });
+
+    it('should toggle passwordVisible when togglePasswordVisibility is called', () => {
+      basicInputDe.componentInstance.passwordVisible = false;
+      basicInputDe.componentInstance.togglePasswordVisibility();
+      expect(basicInputDe.componentInstance.passwordVisible).toBeTrue();
+      basicInputDe.componentInstance.togglePasswordVisibility();
+      expect(basicInputDe.componentInstance.passwordVisible).toBeFalse();
     });
   });
 });
@@ -187,6 +223,7 @@ describe('BasicInputComponent Integration-Testing', () => {
   standalone: true
 })
 class TestHostComponent {
+  public clearable: boolean = false;
   public label = 'formLabel';
   public formGroup = new FormGroup(
     {

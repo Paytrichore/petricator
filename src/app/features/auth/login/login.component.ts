@@ -6,21 +6,35 @@ import { ToFormControlPipe } from '../../../shared/pipes/form-control.pipe';
 import { BasicInputComponent } from '../../../shared/components/basic-input/basic-input.component';
 import { patternValidator, requiredValidator } from '../../../shared/helpers/validators/generics.validator';
 import { MatButtonModule } from '@angular/material/button';
+import { LoaderDirective } from '../../../shared/directives/loader.directive';
+import { LoaderSpinnerComponent } from "../../../shared/components/loader-spinner/loader-spinner.component";
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageService } from '../../../services/message/message.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  imports: [ReactiveFormsModule, RouterLink, ToFormControlPipe, BasicInputComponent, MatButtonModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    ToFormControlPipe,
+    BasicInputComponent,
+    MatButtonModule,
+    LoaderDirective,
+    MatSnackBarModule
+],
 })
 export class LoginComponent {
   loginForm: FormGroup;
   error = '';
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private messageService: MessageService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [requiredValidator('L\'email est requis'), patternValidator(
@@ -36,14 +50,25 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
       return;
     }
+    this.loading = true;
+    const minLoading = new Promise(resolve => setTimeout(resolve, 1000));
     const { email, password } = this.loginForm.value;
     this.authService.login(email, password).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: err => this.error = err?.error?.message || 'Erreur lors de la connexion'
+      next: async () => {
+        await minLoading;
+        this.router.navigate(['/']);
+        this.loading = false;
+      },
+      error: async err => {
+        await minLoading;
+        this.error = err?.error?.message || 'Erreur lors de la connexion';
+        this.loading = false;
+        if (this.error) {
+          this.messageService.openSnackBar(this.error, true);
+        }
+      }
     });
   }
 
-  onChange() {
-    console.log('Form changed:', this.loginForm.value);
-  }
+  onChange() {}
 }
