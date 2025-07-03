@@ -36,7 +36,7 @@
       </button>
     }
   </span>
-  @if (controlDir.control && controlDir.control.errors) {
+  @if (controlDir.control && controlDir.control.errors && showErrors) {
     <mat-error class="basic-input__errors">
       @for (error of getErrors(controlDir.control); track error) {
           {{ error }}

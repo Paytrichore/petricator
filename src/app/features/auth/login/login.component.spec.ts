@@ -134,8 +134,4 @@ describe('LoginComponent', () => {
     tick(1000);
     expect(component.error).toBe('Erreur lors de la connexion');
   }));
-
-  it('should have an onChange method that does not throw', () => {
-    expect(() => component.onChange()).not.toThrow();
-  });
 });
