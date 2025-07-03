@@ -8,6 +8,8 @@ import { patternValidator, requiredValidator } from '../../../shared/helpers/val
 import { LoaderDirective } from '../../../shared/directives/loader.directive';
 import { MessageService } from '../../../services/message/message.service';
 import { MatButton } from '@angular/material/button';
+import { LoaderDirective } from '../../../shared/directives/loader.directive';
+import { MessageService } from '../../../services/message/message.service';
 
 @Component({
   selector: 'app-login',
