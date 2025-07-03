@@ -33,7 +33,7 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   private morphDuration = 12000;
   private colorSetInterval: any;
   private lastFrameTime = 0;
-  private resolutionScale = 0.5; // 0.5 = moitié de la résolution
+  private resolutionScale = 0.5;
 
   private getCssVar(name: string): string {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -119,14 +119,12 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
     this.height = Math.round(window.innerHeight * this.resolutionScale);
     canvas.width = this.width;
     canvas.height = this.height;
-    // CSS: le canvas prendra toute la place, mais le rendu interne est réduit
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
     this.ctx = canvas.getContext('2d', { willReadFrequently: true })!;
     this.points = [];
     for (let i = 0; i < 4; i++) {
       const color = this.colors[Math.floor(Math.random() * this.colors.length)];
-      // morphTime synchronisé (pas de décalage)
       const morphTime = Date.now();
       this.points.push({
         x: Math.random() * this.width,
@@ -151,7 +149,6 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   }
 
   private lerpColor(a: string, b: string, t: number) {
-    // Supporte rgba(r, g, b, a) ou #rrggbb
     const parse = (c: string) => {
       if (c.startsWith('rgba')) {
         const [r, g, b, a] = c.match(/\d+\.?\d*/g)!.map(Number);
@@ -168,7 +165,6 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
           a: 1
         };
       }
-      // fallback noir
       return { r: 0, g: 0, b: 0, a: 1 };
     };
     const ca = parse(a);
@@ -186,13 +182,11 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
 
   private animate = () => {
     const now = Date.now();
-    // Limite le framerate à 30 FPS (1 frame toutes les ~33ms)
     if (now - this.lastFrameTime < 33) {
       this.animationId = requestAnimationFrame(this.animate);
       return;
     }
     this.lastFrameTime = now;
-    // Optimisation du clear : reset si dispo, sinon clearRect
     if (typeof (this.ctx as any).reset === 'function') {
       (this.ctx as any).reset();
     } else {
@@ -220,7 +214,6 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       this.ctx.fill();
       this.ctx.filter = 'none';
       if (t >= 1) {
-        // Reset brutal : nouvelle cible totalement aléatoire
         p.x = p.tx;
         p.y = p.ty;
         p.r = p.tr;
