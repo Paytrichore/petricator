@@ -132,7 +132,7 @@ describe('AnimatedBgComponent', () => {
     const c = (component as any).lerpColor('foo', 'bar', 0.5);
     expect(c).toBe('rgba(0,0,0,1)');
   });
-  
+
   it('should clear canvas with setTransform and clearRect if reset is not available', () => {
     component['width'] = 100;
     component['height'] = 50;

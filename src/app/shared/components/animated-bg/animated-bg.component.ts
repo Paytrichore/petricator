@@ -129,7 +129,7 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       this.points.push({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
-        r: 450 * this.resolutionScale + Math.random() * 250 * this.resolutionScale, // taille adaptée à la résolution
+        r: 450 * this.resolutionScale + Math.random() * 250 * this.resolutionScale,
         color,
         dx: (Math.random() - 0.5) * 1.5 * this.resolutionScale,
         dy: (Math.random() - 0.5) * 1.5 * this.resolutionScale,
@@ -165,7 +165,6 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
           a: 1
         };
       }
-      
       return { r: 0, g: 0, b: 0, a: 1 };
     };
     const ca = parse(a);

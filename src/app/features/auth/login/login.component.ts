@@ -22,7 +22,6 @@ import { MatButton } from '@angular/material/button';
     MatButton,
     LoaderDirective,
   ],
-
 })
 export class LoginComponent {
   loginForm: FormGroup;
