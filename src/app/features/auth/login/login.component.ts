@@ -9,6 +9,7 @@ import { LoaderDirective } from '../../../shared/directives/loader.directive';
 import { MessageService } from '../../../services/message/message.service';
 import { MatButton } from '@angular/material/button';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,6 +22,7 @@ import { MatButton } from '@angular/material/button';
     MatButton,
     LoaderDirective,
   ],
+
 })
 export class LoginComponent {
   loginForm: FormGroup;

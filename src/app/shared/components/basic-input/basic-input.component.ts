@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { BaseFormFieldDirective } from '../../directives/CVA.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    MatFormFieldModule,
     MatInputModule,
     MatIcon,
     MatButtonModule

@@ -165,6 +165,7 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
           a: 1
         };
       }
+      
       return { r: 0, g: 0, b: 0, a: 1 };
     };
     const ca = parse(a);
