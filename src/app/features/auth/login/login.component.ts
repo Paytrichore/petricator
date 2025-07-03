@@ -1,15 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ToFormControlPipe } from '../../../shared/pipes/form-control.pipe';
 import { BasicInputComponent } from '../../../shared/components/basic-input/basic-input.component';
 import { patternValidator, requiredValidator } from '../../../shared/helpers/validators/generics.validator';
-import { MatButtonModule } from '@angular/material/button';
 import { LoaderDirective } from '../../../shared/directives/loader.directive';
-import { LoaderSpinnerComponent } from "../../../shared/components/loader-spinner/loader-spinner.component";
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MessageService } from '../../../services/message/message.service';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
@@ -20,10 +18,9 @@ import { MessageService } from '../../../services/message/message.service';
     RouterLink,
     ToFormControlPipe,
     BasicInputComponent,
-    MatButtonModule,
+    MatButton,
     LoaderDirective,
-    MatSnackBarModule
-],
+  ],
 })
 export class LoginComponent {
   loginForm: FormGroup;

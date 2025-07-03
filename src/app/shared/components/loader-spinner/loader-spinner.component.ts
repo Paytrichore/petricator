@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-loader-spinner',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './loader-spinner.component.html',
   styleUrls: ['./loader-spinner.component.scss']
 })
