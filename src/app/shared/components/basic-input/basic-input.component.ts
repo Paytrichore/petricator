@@ -23,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class BasicInputComponent extends BaseFormFieldDirective<string> {
   @Input() public clearable: boolean = false;
   @Input() public isPassword: boolean = false;
+  @Input() public showErrors: boolean = true;
 
   public passwordVisible = false;
 

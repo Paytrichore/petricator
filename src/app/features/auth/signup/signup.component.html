@@ -1,0 +1,58 @@
+<main class="signup">
+  <h2 class="signup__title pixel-font">Inscription</h2>
+  <form
+    [formGroup]="signupForm"
+    (ngSubmit)="onSubmit()"
+    class="signup__form"
+  >
+    <app-basic-input
+      label="Pseudo"
+      [formControl]="signupForm.controls['username'] | toFormControl"
+    ></app-basic-input>
+    <app-basic-input
+      label="Email"
+      [formControl]="signupForm.controls['email'] | toFormControl"
+    ></app-basic-input>
+    <app-basic-input
+      label="Mot de passe"
+      [formControl]="signupForm.controls['password'] | toFormControl"
+      [isPassword]="true"
+      [showErrors]="false"
+    ></app-basic-input>
+    <aside class="signup__checker">
+      <p class="signup__checker-item" [ngClass]="getPasswordCheckerClass('minLength')">
+        Contient au moins six caractères
+        <mat-icon class="signup__checker-icon">check_circle</mat-icon>
+      </p>
+      <p class="signup__checker-item" [ngClass]="getPasswordCheckerClass('specialChar')">
+        Contient au moins un caractère spécial
+        <mat-icon class="signup__checker-icon">check_circle</mat-icon>
+      </p>
+      <p class="signup__checker-item" [ngClass]="getPasswordCheckerClass('digit')">
+        Contient au moins un chiffre
+        <mat-icon class="signup__checker-icon">check_circle</mat-icon>
+      </p>
+      <p class="signup__checker-item" [ngClass]="getPasswordCheckerClass('uppercase')">
+        Contient au moins une majuscule
+        <mat-icon class="signup__checker-icon">check_circle</mat-icon>
+      </p>
+    </aside>
+    <app-basic-input
+      label="Confirmation du mot de passe"
+      [formControl]="signupForm.controls['confirmPassword'] | toFormControl"
+      [isPassword]="true"
+    ></app-basic-input>
+    <div class="signup__actions">
+      <button
+        mat-stroked-button
+        type="submit"
+        [disabled]="signupForm.invalid"
+        class="signup__button"
+        [appLoader]="loading"
+      >
+        S'inscrire
+      </button>
+      <p class="signup__login">Déjà inscrit(e) ? <a routerLink="/login">Connecte toi</a> !</p>
+    </div>
+  </form>
+</main>

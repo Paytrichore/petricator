@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -32,7 +32,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       email: ['', [requiredValidator('L\'email est requis'), patternValidator(
@@ -56,17 +57,20 @@ export class LoginComponent {
         await minLoading;
         this.router.navigate(['/']);
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: async err => {
         await minLoading;
-        this.error = err?.error?.message || 'Erreur lors de la connexion';
+        const apiMessage = err?.error?.message;
+        this.error = typeof apiMessage === 'string' && apiMessage.trim().length > 0
+          ? apiMessage
+          : 'Erreur lors de la connexion';
         this.loading = false;
+        this.cdr.detectChanges();
         if (this.error) {
           this.messageService.openSnackBar(this.error, true);
         }
       }
     });
   }
-
-  onChange() {}
 }
