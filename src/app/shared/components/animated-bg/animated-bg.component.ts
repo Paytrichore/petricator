@@ -32,6 +32,8 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   private colors: string[] = [];
   private morphDuration = 12000;
   private colorSetInterval: any;
+  private lastFrameTime = 0;
+  private resolutionScale = 0.5; // 0.5 = moitié de la résolution
 
   private getCssVar(name: string): string {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -83,7 +85,7 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       this.loadColorSetsFromCss();
       this.setColorsForCurrentTime();
       this.initCanvas();
@@ -113,26 +115,32 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
 
   private initCanvas = () => {
     const canvas = this.canvasRef.nativeElement;
-    this.width = canvas.width = window.innerWidth;
-    this.height = canvas.height = window.innerHeight;
-    // Utilise willReadFrequently pour optimiser les accès getImageData
+    this.width = Math.round(window.innerWidth * this.resolutionScale);
+    this.height = Math.round(window.innerHeight * this.resolutionScale);
+    canvas.width = this.width;
+    canvas.height = this.height;
+    // CSS: le canvas prendra toute la place, mais le rendu interne est réduit
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
     this.ctx = canvas.getContext('2d', { willReadFrequently: true })!;
     this.points = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 4; i++) {
       const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+      // morphTime synchronisé (pas de décalage)
+      const morphTime = Date.now();
       this.points.push({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
-        r: 450 + Math.random() * 250,
+        r: 450 * this.resolutionScale + Math.random() * 250 * this.resolutionScale, // taille adaptée à la résolution
         color,
-        dx: (Math.random() - 0.5) * 1.5,
-        dy: (Math.random() - 0.5) * 1.5,
-        dr: (Math.random() - 0.5) * 0.5,
+        dx: (Math.random() - 0.5) * 1.5 * this.resolutionScale,
+        dy: (Math.random() - 0.5) * 1.5 * this.resolutionScale,
+        dr: (Math.random() - 0.5) * 0.5 * this.resolutionScale,
         tx: Math.random() * this.width,
         ty: Math.random() * this.height,
-        tr: 450 + Math.random() * 250,
+        tr: 450 * this.resolutionScale + Math.random() * 250 * this.resolutionScale,
         tColor: this.colors[Math.floor(Math.random() * this.colors.length)],
-        morphTime: Date.now(),
+        morphTime,
         morphProgress: 0
       });
     }
@@ -177,8 +185,20 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   };
 
   private animate = () => {
-    this.ctx.clearRect(0, 0, this.width, this.height);
     const now = Date.now();
+    // Limite le framerate à 30 FPS (1 frame toutes les ~33ms)
+    if (now - this.lastFrameTime < 33) {
+      this.animationId = requestAnimationFrame(this.animate);
+      return;
+    }
+    this.lastFrameTime = now;
+    // Optimisation du clear : reset si dispo, sinon clearRect
+    if (typeof (this.ctx as any).reset === 'function') {
+      (this.ctx as any).reset();
+    } else {
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+      this.ctx.clearRect(0, 0, this.width, this.height);
+    }
     this.ctx.save();
     this.ctx.globalAlpha = 0.7;
     this.ctx.globalCompositeOperation = 'lighter';
@@ -196,17 +216,18 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       this.ctx.arc(x, y, r, 0, 2 * Math.PI);
       this.ctx.closePath();
       this.ctx.fillStyle = grad;
-      this.ctx.filter = 'blur(64px)';
+      this.ctx.filter = `blur(${64 * this.resolutionScale}px)`; // blur adapté à la résolution
       this.ctx.fill();
       this.ctx.filter = 'none';
       if (t >= 1) {
+        // Reset brutal : nouvelle cible totalement aléatoire
         p.x = p.tx;
         p.y = p.ty;
         p.r = p.tr;
         p.color = p.tColor;
         p.tx = Math.random() * this.width;
         p.ty = Math.random() * this.height;
-        p.tr = 450 + Math.random() * 250;
+        p.tr = 450 * this.resolutionScale + Math.random() * 250 * this.resolutionScale;
         p.tColor = this.colors[Math.floor(Math.random() * this.colors.length)];
         p.morphTime = now;
         p.morphProgress = 0;
