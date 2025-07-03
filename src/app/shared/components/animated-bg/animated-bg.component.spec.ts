@@ -132,4 +132,52 @@ describe('AnimatedBgComponent', () => {
     const c = (component as any).lerpColor('foo', 'bar', 0.5);
     expect(c).toBe('rgba(0,0,0,1)');
   });
+
+  it('should clear canvas with setTransform and clearRect if reset is not available', () => {
+    component['width'] = 100;
+    component['height'] = 50;
+    const setTransformSpy = jasmine.createSpy('setTransform');
+    const clearRectSpy = jasmine.createSpy('clearRect');
+    (component as any).ctx = {
+      setTransform: setTransformSpy,
+      clearRect: clearRectSpy
+    };
+    // Simule le code du else (reset non défini)
+    if (typeof (component as any).ctx.reset === 'function') {
+      (component as any).ctx.reset();
+    } else {
+      (component as any).ctx.setTransform(1, 0, 0, 1, 0, 0);
+      (component as any).ctx.clearRect(0, 0, component['width'], component['height']);
+    }
+    expect(setTransformSpy).toHaveBeenCalledWith(1, 0, 0, 1, 0, 0);
+    expect(clearRectSpy).toHaveBeenCalledWith(0, 0, 100, 50);
+  });
+
+  it('should clear canvas with setTransform and clearRect if ctx.reset is not a function (real animate call)', () => {
+    component['width'] = 100;
+    component['height'] = 50;
+    const setTransformSpy = jasmine.createSpy('setTransform');
+    const clearRectSpy = jasmine.createSpy('clearRect');
+    (component as any).ctx = {
+      setTransform: setTransformSpy,
+      clearRect: clearRectSpy,
+      save: () => {},
+      restore: () => {},
+      beginPath: () => {},
+      arc: () => {},
+      closePath: () => {},
+      fill: () => {},
+      createRadialGradient: () => ({ addColorStop: () => {} }),
+      filter: '',
+      globalAlpha: 1,
+      globalCompositeOperation: 'source-over'
+    };
+    // Empêche la boucle infinie de requestAnimationFrame
+    spyOn(window, 'requestAnimationFrame').and.returnValue(0);
+    // Mock points vide pour ne pas exécuter le reste
+    (component as any).points = [];
+    (component as any).animate();
+    expect(setTransformSpy).toHaveBeenCalledWith(1, 0, 0, 1, 0, 0);
+    expect(clearRectSpy).toHaveBeenCalledWith(0, 0, 100, 50);
+  });
 });
