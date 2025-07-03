@@ -4,7 +4,7 @@
 }
 
 
-.login {
+.signup {
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -37,6 +37,38 @@
         width: 140px;
     }
 
+    &__checker {
+        font-size: 14px;
+        margin-bottom: 30px;
+        text-align: end;
+        width: 100%;
+
+        &-item {
+            margin: 5px 0;
+            font-size: 13px;
+            color: color-mix(in srgb, var(--mat-sys-on-surface) 56%, transparent);
+            transition: color 150ms;
+
+            &--valid {
+                color: var(--mat-sys-primary);
+                transition: color 150ms;
+            }
+        }
+
+        &-icon {
+            font-size: 16px;
+            height: 16px;
+            margin-left: 3px;
+            position: relative;
+            top: 4px;
+            width: 16px;
+
+            &--valid {
+                color: var(--mat-sys-primary);
+            }
+        }
+    }
+
     &__error {
         color: var(--mat-sys-error);
         margin-bottom: 0px;
@@ -50,7 +82,7 @@
         width: 400px;
     }
 
-    &__signup {
+    &__login {
         font-size: 14px;
     }
 
@@ -63,7 +95,7 @@
 }
 
 @media (max-width: 600px) {
-  .login {
+  .signup {
     height: 100vh;
     justify-content: center;
 
