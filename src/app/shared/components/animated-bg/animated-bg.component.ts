@@ -84,10 +84,9 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       canvas.style.width = window.innerWidth + 'px';
       canvas.style.height = window.innerHeight + 'px';
       this.ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-      this.animate();
       // 3. Redessiner l'ancien contenu
-      this.ctx = canvas.getContext('2d', { willReadFrequently: true })!;
       this.ctx.drawImage(tempCanvas, 0, 0);
+      // Ne pas relancer animate ici
     }
   };
 
