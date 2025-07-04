@@ -6,6 +6,7 @@ describe('AnimatedBgComponent', () => {
   let fixture: ComponentFixture<AnimatedBgComponent>;
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
+  let getContextSpy: jasmine.Spy;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -26,7 +27,7 @@ describe('AnimatedBgComponent', () => {
       writable: true
     });
     ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-    spyOn(canvas, 'getContext').and.returnValue(ctx);
+    getContextSpy = spyOn(canvas, 'getContext').and.returnValue(ctx);
     spyOn(window, 'getComputedStyle').and.callFake(() => ({
       getPropertyValue: (name: string) => '#123456',
     }) as any);
@@ -102,12 +103,6 @@ describe('AnimatedBgComponent', () => {
     expect(component['colors']).toEqual(['#night']);
   });
 
-  it('should call initCanvas when resizeCanvas is called', () => {
-    const spy = spyOn(component as any, 'initCanvas');
-    (component as any).resizeCanvas();
-    expect(spy).toHaveBeenCalled();
-  });
-
   it('lerpColor should interpolate between two hex colors', () => {
     const c = (component as any).lerpColor('#ff0000', '#00ff00', 0.5);
     expect(c).toBe('rgba(128,128,0,1)');
@@ -179,5 +174,41 @@ describe('AnimatedBgComponent', () => {
     (component as any).animate();
     expect(setTransformSpy).toHaveBeenCalledWith(1, 0, 0, 1, 0, 0);
     expect(clearRectSpy).toHaveBeenCalledWith(0, 0, 100, 50);
+  });
+
+  it('should resize the canvas and call animate if window is larger', () => {
+    component['width'] = 100;
+    component['height'] = 100;
+    getContextSpy.calls.reset();
+    const canvas = component.canvasRef.nativeElement;
+    spyOnProperty(window, 'innerWidth').and.returnValue(300);
+    spyOnProperty(window, 'innerHeight').and.returnValue(400);
+    component['resolutionScale'] = 1;
+    const animateSpy = spyOn(component as any, 'animate');
+    (component as any).handleResize();
+    expect(component['width']).toBe(300);
+    expect(component['height']).toBe(400);
+    expect(canvas.width).toBe(300);
+    expect(canvas.height).toBe(400);
+    expect(getContextSpy).toHaveBeenCalled();
+    expect(animateSpy).toHaveBeenCalled();
+  });
+
+  it('should not resize the canvas if window is smaller or equal', () => {
+    component['width'] = 500;
+    component['height'] = 500;
+    getContextSpy.calls.reset();
+    const canvas = component.canvasRef.nativeElement;
+    spyOnProperty(window, 'innerWidth').and.returnValue(400);
+    spyOnProperty(window, 'innerHeight').and.returnValue(400);
+    component['resolutionScale'] = 1;
+    const animateSpy = spyOn(component as any, 'animate');
+    (component as any).handleResize();
+    expect(component['width']).toBe(500);
+    expect(component['height']).toBe(500);
+    expect(canvas.width).not.toBe(400);
+    expect(canvas.height).not.toBe(400);
+    expect(getContextSpy).not.toHaveBeenCalled();
+    expect(animateSpy).not.toHaveBeenCalled();
   });
 });

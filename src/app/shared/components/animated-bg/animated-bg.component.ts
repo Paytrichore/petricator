@@ -40,48 +40,10 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadColorSetsFromCss() {
-    this.colorSets = [
-      [
-        this.getCssVar('--palette-morning-1'),
-        this.getCssVar('--palette-morning-2'),
-        this.getCssVar('--palette-morning-3'),
-        this.getCssVar('--palette-morning-4'),
-        this.getCssVar('--palette-morning-5'),
-        this.getCssVar('--palette-morning-6'),
-        this.getCssVar('--palette-morning-7'),
-        this.getCssVar('--palette-morning-8'),
-      ],
-      [
-        this.getCssVar('--palette-noon-1'),
-        this.getCssVar('--palette-noon-2'),
-        this.getCssVar('--palette-noon-3'),
-        this.getCssVar('--palette-noon-4'),
-        this.getCssVar('--palette-noon-5'),
-        this.getCssVar('--palette-noon-6'),
-        this.getCssVar('--palette-noon-7'),
-        this.getCssVar('--palette-noon-8'),
-      ],
-      [
-        this.getCssVar('--palette-evening-1'),
-        this.getCssVar('--palette-evening-2'),
-        this.getCssVar('--palette-evening-3'),
-        this.getCssVar('--palette-evening-4'),
-        this.getCssVar('--palette-evening-5'),
-        this.getCssVar('--palette-evening-6'),
-        this.getCssVar('--palette-evening-7'),
-        this.getCssVar('--palette-evening-8'),
-      ],
-      [
-        this.getCssVar('--palette-night-1'),
-        this.getCssVar('--palette-night-2'),
-        this.getCssVar('--palette-night-3'),
-        this.getCssVar('--palette-night-4'),
-        this.getCssVar('--palette-night-5'),
-        this.getCssVar('--palette-night-6'),
-        this.getCssVar('--palette-night-7'),
-        this.getCssVar('--palette-night-8'),
-      ]
-    ];
+    const palettes = ['morning', 'noon', 'evening', 'night'];
+    this.colorSets = palettes.map(palette =>
+      Array.from({ length: 8 }, (_, i) => this.getCssVar(`--palette-${palette}-${i + 1}`))
+    );
   }
 
   ngAfterViewInit() {
@@ -90,7 +52,7 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
       this.setColorsForCurrentTime();
       this.initCanvas();
       this.animate();
-      window.addEventListener('resize', this.resizeCanvas);
+      window.addEventListener('resize', this.handleResize);
       this.colorSetInterval = setInterval(() => {
         this.setColorsForCurrentTime();
       }, 15 * 60 * 1000);
@@ -99,9 +61,25 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     cancelAnimationFrame(this.animationId);
-    window.removeEventListener('resize', this.resizeCanvas);
+    window.removeEventListener('resize', this.handleResize);
     if (this.colorSetInterval) clearInterval(this.colorSetInterval);
   }
+
+  private handleResize = () => {
+    const newWidth = Math.round(window.innerWidth * this.resolutionScale);
+    const newHeight = Math.round(window.innerHeight * this.resolutionScale);
+    if (newWidth > this.width || newHeight > this.height) {
+      const canvas = this.canvasRef.nativeElement;
+      this.width = Math.max(this.width, newWidth);
+      this.height = Math.max(this.height, newHeight);
+      canvas.width = this.width;
+      canvas.height = this.height;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      this.ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+      this.animate();
+    }
+  };
 
   private setColorsForCurrentTime = () => {
     const hour = new Date().getHours();
@@ -176,9 +154,36 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
     return `rgba(${rr},${rg},${rb},${ra})`;
   }
 
-  private resizeCanvas = () => {
-    this.initCanvas();
-  };
+  private drawMorphPoint(p: MorphPoint, now: number) {
+    const t = Math.min((now - p.morphTime) / this.morphDuration, 1);
+    p.morphProgress = t;
+    const x = this.lerp(p.x, p.tx, t);
+    const y = this.lerp(p.y, p.ty, t);
+    const r = this.lerp(p.r, p.tr, t);
+    const color = this.lerpColor(p.color, p.tColor, t);
+    const grad = this.ctx.createRadialGradient(x, y, 0, x, y, r);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, 'transparent');
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, r, 0, 2 * Math.PI);
+    this.ctx.closePath();
+    this.ctx.fillStyle = grad;
+    this.ctx.filter = `blur(${64 * this.resolutionScale}px)`;
+    this.ctx.fill();
+    this.ctx.filter = 'none';
+    if (t >= 1) {
+      p.x = p.tx;
+      p.y = p.ty;
+      p.r = p.tr;
+      p.color = p.tColor;
+      p.tx = Math.random() * this.width;
+      p.ty = Math.random() * this.height;
+      p.tr = 450 * this.resolutionScale + Math.random() * 250 * this.resolutionScale;
+      p.tColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+      p.morphTime = now;
+      p.morphProgress = 0;
+    }
+  }
 
   private animate = () => {
     const now = Date.now();
@@ -190,41 +195,14 @@ export class AnimatedBgComponent implements AfterViewInit, OnDestroy {
     if (typeof (this.ctx as any).reset === 'function') {
       (this.ctx as any).reset();
     } else {
-      this.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
       this.ctx.clearRect(0, 0, this.width, this.height);
     }
     this.ctx.save();
     this.ctx.globalAlpha = 0.7;
     this.ctx.globalCompositeOperation = 'lighter';
     for (const p of this.points) {
-      const t = Math.min((now - p.morphTime) / this.morphDuration, 1);
-      p.morphProgress = t;
-      const x = this.lerp(p.x, p.tx, t);
-      const y = this.lerp(p.y, p.ty, t);
-      const r = this.lerp(p.r, p.tr, t);
-      const color = this.lerpColor(p.color, p.tColor, t);
-      const grad = this.ctx.createRadialGradient(x, y, 0, x, y, r);
-      grad.addColorStop(0, color);
-      grad.addColorStop(1, 'transparent');
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, r, 0, 2 * Math.PI);
-      this.ctx.closePath();
-      this.ctx.fillStyle = grad;
-      this.ctx.filter = `blur(${64 * this.resolutionScale}px)`; // blur adapté à la résolution
-      this.ctx.fill();
-      this.ctx.filter = 'none';
-      if (t >= 1) {
-        p.x = p.tx;
-        p.y = p.ty;
-        p.r = p.tr;
-        p.color = p.tColor;
-        p.tx = Math.random() * this.width;
-        p.ty = Math.random() * this.height;
-        p.tr = 450 * this.resolutionScale + Math.random() * 250 * this.resolutionScale;
-        p.tColor = this.colors[Math.floor(Math.random() * this.colors.length)];
-        p.morphTime = now;
-        p.morphProgress = 0;
-      }
+      this.drawMorphPoint(p, now);
     }
     this.ctx.globalAlpha = 1;
     this.ctx.globalCompositeOperation = 'source-over';
