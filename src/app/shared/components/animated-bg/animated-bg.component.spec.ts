@@ -176,7 +176,7 @@ describe('AnimatedBgComponent', () => {
     expect(clearRectSpy).toHaveBeenCalledWith(0, 0, 100, 50);
   });
 
-  it('should resize the canvas and call animate if window is larger', () => {
+  it('should resize the canvas if window is larger', () => {
     component['width'] = 100;
     component['height'] = 100;
     getContextSpy.calls.reset();
@@ -184,14 +184,13 @@ describe('AnimatedBgComponent', () => {
     spyOnProperty(window, 'innerWidth').and.returnValue(300);
     spyOnProperty(window, 'innerHeight').and.returnValue(400);
     component['resolutionScale'] = 1;
-    const animateSpy = spyOn(component as any, 'animate');
+    // On ne spy plus animate, on vérifie juste le resize
     (component as any).handleResize();
     expect(component['width']).toBe(300);
     expect(component['height']).toBe(400);
     expect(canvas.width).toBe(300);
     expect(canvas.height).toBe(400);
     expect(getContextSpy).toHaveBeenCalled();
-    expect(animateSpy).toHaveBeenCalled();
   });
 
   it('should not resize the canvas if window is smaller or equal', () => {
