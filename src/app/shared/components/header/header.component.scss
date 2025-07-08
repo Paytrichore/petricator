@@ -1,0 +1,11 @@
+.header {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+
+    &__title {
+        color: var(--mat-sys-on-surface-variant);
+        font-size: 64px;
+        text-align: center;
+    }
+}
