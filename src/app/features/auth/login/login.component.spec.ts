@@ -8,6 +8,8 @@ import { Component, Input, Pipe, PipeTransform } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MessageService } from '../../../services/message/message.service';
+import { TranslateService } from '@ngx-translate/core';
+import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 
 // Mock BasicInputComponent
 @Component({
@@ -53,7 +55,8 @@ describe('LoginComponent', () => {
         { provide: AuthService, useValue: authServiceSpy },
         { provide: MessageService, useValue: messageServiceSpy },
         { provide: ActivatedRoute, useValue: {} },
-        provideRouter([])
+        provideRouter([]),
+        { provide: TranslateService, useValue: translateServiceMock }
       ]
     });
 
@@ -113,9 +116,9 @@ describe('LoginComponent', () => {
     authServiceSpy.login.and.returnValue(throwError(() => ({})));
     component.onSubmit();
     tick(1000);
-    expect(component.error).toBe('Erreur lors de la connexion');
+    expect(component.error).toBe('Erreur');
     expect(component.loading).toBeFalse();
-    expect(messageServiceSpy.openSnackBar).toHaveBeenCalledWith('Erreur lors de la connexion', true);
+    expect(messageServiceSpy.openSnackBar).toHaveBeenCalledWith('Erreur', true);
   }));
 
   it('should set error message on login error', fakeAsync(() => {
@@ -132,6 +135,6 @@ describe('LoginComponent', () => {
     authServiceSpy.login.and.returnValue(throwError(() => ({})));
     component.onSubmit();
     tick(1000);
-    expect(component.error).toBe('Erreur lors de la connexion');
+    expect(component.error).toBe('Erreur');
   }));
 });

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -10,6 +10,7 @@ import { matchOtherControlValidator, passwordStrengthValidator, patternValidator
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MessageService } from '../../../services/message/message.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-signup',
@@ -23,11 +24,12 @@ import { MessageService } from '../../../services/message/message.service';
     LoaderDirective,
     MatButton,
     RouterLink,
-    MatIcon
+    MatIcon,
+    TranslateModule
   ],
 })
-export class SignupComponent {
-  signupForm: FormGroup;
+export class SignupComponent implements OnInit {
+  signupForm!: FormGroup;
   error = '';
   loading = false;
 
@@ -36,16 +38,53 @@ export class SignupComponent {
     private authService: AuthService,
     private router: Router,
     private messageService: MessageService,
-    private cdr: ChangeDetectorRef
-  ) {
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
+  ) {}
+
+  ngOnInit() {
     this.signupForm = this.fb.group({
-      username: ['', [requiredValidator('Le pseudo est requis'), patternValidator('/^.{6,}$/', 'Le pseudo doit contenir au moins 6 caractères')]],
-      email: ['', [requiredValidator('L\'email est requis'), patternValidator(
-        '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
-        'Adresse email invalide'
-      )]],
-      password: ['', [requiredValidator('Le mot de passe est requis'), passwordStrengthValidator()]],
-      confirmPassword: ['', [requiredValidator('Le validation est requise'), matchOtherControlValidator('password', 'Les mots de passe ne correspondent pas')]],
+      username: ['',
+        [
+          requiredValidator(
+            this.translate.instant('auth.form.username.required')
+          ),
+          patternValidator(
+            '/^.{6,}$/',
+            this.translate.instant('auth.form.username.invalid')
+          )
+        ]
+      ],
+      email: ['',
+        [
+          requiredValidator(
+            this.translate.instant('auth.form.mail.required')
+          ),
+          patternValidator(
+            '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
+            this.translate.instant('auth.form.mail.invalid')
+          )
+        ]
+      ],
+      password: ['',
+        [
+          requiredValidator(
+            this.translate.instant('auth.form.password.required')
+          ),
+          passwordStrengthValidator()
+        ]
+      ],
+      confirmPassword: ['',
+        [
+          requiredValidator(
+            this.translate.instant('auth.form.passwordConfirmation.required')
+          ),
+          matchOtherControlValidator(
+            'password',
+            this.translate.instant('auth.form.passwordConfirmation.invalid')
+          )
+        ]
+      ],
     });
   }
 
@@ -66,9 +105,8 @@ export class SignupComponent {
       error: async err => {
         await minLoading;
         const apiMessage = err?.error?.message;
-        this.error = typeof apiMessage === 'string' && apiMessage.trim().length > 0
-          ? apiMessage
-          : 'Erreur lors de l\'inscription';
+        const apiCode = err?.error?.code;
+        this.error = this.translate.instant('apiErrors.' + apiCode) || this.translate.instant('auth.form.apiErrors.DEFAULT');
         this.loading = false;
         this.cdr.detectChanges();
         if (this.error) {

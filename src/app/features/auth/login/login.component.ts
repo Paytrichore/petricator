@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -8,6 +8,7 @@ import { patternValidator, requiredValidator } from '../../../shared/helpers/val
 import { LoaderDirective } from '../../../shared/directives/loader.directive';
 import { MessageService } from '../../../services/message/message.service';
 import { MatButton } from '@angular/material/button';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -21,10 +22,11 @@ import { MatButton } from '@angular/material/button';
     BasicInputComponent,
     MatButton,
     LoaderDirective,
+    TranslateModule
   ],
 })
-export class LoginComponent {
-  loginForm: FormGroup;
+export class LoginComponent implements OnInit {
+  loginForm!: FormGroup;
   error = '';
   loading = false;
 
@@ -33,14 +35,30 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private messageService: MessageService,
-    private cdr: ChangeDetectorRef
-  ) {
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
+  ) {}
+
+  ngOnInit() {
     this.loginForm = this.fb.group({
-      email: ['', [requiredValidator('L\'email est requis'), patternValidator(
-        '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
-        'Adresse email invalide'
-      )]],
-      password: ['', [requiredValidator('Le mot de passe est requis'), patternValidator('/^.{6,}$/', 'Le mot de passe doit contenir au moins 6 caractères')]],
+      email: ['', [
+        requiredValidator(
+          this.translate.instant('auth.form.mail.required')
+        ),
+        patternValidator(
+          '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
+          this.translate.instant('auth.form.mail.invalid')
+        )
+      ]],
+      password: ['', [
+        requiredValidator(
+          this.translate.instant('auth.form.password.required')
+        ),
+        patternValidator(
+          '/^.{6,}$/',
+          this.translate.instant('auth.form.password.invalid')
+        )
+      ]]
     });
   }
 
@@ -61,10 +79,8 @@ export class LoginComponent {
       },
       error: async err => {
         await minLoading;
-        const apiMessage = err?.error?.message;
-        this.error = typeof apiMessage === 'string' && apiMessage.trim().length > 0
-          ? apiMessage
-          : 'Erreur lors de la connexion';
+        const apiCode = err?.error?.code;
+        this.error = this.translate.instant('apiErrors.' + apiCode) || this.translate.instant('auth.form.apiErrors.DEFAULT');
         this.loading = false;
         this.cdr.detectChanges();
         if (this.error) {

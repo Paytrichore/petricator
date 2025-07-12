@@ -8,6 +8,8 @@ import { MessageService } from '../../../services/message/message.service';
 import { Component, Input, Pipe, PipeTransform } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateService } from '@ngx-translate/core';
+import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 
 // Mock BasicInputComponent
 @Component({
@@ -53,7 +55,8 @@ describe('SignupComponent', () => {
         { provide: AuthService, useValue: authServiceSpy },
         { provide: ActivatedRoute, useValue: {} },
         { provide: MessageService, useValue: messageServiceSpy },
-        provideRouter([])
+        provideRouter([]),
+        { provide: TranslateService, useValue: translateServiceMock }
       ]
     });
 
@@ -117,7 +120,7 @@ describe('SignupComponent', () => {
     component.onSubmit();
     tick(1000);
     fixture.detectChanges();
-    expect(component.error).toBe("Erreur lors de l'inscription");
+    expect(component.error).toBe("Erreur");
   }));
 
   it('should return error class if password checker fails for a type', () => {
