@@ -1,30 +1,32 @@
 <main class="login">
-  <h2 class="login__title pixel-font">Connexion</h2>
-  <form
-    [formGroup]="loginForm"
-    (ngSubmit)="onSubmit()"
-    class="login__form"
-  >
-    <app-basic-input
-      label="Email"
-      [formControl]="loginForm.controls['email'] | toFormControl"
-    ></app-basic-input>
-    <app-basic-input
-      label="Mot de Passe"
-      [formControl]="loginForm.controls['password'] | toFormControl"
-      [isPassword]="true"
-    ></app-basic-input>
-    <div class="login__actions">
-      <button
-        mat-stroked-button
-        type="submit"
-        [disabled]="loginForm.invalid"
-        class="login__button"
-        [appLoader]="loading"
-      >
-        Se connecter
-      </button>
-      <p class="login__signup">Pas encore inscrit(e) ? Par <a routerLink="/signup">ici</a> !</p>
-    </div>
-  </form>
+  <h2 class="login__title pixel-font">{{ 'auth.login.title' | translate }}</h2>
+  @if (loginForm) {
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="login__form"
+    >
+      <app-basic-input
+        label="{{ 'auth.form.mail.label' | translate }}"
+        [formControl]="loginForm.controls['email'] | toFormControl"
+      ></app-basic-input>
+      <app-basic-input
+        label="{{ 'auth.form.password.label' | translate }}"
+        [formControl]="loginForm.controls['password'] | toFormControl"
+        [isPassword]="true"
+      ></app-basic-input>
+      <div class="login__actions">
+        <button
+          mat-stroked-button
+          type="submit"
+          [disabled]="loginForm.invalid"
+          class="login__button"
+          [appLoader]="loading"
+        >
+          {{ 'auth.login.button' | translate }}
+        </button>
+        <p class="login__signup">{{ 'auth.login.signup' | translate }}<a routerLink="/signup">{{ 'auth.login.link' | translate }}</a>{{ 'auth.login.end' | translate }}</p>
+      </div>
+    </form>
+  }
 </main>

@@ -1,0 +1,51 @@
+{
+  "auth": {
+    "login": {
+      "button": "Se connecter",
+      "end": " !",
+      "link": "ici",
+      "signup": "Pas encore inscrit(e) ? Par ",
+      "title": "Connexion"
+    },
+    "signup": {
+      "button": "S'inscrire",
+      "end": " !",
+      "link": "Connecte toi",
+      "login": "Déjà inscrit(e) ? ",
+      "title": "Inscription"
+    },
+    "form": {
+      "apiErrors": {
+        "INVALID_CREDENTIALS": "Identifiants invalides.",
+        "EMAIL_ALREADY_USED": "Cet email est déjà utilisé.",
+        "DEFAULT": "Erreur lors de la connexion"
+      },
+      "checkers": {
+        "minLength": "Contient au moins six caractères",
+        "digit": "Contient au moins un chiffre",
+        "specialChar": "Contient au moins un caractère spécial",
+        "uppercase": "Contient au moins une majuscule"
+      },
+      "mail": {
+        "label": "Email",
+        "required": "L'email est requis.",
+        "invalid": "L'email n'est pas valide."
+      },
+      "password": {
+        "label": "Mot de passe",
+        "required": "Le mot de passe est requis.",
+        "invalid": "Le mot de passe doit contenir au moins 6 caractères"
+      },
+      "passwordConfirmation": {
+        "label": "Confirmation du mot de passe",
+        "required": "La confirmation du mot de passe est requise.",
+        "invalid": "Les mots de passe ne correspondent pas."
+      },
+      "username": {
+        "label": "Pseudo",
+        "required": "Le pseudo est requis.",
+        "invalid": "Le pseudo doit contenir au moins 6 caractères."}
+    }
+  }
+}
+
