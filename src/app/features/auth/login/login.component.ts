@@ -79,8 +79,12 @@ export class LoginComponent implements OnInit {
       },
       error: async err => {
         await minLoading;
-        const apiCode = err?.error?.code;
-        this.error = this.translate.instant('apiErrors.' + apiCode) || this.translate.instant('auth.form.apiErrors.DEFAULT');
+        const apiCode = err?.error?.error?.code;
+        const key = 'auth.form.apiErrors.' + (apiCode || 'DEFAULT');
+        const translation = this.translate.instant(key);
+        this.error = translation === key
+          ? this.translate.instant('auth.form.apiErrors.DEFAULT')
+          : translation;
         this.loading = false;
         this.cdr.detectChanges();
         if (this.error) {
