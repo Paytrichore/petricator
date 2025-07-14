@@ -95,7 +95,7 @@ export class SignupComponent implements OnInit {
           this.cdr.detectChanges();
           break;
         case signupFailure.type:
-          const apiCode = action.error?.error?.code;
+          const apiCode = action.error?.error?.error?.code;
           const key = 'auth.form.apiErrors.' + (apiCode || 'DEFAULT');
           const translation = this.translate.instant(key);
           this.error = translation === key
