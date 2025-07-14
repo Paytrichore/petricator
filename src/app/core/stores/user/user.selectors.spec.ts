@@ -4,7 +4,7 @@ import { UserState } from './user.reducer';
 describe('User Selectors', () => {
   describe('selectUser', () => {
     it('should return the user from state', () => {
-      const user = { id: 1, name: 'Test' };
+      const user = { _id: '1', username: 'Test', email: 'test@test.com' };
       const state: UserState = { user };
       expect(selectUser.projector(state)).toEqual(user);
     });
@@ -16,7 +16,7 @@ describe('User Selectors', () => {
 
   describe('selectIsLoggedIn', () => {
     it('should return true if user exists', () => {
-      expect(selectIsLoggedIn.projector({ id: 1 })).toBeTrue();
+      expect(selectIsLoggedIn.projector({ _id: '1', username: 'Test', email: 'test@test.com' })).toBeTrue();
     });
     it('should return false if user is null', () => {
       expect(selectIsLoggedIn.projector(null)).toBeFalse();

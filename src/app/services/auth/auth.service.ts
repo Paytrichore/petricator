@@ -1,10 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Store } from '@ngrx/store';
-import { setUser } from '../../core/stores/user/user.actions';
+import { login, signup } from '../../core/stores/user/user.actions';
+import { User } from '../../core/stores/user/user.types';
+
+export function mapUserFromApi(user: any): User {
+  // On copie toutes les clés sauf password et __v
+  const { password, __v, ...rest } = user;
+  return rest as User;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,30 +22,12 @@ export class AuthService {
   private store = inject(Store);
   private apiUrl = environment.apiUrl;
 
-  login(email: string, password: string): Observable<{ access_token: string, user: any }> {
-    return this.http.post<{ access_token: string, user: any }>(
-      `${this.apiUrl}/auth/login`,
-      { email, password }
-    ).pipe(
-      tap(res => {
-        localStorage.setItem('access_token', res.access_token);
-        localStorage.setItem('user', JSON.stringify(res.user));
-        this.store.dispatch(setUser({ user: res.user }));
-      })
-    );
+  login(email: string, password: string): void {
+    this.store.dispatch(login({ email, password }));
   }
 
-  signup(username: string, email: string, password: string): Observable<{ access_token: string, user: any }> {
-    return this.http.post<{ access_token: string, user: any }>(
-      `${this.apiUrl}/auth/register`,
-      { username, email, password }
-    ).pipe(
-      tap(res => {
-        localStorage.setItem('access_token', res.access_token);
-        localStorage.setItem('user', JSON.stringify(res.user));
-        this.store.dispatch(setUser({ user: res.user }));
-      })
-    );
+  signup(username: string, email: string, password: string): void {
+    this.store.dispatch(signup({ username, email, password }));
   }
 
   logout() {

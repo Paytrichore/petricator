@@ -3,13 +3,15 @@ import { SignupComponent } from './signup.component';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Router, ActivatedRoute, provideRouter } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MessageService } from '../../../services/message/message.service';
 import { Component, Input, Pipe, PipeTransform } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
+import { Actions } from '@ngrx/effects';
+import { signupSuccess, signupFailure } from '../../../core/stores/user/user.actions';
 
 // Mock BasicInputComponent
 @Component({
@@ -36,10 +38,12 @@ describe('SignupComponent', () => {
   let fixture: ComponentFixture<SignupComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let messageServiceSpy: jasmine.SpyObj<MessageService>;
+  let actions$: Subject<any>;
 
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['signup']);
     messageServiceSpy = jasmine.createSpyObj('MessageService', ['openSnackBar']);
+    actions$ = new Subject();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -56,7 +60,8 @@ describe('SignupComponent', () => {
         { provide: ActivatedRoute, useValue: {} },
         { provide: MessageService, useValue: messageServiceSpy },
         provideRouter([]),
-        { provide: TranslateService, useValue: translateServiceMock }
+        { provide: TranslateService, useValue: translateServiceMock },
+        { provide: Actions, useValue: actions$ }
       ]
     });
 
@@ -75,24 +80,7 @@ describe('SignupComponent', () => {
     expect(authServiceSpy.signup).not.toHaveBeenCalled();
   });
 
-  it('should call authService.signup and navigate on success', fakeAsync(() => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    component.signupForm.setValue({
-      username: 'user123', // au moins 6 caractères
-      email: 'test@test.com',
-      password: 'Abcdef1!', // mot de passe fort
-      confirmPassword: 'Abcdef1!'
-    });
-    expect(component.signupForm.valid).toBeTrue();
-    authServiceSpy.signup.and.returnValue(of({ access_token: 'token', user: { id: 1 } }));
-    component.onSubmit();
-    tick(1000);
-    fixture.detectChanges();
-    expect(authServiceSpy.signup).toHaveBeenCalledWith('user123', 'test@test.com', 'Abcdef1!');
-    expect(routerSpy).toHaveBeenCalledWith(['/']);
-  }));
-
-  it('should set error message on signup error', fakeAsync(() => {
+  it('should call authService.signup with form values', () => {
     component.signupForm.setValue({
       username: 'user123',
       email: 'test@test.com',
@@ -100,27 +88,41 @@ describe('SignupComponent', () => {
       confirmPassword: 'Abcdef1!'
     });
     expect(component.signupForm.valid).toBeTrue();
-    const errorResponse = { error: { message: 'Erreur' } };
-    authServiceSpy.signup.and.returnValue(throwError(() => errorResponse));
     component.onSubmit();
+    expect(authServiceSpy.signup).toHaveBeenCalledWith('user123', 'test@test.com', 'Abcdef1!');
+  });
+
+  it('should navigate on signupSuccess action', fakeAsync(() => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.signupForm.setValue({
+      username: 'user123',
+      email: 'test@test.com',
+      password: 'Abcdef1!',
+      confirmPassword: 'Abcdef1!'
+    });
+    component.onSubmit();
+    component.loading = true;
+    actions$.next(signupSuccess({ user: { _id: '1', username: 'user123', email: 'test@test.com' }, access_token: 'token' }));
+    tick(1000);
+    fixture.detectChanges();
+    expect(routerSpy).toHaveBeenCalledWith(['/']);
+    expect(component.loading).toBeFalse();
+  }));
+
+  it('should set error message on signupFailure action', fakeAsync(() => {
+    component.signupForm.setValue({
+      username: 'user123',
+      email: 'test@test.com',
+      password: 'Abcdef1!',
+      confirmPassword: 'Abcdef1!'
+    });
+    component.onSubmit();
+    component.loading = true;
+    actions$.next(signupFailure({ error: { error: { code: 'DEFAULT' } } }));
     tick(1000);
     fixture.detectChanges();
     expect(component.error).toBe('Erreur');
-  }));
-
-  it('should set default error message if error has no message', fakeAsync(() => {
-    component.signupForm.setValue({
-      username: 'user123',
-      email: 'test@test.com',
-      password: 'Abcdef1!',
-      confirmPassword: 'Abcdef1!'
-    });
-    expect(component.signupForm.valid).toBeTrue();
-    authServiceSpy.signup.and.returnValue(throwError(() => ({})));
-    component.onSubmit();
-    tick(1000);
-    fixture.detectChanges();
-    expect(component.error).toBe("Erreur");
+    expect(component.loading).toBeFalse();
   }));
 
   it('should return error class if password checker fails for a type', () => {

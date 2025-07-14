@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthService } from './auth.service';
+import { AuthService, mapUserFromApi } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -30,36 +30,28 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call http.post and set token and user on login', (done) => {
-    spyOn(localStorage, 'setItem');
-    const response = { access_token: 'token', user: { id: 1 } };
-    httpSpy.post.and.returnValue(of(response));
-    service.login('a@a.com', 'pass').subscribe(res => {
-      expect(res).toEqual(response);
-      expect(httpSpy.post).toHaveBeenCalledWith(
-        jasmine.any(String),
-        { email: 'a@a.com', password: 'pass' }
-      );
-      expect(localStorage.setItem).toHaveBeenCalledWith('access_token', 'token');
-      expect(localStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(response.user));
-      done();
-    });
+  it('should dispatch login action with credentials', () => {
+    const email = 'a@a.com';
+    const password = 'pass';
+    service.login(email, password);
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
+      type: '[Auth] Login attempt',
+      email,
+      password
+    }));
   });
 
-  it('should call http.post and set token and user on signup', (done) => {
-    spyOn(localStorage, 'setItem');
-    const response = { access_token: 'token', user: { id: 1 } };
-    httpSpy.post.and.returnValue(of(response));
-    service.signup('user', 'a@a.com', 'pass').subscribe(res => {
-      expect(res).toEqual(response);
-      expect(httpSpy.post).toHaveBeenCalledWith(
-        jasmine.any(String),
-        { username: 'user', email: 'a@a.com', password: 'pass' }
-      );
-      expect(localStorage.setItem).toHaveBeenCalledWith('access_token', 'token');
-      expect(localStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(response.user));
-      done();
-    });
+  it('should dispatch signup action with credentials', () => {
+    const username = 'user';
+    const email = 'a@a.com';
+    const password = 'pass';
+    service.signup(username, email, password);
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
+      type: '[Auth] Signup attempt',
+      username,
+      email,
+      password
+    }));
   });
 
   it('should return true if access_token exists', () => {
@@ -78,5 +70,20 @@ describe('AuthService', () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith('access_token');
     expect(localStorage.removeItem).toHaveBeenCalledWith('user');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should map user and exclude password and __v', () => {
+    const apiUser = {
+      _id: '1',
+      username: 'bob',
+      email: 'bob@bob.com',
+      password: 'secret',
+      __v: 42,
+      extra: 'ok'
+    };
+    const mapped = mapUserFromApi(apiUser);
+    expect(mapped).toEqual(jasmine.objectContaining({ _id: '1', username: 'bob', email: 'bob@bob.com', extra: 'ok' }));
+    expect('password' in mapped).toBeFalse();
+    expect('__v' in mapped).toBeFalse();
   });
 });

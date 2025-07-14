@@ -9,6 +9,9 @@ import { LoaderDirective } from '../../../shared/directives/loader.directive';
 import { MessageService } from '../../../services/message/message.service';
 import { MatButton } from '@angular/material/button';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Actions, ofType } from '@ngrx/effects';
+import { loginSuccess, loginFailure } from '../../../core/stores/user/user.actions';
+import { filter } from 'rxjs/operators';
 
 
 @Component({
@@ -36,7 +39,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private messageService: MessageService,
     private cdr: ChangeDetectorRef,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private actions$: Actions
   ) {}
 
   ngOnInit() {
@@ -60,6 +64,33 @@ export class LoginComponent implements OnInit {
         )
       ]]
     });
+
+    this.actions$.pipe(
+      ofType(loginSuccess, loginFailure),
+      filter(() => this.loading)
+    ).subscribe(async (action) => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      switch (action.type) {
+        case loginSuccess.type:
+          this.router.navigate(['/']);
+          this.loading = false;
+          this.cdr.detectChanges();
+          break;
+        case loginFailure.type:
+          const apiCode = action.error?.error?.code;
+          const key = 'auth.form.apiErrors.' + (apiCode || 'DEFAULT');
+          const translation = this.translate.instant(key);
+          this.error = translation === key
+            ? this.translate.instant('auth.form.apiErrors.DEFAULT')
+            : translation;
+          this.loading = false;
+          this.cdr.detectChanges();
+          if (this.error) {
+            this.messageService.openSnackBar(this.error, true);
+          }
+          break;
+      }
+    });
   }
 
   onSubmit() {
@@ -68,29 +99,8 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.loading = true;
-    const minLoading = new Promise(resolve => setTimeout(resolve, 1000));
+    this.error = '';
     const { email, password } = this.loginForm.value;
-    this.authService.login(email, password).subscribe({
-      next: async () => {
-        await minLoading;
-        this.router.navigate(['/']);
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: async err => {
-        await minLoading;
-        const apiCode = err?.error?.error?.code;
-        const key = 'auth.form.apiErrors.' + (apiCode || 'DEFAULT');
-        const translation = this.translate.instant(key);
-        this.error = translation === key
-          ? this.translate.instant('auth.form.apiErrors.DEFAULT')
-          : translation;
-        this.loading = false;
-        this.cdr.detectChanges();
-        if (this.error) {
-          this.messageService.openSnackBar(this.error, true);
-        }
-      }
-    });
+    this.authService.login(email, password);
   }
 }

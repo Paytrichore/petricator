@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .loader-spinner {
   display: flex;
   align-items: center;
@@ -32,13 +34,13 @@ $min-duration: 1.1;
 $max-duration: 1.8;
 
 @function random-float($min, $max) {
-  @return $min + random() * ($max - $min);
+  @return $min + math.random() * ($max - $min);
 }
 
 @for $y from 0 to $rows {
   @for $x from 0 to $cols {
-    $delay: $min-delay + random() * ($max-delay - $min-delay);
-    $duration: $min-duration + random() * ($max-duration - $min-duration);
+    $delay: $min-delay + math.random() * ($max-delay - $min-delay);
+    $duration: $min-duration + math.random() * ($max-duration - $min-duration);
     .pixel-#{$x}-#{$y} {
       animation-delay: #{$delay}s;
       animation-duration: #{$duration}s;
