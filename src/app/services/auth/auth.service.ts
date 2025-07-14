@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Store } from '@ngrx/store';
+import { setUser } from '../../core/stores/user/user.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,7 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private store = inject(Store);
   private apiUrl = environment.apiUrl;
 
   login(email: string, password: string): Observable<{ access_token: string, user: any }> {
@@ -19,6 +22,8 @@ export class AuthService {
     ).pipe(
       tap(res => {
         localStorage.setItem('access_token', res.access_token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        this.store.dispatch(setUser({ user: res.user }));
       })
     );
   }
@@ -30,12 +35,15 @@ export class AuthService {
     ).pipe(
       tap(res => {
         localStorage.setItem('access_token', res.access_token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        this.store.dispatch(setUser({ user: res.user }));
       })
     );
   }
 
   logout() {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
 
