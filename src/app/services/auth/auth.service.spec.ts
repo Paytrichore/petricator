@@ -20,7 +20,7 @@ describe('AuthService', () => {
       providers: [
         { provide: HttpClient, useValue: httpSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: Store, useValue: storeSpy }
+        { provide: Store, useValue: storeSpy },
       ]
     });
     service = TestBed.inject(AuthService);
