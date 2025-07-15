@@ -71,28 +71,6 @@ export class UserEffects {
     )
   );
 
-  setUser$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(setUser),
-        tap(action => {
-          // Side effect possible ici
-        })
-      ),
-    { dispatch: false }
-  );
-
-  clearUser$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(clearUser),
-        tap(() => {
-          // Side effect possible ici
-        })
-      ),
-    { dispatch: false }
-  );
-
   hydrateUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(hydrateUser),
@@ -111,6 +89,4 @@ export class UserEffects {
       })
     )
   );
-
-  constructor() {}
 }
