@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { setUser, clearUser } from './user.actions';
+import { setUser, clearUser, resetStore } from './user.actions';
 import { User } from './user.types';
 
 export interface UserState {
@@ -13,5 +13,6 @@ export const initialState: UserState = {
 export const userReducer = createReducer(
   initialState,
   on(setUser, (state, { user }) => ({ ...state, user })),
-  on(clearUser, state => ({ ...state, user: null }))
+  on(clearUser, state => ({ ...state, user: null })),
+  on(resetStore, () => initialState)
 );

@@ -14,6 +14,7 @@ describe('AuthService', () => {
   beforeEach(() => {
     httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy.navigate.and.returnValue(Promise.resolve(true));
     storeSpy = jasmine.createSpyObj('Store', ['dispatch']);
 
     TestBed.configureTestingModule({

@@ -12,3 +12,5 @@ export const signupFailure = createAction('[Auth] Signup Failure', props<{ error
 export const setUser = createAction('[User] Set User', props<{ user: User }>());
 export const clearUser = createAction('[User] Clear User');
 export const hydrateUser = createAction('[User] Hydrate User');
+
+export const resetStore = createAction('[App] Reset Store');
