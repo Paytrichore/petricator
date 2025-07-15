@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Store } from '@ngrx/store';
-import { login, signup } from '../../core/stores/user/user.actions';
+import { login, signup, clearUser } from '../../core/stores/user/user.actions';
 import { User } from '../../core/stores/user/user.types';
 
 export function mapUserFromApi(user: any): User {
@@ -31,6 +31,7 @@ export class AuthService {
   }
 
   logout() {
+    this.store.dispatch(clearUser());
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     this.router.navigate(['/login']);

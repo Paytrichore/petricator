@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectUser } from '../../../core/stores/user/user.selectors';
 import { AsyncPipe } from '@angular/common';
+import { LogoutComponent } from '../../../shared/components/logout/logout.component';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, LogoutComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })

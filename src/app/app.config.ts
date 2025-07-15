@@ -17,7 +17,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // provideZoneChangeDetection({ eventCoalescing: true }),
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(withFetch()),
