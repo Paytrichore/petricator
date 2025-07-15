@@ -5,9 +5,13 @@
       [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item routerLink="/login">Connexion</a>
-      <a mat-list-item routerLink="/signup">inscription</a>
+      <a mat-list-item routerLink="home" routerLinkActive="active-link">Accueil</a>
+      <a mat-list-item routerLink="profile" routerLinkActive="active-link">Profil</a>
     </mat-nav-list>
+    @if (user$ | async; as user) {
+      {{ user?.email }}
+    }
+    <app-logout></app-logout>
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
@@ -20,8 +24,10 @@
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
       }
-      <span>petricator</span>
+      <h1 class="pixel-font">{{ 'title' | translate }}</h1>
     </mat-toolbar>
-    <router-outlet></router-outlet>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
