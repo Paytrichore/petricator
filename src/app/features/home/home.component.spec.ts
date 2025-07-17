@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
 import { RouterOutlet } from '@angular/router';
-import { NavComponent } from '../../nav/nav.component';
+import { NavComponent } from '../main/nav/nav.component';
 import { ActivatedRoute } from '@angular/router';
 
 describe('HomeComponent', () => {

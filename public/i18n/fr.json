@@ -47,6 +47,12 @@
         "required": "Le pseudo est requis.",
         "invalid": "Le pseudo doit contenir au moins 6 caractères."}
     }
+  },
+  "nav": {
+    "menu": {
+      "home": "Accueil",
+      "profile": "Profil"
+    }
   }
 }
 
