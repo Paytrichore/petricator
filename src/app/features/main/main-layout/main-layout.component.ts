@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { LogoutComponent } from '../../../shared/components/logout/logout.component';
-import { NavComponent } from "../../../nav/nav.component";
+import { NavComponent } from "../nav/nav.component";
 
 @Component({
   selector: 'app-main-layout',

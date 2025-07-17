@@ -1,0 +1,57 @@
+<mat-sidenav-container class="nav-container">
+  <mat-sidenav #drawer class="nav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false"
+      [class.mat-drawer-mini]="mini && !(isHandset$ | async)"
+      (click)="onAnyClick($event, drawer)">
+      <mat-toolbar class="nav__toolbar" [class.nav__toolbar--minify]="mini">
+        @if (!(isHandset$ | async)) {
+          <button mat-icon-button (click)="toggleMini()" class="nav__toggle" [class.nav__toggle--minify]="mini">
+            <mat-icon>{{ mini ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+          </button>
+        }
+      </mat-toolbar>
+    <mat-nav-list class="nav__list" [class.nav__list--minify]="mini">
+      @if (!mini) {
+        <a mat-list-item routerLink="home" routerLinkActive="active-link">
+          <span class="nav__link">
+            <mat-icon>home</mat-icon>
+            <span class="nav__link--text">Accueil</span>
+          </span>
+        </a>
+        <a mat-list-item routerLink="profile" routerLinkActive="active-link">
+          <span class="nav__link">
+            <mat-icon>hail</mat-icon>
+            <span class="nav__link--text">Profil</span>
+          </span>
+        </a>
+      } @else {
+        <button mat-icon-button routerLink="home" routerLinkActive="active-link" class="nav__link--minify">
+          <mat-icon>home</mat-icon>
+        </button>
+        <button mat-icon-button routerLink="profile" routerLinkActive="active-link" class="nav__link--minify">
+          <mat-icon>hail</mat-icon>
+        </button>
+      }
+    </mat-nav-list>
+    <app-logout></app-logout>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="nav__title" [class.nav__title--minify]="mini">
+      @if (isHandset$ | async) {
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+      }
+      <h1 class="pixel-font">{{ 'title' | translate }}</h1>
+    </mat-toolbar>
+    <main class="nav__content" [class.nav__content--minify]="mini">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
