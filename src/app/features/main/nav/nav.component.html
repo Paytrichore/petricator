@@ -17,13 +17,13 @@
         <a mat-list-item routerLink="home" routerLinkActive="active-link">
           <span class="nav__link">
             <mat-icon>home</mat-icon>
-            <span class="nav__link--text">Accueil</span>
+            <span class="nav__link--text">{{ 'nav.menu.home' | translate }}</span>
           </span>
         </a>
         <a mat-list-item routerLink="profile" routerLinkActive="active-link">
           <span class="nav__link">
             <mat-icon>hail</mat-icon>
-            <span class="nav__link--text">Profil</span>
+            <span class="nav__link--text">{{ 'nav.menu.profile' | translate }}</span>
           </span>
         </a>
       } @else {
