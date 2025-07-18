@@ -14,7 +14,7 @@ RUN npm ci
 # Copy the rest of your application code
 COPY . .
 
-# Build the Angular application for production
+# Build the Angular application for development
 # *** IMPORTANT: Replace 'petricator' with your actual Angular project name from angular.json ***
 RUN npm run build -- --configuration=development
 
