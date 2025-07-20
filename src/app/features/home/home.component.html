@@ -1,3 +1,5 @@
-<!-- <app-nav></app-nav>
-<router-outlet></router-outlet> -->
-<p>Home Works !</p>
+<div class="flex justify-center gap-10 wrap">
+    @for (composed of peblob; track composed) {
+      <app-peblob [composed]="composed"></app-peblob>
+    }
+</div>

@@ -1,0 +1,29 @@
+:host {
+    display: block;
+}
+
+.peblob {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    height: 100px;
+    width: 100px;
+
+    &__item {
+        display: block;
+        border-radius: 20%;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        width: -webkit-fill-available;
+        z-index: 2;
+    }
+
+    &__line {
+        display: flex;
+        flex-grow: 1;
+        gap: 2px;
+        margin: 0;
+        padding: 0;
+    }
+}

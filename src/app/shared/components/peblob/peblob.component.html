@@ -1,0 +1,11 @@
+<div class="peblob">
+    @for (group of composed; track group) {
+      <div class="peblob__line">
+        @for (color of group; track color) {
+          <div class="peblob__item"
+               [style.background]="'rgb(' + color.r + ',' + color.g + ',' + color.b + ')'">
+          </div>
+        }
+      </div>
+    }
+</div>
