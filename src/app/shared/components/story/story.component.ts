@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter, HostBinding } from '@angular/c
 import { StoryService } from '../../../services/story/story.service';
 import { Story } from '../../interfaces/story';
 import { MatButtonModule } from '@angular/material/button';
-import { trigger, transition, style, animate, query, state } from '@angular/animations';
 import { shuffleArray } from '../../helpers/array.helpers';
 import { sequencedFadeInAnimation } from '../../animations/sequenced-fade-in.animation';
 

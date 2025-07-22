@@ -4,9 +4,9 @@
   </div>
   <div class="peblob-draft__event">
     <div class="t-center peblob-draft__message">
-      <span>Quelques Peblobs sont intrigués par ton comportement...</span>
+      <span>{{ 'peblobDraft.event' | translate }}</span>
       <br>
-      <span>Choisis en un qui t'accompagnera pour le reste de ton aventure.</span>
+      <span>{{ 'peblobDraft.action' | translate }}</span>
     </div>
     <div class="flex justify-center gap-36 wrap my-36">
       @for (peblob of peblobDraft; track peblob) {
@@ -24,7 +24,7 @@
         (click)="confirmSelection()"
         [disabled]="!selectedPeblob"
       >
-        Adopter ce Peblob
+        {{ 'peblobDraft.button' | translate }}
       </button>
     </div>
   </div>

@@ -53,6 +53,11 @@
       "home": "Accueil",
       "profile": "Profil"
     }
+  },
+  "peblobDraft": {
+    "button": "Adopter ce Peblob",
+    "event": "Quelques Peblobs sont intrigués par ton comportement...",
+    "action": "Choisis en un qui t'accompagnera pour le reste de ton aventure."
   }
 }
 
