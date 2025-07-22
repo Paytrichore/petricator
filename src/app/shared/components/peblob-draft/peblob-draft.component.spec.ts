@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PeblobDraftComponent } from './peblob-draft.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('PeblobDraftComponent', () => {
   let component: PeblobDraftComponent;
@@ -10,7 +12,10 @@ describe('PeblobDraftComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PeblobDraftComponent],
-      providers: [provideAnimations()]
+      providers: [
+        provideAnimations(),
+        { provide: TranslateService, useValue: translateServiceMock },
+      ]
     })
     .compileComponents();
 
