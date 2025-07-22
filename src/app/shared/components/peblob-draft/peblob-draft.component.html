@@ -1,0 +1,31 @@
+<div @sequencedFadeIn>
+  <div class="peblob-draft__result">
+    <ng-content></ng-content>
+  </div>
+  <div class="peblob-draft__event">
+    <div class="t-center peblob-draft__message">
+      <span>Quelques Peblobs sont intrigués par ton comportement...</span>
+      <br>
+      <span>Choisis en un qui t'accompagnera pour le reste de ton aventure.</span>
+    </div>
+    <div class="flex justify-center gap-36 wrap my-36">
+      @for (peblob of peblobDraft; track peblob) {
+        <app-peblob
+          [composed]="peblob"
+          (click)="selectPeblob(peblob)"
+          [class.selected]="peblob === selectedPeblob"
+        ></app-peblob>
+      }
+    </div>
+    <div class="flex justify-center">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="confirmSelection()"
+        [disabled]="!selectedPeblob"
+      >
+        Adopter ce Peblob
+      </button>
+    </div>
+  </div>
+</div>

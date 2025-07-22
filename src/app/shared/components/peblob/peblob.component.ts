@@ -12,7 +12,7 @@ type ComposedPeblob = Array<Array<Peblob>>;
   selector: 'app-peblob',
   imports: [],
   templateUrl: './peblob.component.html',
-  styleUrl: './peblob.component.scss'
+  styleUrl: './peblob.component.scss',
 })
 export class PeblobComponent {
   @Input() composed!: ComposedPeblob;

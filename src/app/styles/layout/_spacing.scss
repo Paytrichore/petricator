@@ -1,0 +1,29 @@
+@use "sass:meta";
+
+$spacing-values: 12, 24, 36;
+$spacing-directions: (
+  b: bottom,
+  t: top,
+  l: left,
+  r: right,
+  x: (left, right),
+  y: (top, bottom)
+);
+
+.m {
+  @each $dir, $prop in $spacing-directions {
+    &#{ $dir } {
+      @each $val in $spacing-values {
+        &-#{$val} {
+          @if meta.type-of($prop) == 'list' {
+            @each $p in $prop {
+              margin-#{$p}: #{$val}px;
+            }
+          } @else {
+            margin-#{$prop}: #{$val}px;
+          }
+        }
+      }
+    }
+  }
+}

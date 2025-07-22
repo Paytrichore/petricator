@@ -1,0 +1,10 @@
+<div class="story flex justify-center wrap" [@sequencedFadeIn]="storyAnimState">
+    <h2 class="story__situation">{{ story.situation }}</h2>
+    <div class="story__actions flex justify-center wrap gap-12">
+        @for (choice of shuffledChoices; track choice) {
+            <button mat-stroked-button (click)="onChoiceClick(choice)">
+                {{ choice.action }}
+            </button>
+        }
+    </div>
+</div>

@@ -1,0 +1,197 @@
+{
+  "primary": [
+    {
+      "situation": "Le vent se lève soudain, frais et vif.",
+      "choices": [
+        { "color": "red", "action": "T’adosser solidement, sentant la force du vent.", "result": "Le vent semble défier ta posture, mais tu restes inébranlable." },
+        { "color": "blue", "action": "Écouter le chant du vent en fermant les yeux.", "result": "Le vent murmure à ton oreille des paroles d’un autre monde." }
+      ]
+    },
+    {
+      "situation": "Un orage gronde au loin.",
+      "choices": [
+        { "color": "red", "action": "Avancer vers lui, stimulé par sa puissance.", "result": "Chaque éclair semble alimenter ta propre force intérieure." },
+        { "color": "blue", "action": "T’arrêter pour écouter la résonance dans l’air.", "result": "Le tonnerre résonne en toi comme un chant ancien et sacré." }
+      ]
+    },
+    {
+      "situation": "Un animal sauvage croise ton chemin.",
+      "choices": [
+        { "color": "red", "action": "Le fixer droit dans les yeux.", "result": "L’animal te jauge puis s’en va, reconnaissant ta force." },
+        { "color": "blue", "action": "L’observer calmement sans bouger.", "result": "L’animal s’arrête un instant, puis disparaît dans la forêt." }
+      ]
+    },
+    {
+      "situation": "Une branche craque sous tes pas dans la forêt.",
+      "choices": [
+        { "color": "red", "action": "T’immobiliser, en alerte.", "result": "Ton corps se tend, prêt à toute éventualité." },
+        { "color": "yellow", "action": "Observer autour de toi, curieux de ce qui pourrait venir.", "result": "Rien ne vient, mais chaque ombre devient une énigme à résoudre." }
+      ]
+    },
+    {
+      "situation": "Un sentier escarpé s’élève face à toi.",
+      "choices": [
+        { "color": "red", "action": "Grimper sans hésiter, défiant la pente.", "result": "Chaque pas te rend plus puissant, plus sûr." },
+        { "color": "yellow", "action": "Observer le paysage avant de décider.", "result": "Chaque détour révèle une nouvelle perspective à explorer." }
+      ]
+    },
+    {
+      "situation": "Un trésor brille faiblement sous une pierre.",
+      "choices": [
+        { "color": "red", "action": "Le saisir rapidement, avide de savoir.", "result": "Le trésor semble pulser entre tes mains, vibrant de puissance." },
+        { "color": "yellow", "action": "Le contempler avant de décider.", "result": "Chaque reflet raconte une histoire, une énigme à résoudre." }
+      ]
+    },
+    {
+      "situation": "Un ciel sans nuage s’étend à perte de vue.",
+      "choices": [
+        { "color": "blue", "action": "Contempler les hauteurs et s’interroger sur l’infini.", "result": "Le ciel te renvoie une sensation de paix céleste." },
+        { "color": "yellow", "action": "Frapper des mains, ravi par l’immensité ouverte.", "result": "Un éclat de rire te monte à la gorge, éveillé par cette immensité." }
+      ]
+    },
+    {
+      "situation": "Un rayon de soleil perce les nuages.",
+      "choices": [
+        { "color": "blue", "action": "Fermer les yeux et sentir la chaleur sur ta peau.", "result": "Un calme profond s’installe, comme si le ciel te chuchotait une paix éternelle." },
+        { "color": "yellow", "action": "T’avancer pour te baigner dans la lumière.", "result": "La chaleur du soleil réveille en toi une énergie vive." }
+      ]
+    },
+    {
+      "situation": "Une étendue de tournesols s’étale devant toi.",
+      "choices": [
+        { "color": "blue", "action": "Te tenir en retrait et observer le ballet naturel.", "result": "Chaque fleur semble suivre une danse secrète et spirituelle." },
+        { "color": "yellow", "action": "Marcher au milieu d’eux, exalté par la lumière.", "result": "Les fleurs te saluent comme un enfant du soleil." }
+      ]
+    }
+  ],
+  "secondary": [
+    {
+      "situation": "Un ruisseau murmure à travers les pierres.",
+      "choices": [
+        { "color": "green", "action": "T’asseoir au bord et écouter en silence.", "result": "Le murmure te plonge dans un apaisement profond." },
+        { "color": "violet", "action": "Fermer les yeux et savourer chaque note.", "result": "Chaque trille résonne en toi comme une prière discrète." }
+      ]
+    },
+    {
+      "situation": "Un tapis de mousse recouvre les pierres.",
+      "choices": [
+        { "color": "green", "action": "T’allonger dessus et fermer les yeux.", "result": "La douceur du sol apaise chaque muscle de ton corps." },
+        { "color": "violet", "action": "Observer chaque détail de la mousse de près.", "result": "Tu découvres de minuscules mondes verdoyants et secrets." }
+      ]
+    },
+    {
+      "situation": "Le ciel crépusculaire passe du bleu au pourpre.",
+      "choices": [
+        { "color": "green", "action": "Fermer les yeux pour en sentir le parfum.", "result": "Le parfum t’enveloppe, te plongeant dans une quiétude profonde." },
+        { "color": "violet", "action": "Rester immobile, absorbé par l’harmonie des couleurs.", "result": "Chaque teinte semble te raconter un fragment d’histoire." }
+      ]
+    },
+    {
+      "situation": "Un ruisseau murmure à travers les pierres.",
+      "choices": [
+        { "color": "green", "action": "T’asseoir au bord et écouter en silence.", "result": "Le murmure te plonge dans un apaisement profond." },
+        { "color": "orange", "action": "Jeter une pierre pour voir les cercles sur l’eau.", "result": "Les ondes se propagent joyeusement, comme une musique éphémère." }
+      ]
+    },
+    {
+      "situation": "Une fleur unique pousse au milieu d’un champ.",
+      "choices": [
+        { "color": "green", "action": "Fermer les yeux pour en sentir le parfum.", "result": "Le parfum t’enveloppe, te plongeant dans une quiétude profonde." },
+        { "color": "orange", "action": "L’effleurer du bout des doigts, curieux.", "result": "Un parfum délicat s’en dégage, réveillant ta créativité." }
+      ]
+    },
+    {
+      "situation": "Le vent joue dans les feuilles des arbres.",
+      "choices": [
+        { "color": "green", "action": "Écouter sa mélodie apaisante.", "result": "La nature t’offre un instant de paix sincère." },
+        { "color": "orange", "action": "Créer un sifflement pour l’imiter.", "result": "Ton sifflement anime l’air, éveillant l’imaginaire autour de toi." }
+      ]
+    },
+    {
+      "situation": "Un oiseau chante une mélodie inédite.",
+      "choices": [
+        { "color": "violet", "action": "Fermer les yeux et savourer chaque note.", "result": "Chaque trille résonne en toi comme une prière discrète." },
+        { "color": "orange", "action": "Tenter d’imiter son chant à voix basse.", "result": "L’oiseau te regarde, intrigué par ta tentative maladroite." }
+      ]
+    },
+    {
+      "situation": "Une grotte mystérieuse s’ouvre devant toi.",
+      "choices": [
+        { "color": "violet", "action": "Explorer ses profondeurs avec calme.", "result": "La grotte te révèle ses secrets dans un silence sacré." },
+        { "color": "orange", "action": "Allumer une torche pour voir mieux.", "result": "La lumière éclaire des formes inédites, stimulant ton imagination." }
+      ]
+    },
+    {
+      "situation": "Une étoile filante traverse le ciel nocturne.",
+      "choices": [
+        { "color": "violet", "action": "Faire un vœu en silence.", "result": "Le souhait s’installe dans ton cœur comme un doux espoir." },
+        { "color": "orange", "action": "Lever les bras en signe de joie.", "result": "Ton enthousiasme éclate, vibrant comme une flamme créative." }
+      ]
+    }
+  ],
+  "pink": [
+    {
+      "situation": "Un papillon se pose sur ta main.",
+      "choices": [
+        { "color": "rose", "action": "Le regarder avec tendresse, jusqu’à ce qu’il reparte.", "result": "Le papillon reste un instant encore, ses ailes frémissantes, avant de s’envoler paisiblement." },
+        { "color": "neutral", "action": "Souffler doucement pour le faire s’envoler.", "result": "Le papillon s’envole d’un battement rapide, emporté par la brise." }
+      ]
+    },
+    {
+      "situation": "Le soleil se couche doucement derrière les collines.",
+      "choices": [
+        { "color": "rose", "action": "Rester assis, admirant la douceur du moment.", "result": "Le crépuscule t’enveloppe d’une chaleur apaisante." },
+        { "color": "neutral", "action": "Se lever lentement pour continuer ton chemin.", "result": "Tu avances, portant avec toi la sérénité du soir." }
+      ]
+    },
+    {
+      "situation": "Une vieille balançoire grince dans le vent.",
+      "choices": [
+        { "color": "rose", "action": "Te balancer doucement, emporté par la nostalgie.", "result": "Les souvenirs t’accompagnent dans ce doux mouvement." },
+        { "color": "neutral", "action": "Passer sans t’arrêter, regardant au loin.", "result": "Tu continues, laissant derrière toi un murmure d’autrefois." }
+      ]
+    },
+    {
+      "situation": "Une étoile brille faiblement dans le ciel du soir.",
+      "choices": [
+        { "color": "rose", "action": "Faire un vœu en silence, le cœur plein d’espoir.", "result": "Ton souhait s’élève vers l’infini, empli de tendresse." },
+        { "color": "neutral", "action": "Continuer à marcher, absorbé par le chemin.", "result": "Tes pas rythment le calme de la nuit autour de toi." }
+      ]
+    },
+    {
+      "situation": "Une feuille morte tombe lentement au sol.",
+      "choices": [
+        { "color": "rose", "action": "La suivre du regard, pensif.", "result": "Chaque mouvement te rappelle la fragilité du temps." },
+        { "color": "neutral", "action": "L’écarter du pied pour avancer.", "result": "Tu poursuivis ta route, laissant le passé derrière toi." }
+      ]
+    },
+    {
+      "situation": "Une brise légère caresse ton visage.",
+      "choices": [
+        { "color": "rose", "action": "Fermer les yeux et savourer ce calme.", "result": "Un apaisement profond t’envahit doucement." },
+        { "color": "neutral", "action": "Respirer profondément et reprendre ta route.", "result": "Ton souffle s’harmonise avec la douceur de l’air." }
+      ]
+    },
+    {
+      "situation": "Une musique douce flotte au loin.",
+      "choices": [
+        { "color": "rose", "action": "S’arrêter pour écouter avec émotion.", "result": "Les notes te caressent le cœur, éveillant des souvenirs tendres." },
+        { "color": "neutral", "action": "Continuer ta marche.", "result": "Tu avances, porté par le rythme de tes pas." }
+      ]
+    },
+    {
+      "situation": "Un vieux banc en bois t’invite à t’asseoir.",
+      "choices": [
+        { "color": "rose", "action": "Te laisser aller à un moment de repos.", "result": "La fatigue s’évapore dans la quiétude de ce lieu." },
+        { "color": "neutral", "action": "Passer ton chemin sans t’arrêter.", "result": "Tu marches, gardant en toi ce bref instant de calme." }
+      ]
+    },
+    {
+      "situation": "Une photo jaunie d’un ancien souvenir est trouvée.",
+      "choices": [
+        { "color": "rose", "action": "La regarder longuement, ressentant la nostalgie.", "result": "Les souvenirs dansent devant tes yeux, doux et mélancoliques." },
+        { "color": "neutral", "action": "Ranger la photo rapidement et continuer.", "result": "Tu laisses les souvenirs s’effacer doucement dans ta mémoire." }
+      ]
+    }
+  ]
+}

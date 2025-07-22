@@ -7,7 +7,23 @@ import { ComposedPeblob, Peblob, Tint } from '../../shared/interfaces/peblob';
 export class PeblobService {
   constructor() {}
 
-  public composedPeblobGenerator(tint: Tint): ComposedPeblob {
+  public composedPeblobGenerator(tint?: Tint): ComposedPeblob {
+    if (!tint) {
+      const rand = Math.random();
+      if (rand < 0.75) {
+        // 75% : yellow, red, blue
+        const mainTints = [Tint.YELLOW, Tint.RED, Tint.BLUE];
+        tint = mainTints[Math.floor(Math.random() * mainTints.length)];
+      } else if (rand < 0.95) {
+        // 20% : violet, green, orange
+        const secondaryTints = [Tint.PURPLE, Tint.GREEN, Tint.ORANGE];
+        tint = secondaryTints[Math.floor(Math.random() * secondaryTints.length)];
+      } else {
+        // 5% : pink
+        tint = Tint.PINK;
+      }
+    }
+
     const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
     const composed: ComposedPeblob = [
