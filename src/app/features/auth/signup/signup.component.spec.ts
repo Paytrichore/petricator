@@ -102,7 +102,7 @@ describe('SignupComponent', () => {
     });
     component.onSubmit();
     component.loading = true;
-    actions$.next(signupSuccess({ user: { _id: '1', username: 'user123', email: 'test@test.com' }, access_token: 'token' }));
+    actions$.next(signupSuccess({ user: { _id: '1', username: 'user123', email: 'test@test.com', peblobs: [] }, access_token: 'token' }));
     tick(1000);
     fixture.detectChanges();
     expect(routerSpy).toHaveBeenCalledWith(['/']);

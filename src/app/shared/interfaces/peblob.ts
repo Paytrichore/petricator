@@ -15,3 +15,16 @@ export enum Tint {
     YELLOW = 'yellow',
     PINK = 'pink',
 }
+
+export const tintMap: Record<string, Tint> = {
+    orange: Tint.ORANGE,
+    green: Tint.GREEN,
+    blue: Tint.BLUE,
+    purple: Tint.PURPLE,
+    red: Tint.RED,
+    yellow: Tint.YELLOW,
+    pink: Tint.PINK,
+    rose: Tint.PINK,
+    neutral: Tint.GREEN,
+    violet: Tint.PURPLE
+};

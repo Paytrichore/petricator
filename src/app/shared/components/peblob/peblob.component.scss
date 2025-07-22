@@ -1,5 +1,57 @@
 :host {
+    border-radius: 20%;
     display: block;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+
+     &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 20%;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        background: radial-gradient(
+            circle at 50% 60%,
+            #00fbfb 0%,
+            rgba(0, 180, 255, 0.0666666667) 42%,
+            transparent 55%
+        );
+        z-index: 1;
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 20%;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        background: radial-gradient(
+            circle at 50% 60%,
+            #ffb300 0%,
+            rgba(255, 179, 0, 0.1) 42%,
+            transparent 55%
+        );
+        z-index: 2;
+    }
+}
+
+:host(:hover),
+:host(:focus) {
+    transform: scale(1.1);
+    box-shadow: none;
+}
+
+:host(:hover:not(.selected))::before,
+:host(:focus:not(.selected))::before {
+    opacity: 1;
+}
+
+:host(.selected)::after {
+    opacity: 1;
 }
 
 .peblob {
@@ -8,6 +60,8 @@
     gap: 2px;
     height: 100px;
     width: 100px;
+    position: relative;
+    z-index: 3;
 
     &__item {
         display: block;

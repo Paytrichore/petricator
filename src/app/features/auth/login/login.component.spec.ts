@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { Actions } from '@ngrx/effects';
 import { loginSuccess, loginFailure } from '../../../core/stores/user/user.actions';
+import { userMock } from '../../../tests/mocks/user.mock';
 
 // Mock BasicInputComponent
 @Component({
@@ -98,7 +99,7 @@ describe('LoginComponent', () => {
     component.loginForm.setValue({ email: 'test@test.com', password: '123456' });
     component.onSubmit();
     component.loading = true;
-    actions$.next(loginSuccess({ user: { _id: '1', username: 'user', email: 'test@test.com' }, access_token: 'token' }));
+    actions$.next(loginSuccess({ user: userMock, access_token: 'token' }));
     tick(1000);
     fixture.detectChanges();
     expect(routerSpy).toHaveBeenCalledWith(['/']);
