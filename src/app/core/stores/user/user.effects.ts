@@ -15,24 +15,27 @@ import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { mapUserFromApi } from '../../../services/auth/auth.service';
+import { AuthService, mapUserFromApi } from '../../../services/auth/auth.service';
 import * as PeblobActions from '../peblob/peblob.actions';
+import { User } from './user.model';
 
 @Injectable()
 export class UserEffects {
   private actions$ = inject(Actions);
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private userApiUrl = environment.userApiUrl;
 
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(login),
       switchMap(({ email, password }) =>
-        this.http.post<{ access_token: string; user: any }>(`${this.userApiUrl}/auth/login`, { email, password }).pipe(
+        this.http.post<{ access_token: string; userStatus: User }>(`${this.userApiUrl}/auth/login`, { email, password }).pipe(
           map(res => {
-            const mappedUser = mapUserFromApi(res.user);
+            const mappedUser = mapUserFromApi(res.userStatus);
             localStorage.setItem('access_token', res.access_token);
             localStorage.setItem('user', JSON.stringify(mappedUser));
+            this.authService.updateUserData(res.userStatus);
             return loginSuccess({ user: mappedUser, access_token: res.access_token });
           }),
           catchError(error => of(loginFailure({ error })))
@@ -55,7 +58,7 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(signup),
       switchMap(({ username, email, password }) =>
-        this.http.post<{ access_token: string; user: any }>(`${this.userApiUrl}/auth/register`, { username, email, password }).pipe(
+        this.http.post<{ access_token: string; user: User }>(`${this.userApiUrl}/auth/register`, { username, email, password }).pipe(
           map(res => {
             const mappedUser = mapUserFromApi(res.user);
             localStorage.setItem('access_token', res.access_token);

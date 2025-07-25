@@ -10,6 +10,7 @@ import { User } from '../../core/stores/user/user.model';
 import { selectUser } from '../../core/stores/user/user.selectors';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { take } from 'rxjs';
+import { userMock } from '../../tests/mocks/user.mock';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -33,9 +34,7 @@ describe('HomeComponent', () => {
           selectors: [
             {
               selector: selectUser,
-              value: {
-                _id: '1', username: 'test', email: 't@t.com', peblobs: ['peblob1', 'peblob2']
-              } as User
+              value: userMock
             }
           ]
         }),
@@ -54,7 +53,7 @@ describe('HomeComponent', () => {
   it('should assign user$', (done) => {
   component.ngOnInit();
   component.user$.pipe(take(1)).subscribe(user => {
-    expect(user?.username).toBe('test');
+    expect(user?.username).toBe('user');
     done();
   });
 });
