@@ -1,11 +1,16 @@
 import { PeblobService } from './peblob.service';
 import { Tint } from '../../shared/interfaces/peblob';
+import { HttpClient } from '@angular/common/http';
+import { PeblobEntity } from '../../core/stores/peblob/peblob.model';
+import { of } from 'rxjs';
 
 describe('PeblobService', () => {
   let service: PeblobService;
+  let httpSpy: jasmine.SpyObj<HttpClient>;
 
   beforeEach(() => {
-    service = new PeblobService();
+    httpSpy = jasmine.createSpyObj('HttpClient', ['post', 'get']);
+    service = new PeblobService(httpSpy);
   });
 
   it('should be created', () => {
@@ -102,6 +107,54 @@ describe('PeblobService', () => {
           expect(peblob.b).toBeLessThanOrEqual(40);
         });
       }
+    });
+  });
+
+  it('should call HttpClient.post and return an Observable for createPeblob', (done) => {
+    const userId = 'user123';
+    const structure = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
+    const mockPeblob: PeblobEntity = {
+      _id: 'peblob123',
+      userId,
+      structure,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    httpSpy.post.and.returnValue(of(mockPeblob));
+
+    service.createPeblob(userId, structure).subscribe(result => {
+      expect(httpSpy.post).toHaveBeenCalledWith(jasmine.any(String), { userId, structure });
+      expect(result).toEqual(mockPeblob);
+      done();
+    });
+  });
+
+  it('should call HttpClient.get and return an Observable for loadPeblobsByUserId', (done) => {
+    const userId = 'user123';
+    const mockPeblobs: PeblobEntity[] = [
+      { _id: 'p1', userId, structure: [[{ r: 1, g: 2, b: 3 }]], createdAt: new Date(), updatedAt: new Date() }
+    ];
+    httpSpy.get.and.returnValue(of(mockPeblobs));
+
+    service.loadPeblobsByUserId(userId).subscribe(result => {
+      expect(httpSpy.get).toHaveBeenCalledWith(jasmine.any(String));
+      expect(result).toEqual(mockPeblobs);
+      done();
+    });
+  });
+
+  it('should call HttpClient.get and return an Observable for loadPeblobsByIds', (done) => {
+    const ids = ['p1', 'p2'];
+    const mockPeblobs: PeblobEntity[] = [
+      { _id: 'p1', userId: 'u1', structure: [[{ r: 1, g: 2, b: 3 }]], createdAt: new Date(), updatedAt: new Date() },
+      { _id: 'p2', userId: 'u2', structure: [[{ r: 4, g: 5, b: 6 }]], createdAt: new Date(), updatedAt: new Date() }
+    ];
+    httpSpy.get.and.returnValue(of(mockPeblobs));
+
+    service.loadPeblobsByIds(ids).subscribe(result => {
+      expect(httpSpy.get).toHaveBeenCalledWith(`${service['peblobApiUrl']}/peblob?ids=p1,p2`);
+      expect(result).toEqual(mockPeblobs);
+      done();
     });
   });
 });

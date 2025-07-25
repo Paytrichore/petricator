@@ -2,6 +2,30 @@
     display: flex;
 }
 
+.align {
+    &-center {
+        align-items: center;
+    }
+
+    &-start {
+        align-items: flex-start;
+    }
+
+    &-end {
+        align-items: flex-end;
+    }
+}
+
+.dir {
+    &-row {
+        flex-direction: row;
+    }
+
+    &-column {
+        flex-direction: column;
+    }
+}
+
 .justify {
     &-center {
         justify-content: center;

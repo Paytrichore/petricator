@@ -51,13 +51,17 @@
   "nav": {
     "menu": {
       "home": "Accueil",
-      "profile": "Profil"
+      "profile": "Profil",
+      "collection": "Mes Peblobs"
     }
   },
   "peblobDraft": {
     "button": "Adopter ce Peblob",
     "event": "Quelques Peblobs sont intrigués par ton comportement...",
     "action": "Choisis en un qui t'accompagnera pour le reste de ton aventure."
+  },
+  "actionChecked": {
+    "captured": "Peblob capturé !"
   }
 }
 

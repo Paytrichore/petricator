@@ -10,6 +10,9 @@ import { provideEffects } from '@ngrx/effects';
 import { userReducer } from './core/stores/user/user.reducer';
 import { UserEffects } from './core/stores/user/user.effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { peblobReducer } from './core/stores/peblob/peblob.reducer';
+import { PeblobEffects } from './core/stores/peblob/peblob.effects';
+import { appReducer } from './core/stores/app/app.reducer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/i18n/', '.json');
@@ -30,8 +33,12 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    provideStore({ user: userReducer }),
-    provideEffects([UserEffects]),
+    provideStore({ 
+      app: appReducer,
+      user: userReducer,
+      peblob: peblobReducer
+   }),
+    provideEffects([UserEffects, PeblobEffects]),
     provideStoreDevtools(),
   ]
 };

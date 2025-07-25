@@ -1,18 +1,30 @@
 import { createReducer, on } from '@ngrx/store';
-import { setUser, clearUser, resetStore } from './user.actions';
-import { User } from './user.types';
+import { setUser, clearUser } from './user.actions';
+import { User } from './user.model';
+import * as AppActions from '../app/app.actions';
 
 export interface UserState {
   user: User | null;
 }
 
-export const initialState: UserState = {
-  user: null
+export const initialUserState: UserState = {
+  user: {
+    _id: '',
+    username: '',
+    email: '',
+    peblobs: [], 
+  }
 };
 
 export const userReducer = createReducer(
-  initialState,
-  on(setUser, (state, { user }) => ({ ...state, user })),
+  initialUserState,
+  on(setUser, (state, { user }) => ({ 
+    ...state, 
+    user: {
+      ...user,
+      peblobs: user.peblobs
+    }
+  })),
   on(clearUser, state => ({ ...state, user: null })),
-  on(resetStore, () => initialState)
+  on(AppActions.resetStore, (state) =>  { return { ...initialUserState } })
 );

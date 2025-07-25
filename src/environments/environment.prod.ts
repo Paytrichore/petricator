@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://papi-user-812288085862.us-central1.run.app'
+  userApiUrl: 'https://papi-user-812288085862.us-central1.run.app',
+  peblobApiUrl: 'https://papi-peblob-812288085862.us-central1.run.app',
 };

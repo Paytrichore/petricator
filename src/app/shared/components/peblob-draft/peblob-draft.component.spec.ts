@@ -4,17 +4,21 @@ import { PeblobDraftComponent } from './peblob-draft.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { TranslateService } from '@ngx-translate/core';
+import { provideMockStore } from '@ngrx/store/testing';
+import { userStoreMock } from '../../../tests/mocks/user.mock';
 
 describe('PeblobDraftComponent', () => {
   let component: PeblobDraftComponent;
   let fixture: ComponentFixture<PeblobDraftComponent>;
+  const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PeblobDraftComponent],
       providers: [
-        provideAnimations(),
         { provide: TranslateService, useValue: translateServiceMock },
+        provideAnimations(),
+        provideMockStore(userStoreMock)
       ]
     })
     .compileComponents();
@@ -29,7 +33,6 @@ describe('PeblobDraftComponent', () => {
   });
 
   it('should set selectedPeblob when selectPeblob is called', () => {
-    const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
     component.selectPeblob(fakePeblob);
     expect(component.selectedPeblob).toBe(fakePeblob);
   });
@@ -42,7 +45,6 @@ describe('PeblobDraftComponent', () => {
   });
 
   it('should enable the button if a Peblob is selected', () => {
-    const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
     component.selectedPeblob = fakePeblob;
     fixture.detectChanges();
     const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
@@ -50,7 +52,6 @@ describe('PeblobDraftComponent', () => {
   });
 
   it('should call confirmSelection and log when button is clicked', () => {
-    const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
     component.selectedPeblob = fakePeblob;
     fixture.detectChanges();
     spyOn(component, 'confirmSelection');
@@ -59,14 +60,47 @@ describe('PeblobDraftComponent', () => {
     expect(component.confirmSelection).toHaveBeenCalled();
   });
 
-  it('should log the selectedPeblob when confirmSelection is called', () => {
-    const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
+  it('should dispatch createPeblob and emit draftDone when confirmSelection is called', (done) => {
     component.selectedPeblob = fakePeblob;
-    const logSpy = spyOn(console, 'log');
+    (component as any).userId = 'user123';
+    spyOn((component as any).store, 'dispatch');
+    spyOn(component.draftDone, 'emit');
+
     component.confirmSelection();
-    expect(logSpy).toHaveBeenCalledWith(
-      'Peblob confirmé : TODO PeblobAPI add Peblob, link to user, etc...',
-      fakePeblob
-    );
+
+    expect(component.draftAnimState).toBe('clicked');
+    expect((component as any).store.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
+      userId: 'user123',
+      structure: fakePeblob
+    }));
+
+    setTimeout(() => {
+      expect(component.draftDone.emit).toHaveBeenCalledWith(true);
+      done();
+    }, 450);
   });
+
+  it('should not dispatch or emit if selectedPeblob is undefined', () => {
+  component.selectedPeblob = undefined;
+  (component as any).userId = 'user123';
+  spyOn((component as any).store, 'dispatch');
+  spyOn(component.draftDone, 'emit');
+
+  component.confirmSelection();
+
+  expect((component as any).store.dispatch).not.toHaveBeenCalled();
+  expect(component.draftDone.emit).not.toHaveBeenCalled();
+});
+
+it('should not dispatch or emit if userId is undefined', () => {
+  component.selectedPeblob = fakePeblob;
+  (component as any).userId = undefined;
+  spyOn((component as any).store, 'dispatch');
+  spyOn(component.draftDone, 'emit');
+
+  component.confirmSelection();
+
+  expect((component as any).store.dispatch).not.toHaveBeenCalled();
+  expect(component.draftDone.emit).not.toHaveBeenCalled();
+});
 });
