@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { Actions } from '@ngrx/effects';
 import { signupSuccess, signupFailure } from '../../../core/stores/user/user.actions';
+import { userMock } from '../../../tests/mocks/user.mock';
 
 // Mock BasicInputComponent
 @Component({
@@ -102,7 +103,7 @@ describe('SignupComponent', () => {
     });
     component.onSubmit();
     component.loading = true;
-    actions$.next(signupSuccess({ user: { _id: '1', username: 'user123', email: 'test@test.com', peblobs: [] }, access_token: 'token' }));
+    actions$.next(signupSuccess({ user: userMock, access_token: 'token' }));
     tick(1000);
     fixture.detectChanges();
     expect(routerSpy).toHaveBeenCalledWith(['/']);

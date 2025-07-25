@@ -5,9 +5,8 @@ import { userMock } from '../../../tests/mocks/user.mock';
 describe('User Selectors', () => {
   describe('selectUser', () => {
     it('should return the user from state', () => {
-      const user = { _id: '1', username: 'Test', email: 'test@test.com', peblobs: [] };
-      const state: UserState = { user };
-      expect(selectUser.projector(state)).toEqual(user);
+      const state: UserState = { user: userMock };
+      expect(selectUser.projector(state)).toEqual(userMock);
     });
     it('should return null if user is null', () => {
       const state: UserState = { user: null };

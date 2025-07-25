@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService, mapUserFromApi } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 describe('AuthService', () => {
@@ -12,7 +12,7 @@ describe('AuthService', () => {
   let storeSpy: jasmine.SpyObj<Store<any>>;
 
   beforeEach(() => {
-    httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
+    httpSpy = jasmine.createSpyObj('HttpClient', ['post', 'get']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     routerSpy.navigate.and.returnValue(Promise.resolve(true));
     storeSpy = jasmine.createSpyObj('Store', ['dispatch']);
@@ -86,5 +86,109 @@ describe('AuthService', () => {
     expect(mapped).toEqual(jasmine.objectContaining({ _id: '1', username: 'bob', email: 'bob@bob.com', extra: 'ok' }));
     expect('password' in mapped).toBeFalse();
     expect('__v' in mapped).toBeFalse();
+  });
+
+  it('should call /users/me and handle success in checkUserStatusOnRefresh', () => {
+    spyOn(localStorage, 'getItem').and.returnValue('token');
+    const userData = { _id: '1', username: 'bob', email: 'bob@bob.com' };
+    httpSpy.get = jasmine.createSpy().and.returnValue(of(userData));
+    spyOn(service, 'hasValidToken').and.returnValue(true);
+
+    service.checkUserStatusOnRefresh();
+
+    expect(httpSpy.get).toHaveBeenCalledWith(jasmine.stringMatching('/users/me'));
+    // Ajoute ici tes attentes sur le traitement du userData si tu en as
+  });
+
+  it('should call /users/me and handle error in checkUserStatusOnRefresh', () => {
+    spyOn(localStorage, 'getItem').and.returnValue('token');
+    httpSpy.get = jasmine.createSpy().and.returnValue(throwError(() => new Error('401')));
+    spyOn(service, 'hasValidToken').and.returnValue(true);
+    spyOn(console, 'error');
+
+    service.checkUserStatusOnRefresh();
+
+    expect(httpSpy.get).toHaveBeenCalledWith(jasmine.stringMatching('/users/me'));
+    expect(console.error).toHaveBeenCalledWith(
+      'Erreur lors de la vérification du statut utilisateur:',
+      jasmine.any(Error)
+    );
+  });
+
+  it('should not call /users/me if token is not valid in checkUserStatusOnRefresh', () => {
+    spyOn(service, 'hasValidToken').and.returnValue(false);
+    service.checkUserStatusOnRefresh();
+    expect(httpSpy.get).not.toHaveBeenCalled();
+  });
+
+  it('should return false if no token in localStorage', () => {
+    spyOn(localStorage, 'getItem').and.returnValue(null);
+    expect(service.hasValidToken()).toBeFalse();
+  });
+
+  it('should return false if token is not a valid JWT', () => {
+    spyOn(localStorage, 'getItem').and.returnValue('invalid.token');
+    expect(service.hasValidToken()).toBeFalse();
+  });
+
+  it('should return false if token is expired', () => {
+    // exp in the past
+    const payload = { exp: Math.floor(Date.now() / 1000) - 1000 };
+    const token = `header.${btoa(JSON.stringify(payload))}.signature`;
+    spyOn(localStorage, 'getItem').and.returnValue(token);
+    expect(service.hasValidToken()).toBeFalse();
+  });
+
+  it('should return true if token is valid and not expired', () => {
+    // exp in the future
+    const payload = { exp: Math.floor(Date.now() / 1000) + 1000 };
+    const token = `header.${btoa(JSON.stringify(payload))}.signature`;
+    spyOn(localStorage, 'getItem').and.returnValue(token);
+    expect(service.hasValidToken()).toBeTrue();
+  });
+
+  it('should log error and call logout if status is 401 in checkUserStatusOnRefresh', () => {
+  spyOn(service, 'hasValidToken').and.returnValue(true);
+  spyOn(service, 'logout');
+  spyOn(console, 'error');
+  const errorObj = { status: 401, message: 'Unauthorized' };
+  httpSpy.get.and.returnValue(throwError(() => errorObj));
+
+  service.checkUserStatusOnRefresh();
+
+  expect(console.error).toHaveBeenCalledWith(
+    'Erreur lors de la vérification du statut utilisateur:',
+      errorObj
+    );
+    expect(service.logout).toHaveBeenCalled();
+  });
+
+it('should call /users/use-points with points in useActionPoints', () => {
+  httpSpy.post.and.returnValue(of({ success: true }));
+  const points = 5;
+  service.useActionPoints(points).subscribe(result => {
+    expect(httpSpy.post).toHaveBeenCalledWith(
+      jasmine.stringMatching('/users/use-points'),
+      { points }
+    );
+    expect(result).toEqual({ success: true });
+  });
+});
+
+  it('should call /users/draft with empty body in makeDraft', () => {
+    httpSpy.post.and.returnValue(of({ draft: true }));
+    service.makeDraft().subscribe(result => {
+      expect(httpSpy.post).toHaveBeenCalledWith(
+        jasmine.stringMatching('/users/draft'),
+        {}
+      );
+      expect(result).toEqual({ draft: true });
+    });
+  });
+
+  it('should call checkUserStatusOnRefresh in refreshUserStatus', () => {
+    spyOn(service, 'checkUserStatusOnRefresh');
+    service.refreshUserStatus();
+    expect(service.checkUserStatusOnRefresh).toHaveBeenCalled();
   });
 });

@@ -4,7 +4,13 @@ export const userMock = {
     _id: '1',
     username: 'user',
     email: 'test@test.com', 
-    peblobs: [] 
+    actionPoints: 10,
+    nextDLA: '',
+    drafted: false,
+    timeUntilNextDLA: {
+      hours: 0,
+      minutes: 0,
+    },
 };
 
 export const userStoreMock = {
