@@ -4,5 +4,5 @@ export interface User {
   _id: string;
   username: string;
   email: string;
-  peblobs: Array<ComposedPeblob> | null;
+  peblobs: string[];
 }

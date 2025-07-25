@@ -26,12 +26,21 @@
             <span class="nav__link--text">{{ 'nav.menu.profile' | translate }}</span>
           </span>
         </a>
+        <a mat-list-item routerLink="collection" routerLinkActive="active-link">
+          <span class="nav__link">
+            <mat-icon>widgets</mat-icon>
+            <span class="nav__link--text">{{ 'nav.menu.collection' | translate }}</span>
+          </span>
+        </a>
       } @else {
         <button mat-icon-button routerLink="home" routerLinkActive="active-link" class="nav__link--minify">
           <mat-icon>home</mat-icon>
         </button>
         <button mat-icon-button routerLink="profile" routerLinkActive="active-link" class="nav__link--minify">
           <mat-icon>hail</mat-icon>
+        </button>
+        <button mat-icon-button routerLink="collection" routerLinkActive="active-link" class="nav__link--minify">
+          <mat-icon>widgets</mat-icon>
         </button>
       }
     </mat-nav-list>

@@ -9,7 +9,7 @@ const routes: Routes = [
     children: [
       { path: 'home', loadComponent: () => import('../../home/home.component').then(m => m.HomeComponent) },
       { path: 'profile', loadComponent: () => import('../../home/home.component').then(m => m.HomeComponent) },
-    //   { path: 'battle', loadComponent: () => import('../battle/battle.component').then(m => m.BattleComponent) },
+      { path: 'collection', loadComponent: () => import('../../collection/collection/collection.component').then(m => m.CollectionComponent) },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   }

@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { login, signup, resetStore } from '../../core/stores/user/user.actions';
-import { User } from '../../core/stores/user/user.types';
+import { login, signup } from '../../core/stores/user/user.actions';
+import { User } from '../../core/stores/user/user.model';
+import * as AppActions from '../../core/stores/app/app.actions';
 
 export function mapUserFromApi(user: any): User {
   // On copie toutes les clés sauf password et __v
@@ -29,7 +30,7 @@ export class AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     this.router.navigate(['/login']).then(() => {
-      this.store.dispatch(resetStore());
+      this.store.dispatch(AppActions.resetStore());
     });
   }
 

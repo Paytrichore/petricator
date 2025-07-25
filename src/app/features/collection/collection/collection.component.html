@@ -1,0 +1,7 @@
+@if (peblobs$ | async; as peblobs) {
+  <div class="flex justify-center gap-12 wrap">
+    @for (composedPeblob of peblobs; track composedPeblob) {
+      <app-peblob [composed]="composedPeblob"></app-peblob>
+    }
+  </div>
+}

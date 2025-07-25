@@ -2,19 +2,13 @@
   <div class="user-info">
     <span>Bienvenue, {{ user.username }}</span>
   </div>
-  @if (!user.peblobs || user.peblobs.length === 0) {
-    @if (!storyDone) {
-      <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
-    } @else {
-      <app-peblob-draft [peblobDraft]="peblobDraft">
-        <h2>{{ story.result }}</h2>
-      </app-peblob-draft>
-    }
+  @if (!storyDone) {
+    <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
+  } @else if (!draftDone) {
+    <app-peblob-draft [peblobDraft]="peblobDraft" (draftDone)="onDraftDone($event)">
+      <h2>{{ story.result }}</h2>
+    </app-peblob-draft>
   } @else {
-    <div class="flex justify-center gap-12 wrap">
-      @for (composed of user.peblobs; track composed) {
-        <app-peblob [composed]="composed"></app-peblob>
-      }
-    </div>
+    <app-action-checked>{{ 'actionChecked.captured' | translate }}</app-action-checked>
   }
 }

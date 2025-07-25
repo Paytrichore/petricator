@@ -6,8 +6,10 @@ import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { PeblobService } from '../../services/peblob/peblob.service';
 import { ComposedPeblob } from '../../shared/interfaces/peblob';
-import { User } from '../../core/stores/user/user.types';
+import { User } from '../../core/stores/user/user.model';
 import { selectUser } from '../../core/stores/user/user.selectors';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { take } from 'rxjs';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -32,11 +34,12 @@ describe('HomeComponent', () => {
             {
               selector: selectUser,
               value: {
-                _id: '1', username: 'test', email: 't@t.com', peblobs: [peblobMock]
+                _id: '1', username: 'test', email: 't@t.com', peblobs: ['peblob1', 'peblob2']
               } as User
             }
           ]
-        })
+        }),
+        provideAnimations()
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(HomeComponent);
@@ -48,13 +51,13 @@ describe('HomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should assign user$ and peblob on ngOnInit', () => {
-    component.ngOnInit();
-    component.user$.subscribe(user => {
-      expect(user?.username).toBe('test');
-    });
-    expect(component.peblob.length).toBe(1);
+  it('should assign user$', (done) => {
+  component.ngOnInit();
+  component.user$.pipe(take(1)).subscribe(user => {
+    expect(user?.username).toBe('test');
+    done();
   });
+});
 
   it('should generate and shuffle peblobDraft, set storyDone and story on onChoiceSelected', () => {
     const choice = { color: 'orange', action: 'a', result: 'r' };
@@ -70,5 +73,21 @@ describe('HomeComponent', () => {
     component.ngOnDestroy();
     expect(spy).toHaveBeenCalled();
     expect(spy2).toHaveBeenCalled();
+  });
+
+  it('should set draftDone to true when onDraftDone is called with true', () => {
+    component.draftDone = false;
+    spyOn(console, 'log');
+    component.onDraftDone(true);
+    expect(component.draftDone).toBeTrue();
+    expect(console.log).toHaveBeenCalledWith('Draft done:', true);
+  });
+
+  it('should set draftDone to false when onDraftDone is called with false', () => {
+    component.draftDone = true;
+    spyOn(console, 'log');
+    component.onDraftDone(false);
+    expect(component.draftDone).toBeFalse();
+    expect(console.log).toHaveBeenCalledWith('Draft done:', false);
   });
 });

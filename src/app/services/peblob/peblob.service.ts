@@ -1,11 +1,35 @@
 import { Injectable } from '@angular/core';
 import { ComposedPeblob, Peblob, Tint } from '../../shared/interfaces/peblob';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { PeblobEntity } from '../../core/stores/peblob/peblob.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PeblobService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
+
+  private readonly peblobApiUrl = environment.peblobApiUrl;
+
+  public createPeblob(userId: string, structure: ComposedPeblob): Observable<PeblobEntity> {
+    const body = {
+      userId: userId,
+      structure: structure
+    };
+    
+    return this.http.post<PeblobEntity>(`${this.peblobApiUrl}/peblob`, body);
+  }
+
+  public loadPeblobsByUserId(userId: string): Observable<PeblobEntity[]> {
+    return this.http.get<PeblobEntity[]>(`${this.peblobApiUrl}/peblob/user/${userId}`);
+  }
+
+  public loadPeblobsByIds(peblobIds: string[]): Observable<PeblobEntity[]> {
+    const idsParam = peblobIds.join(',');
+    return this.http.get<PeblobEntity[]>(`${this.peblobApiUrl}/peblob?ids=${idsParam}`);
+  }
 
   public composedPeblobGenerator(tint?: Tint): ComposedPeblob {
     if (!tint) {
