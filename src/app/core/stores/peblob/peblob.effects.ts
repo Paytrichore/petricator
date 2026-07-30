@@ -1,17 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, filter, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { EMPTY, concat, of } from 'rxjs';
 import * as PeblobActions from './peblob.actions';
 import * as UserActions from '../user/user.actions';
 import { PeblobService } from '../../../services/peblob/peblob.service';
-import { Store } from '@ngrx/store';
-import { selectUser } from '../user/user.selectors';
 
 @Injectable()
 export class PeblobEffects {
   private actions$ = inject(Actions);
-  private store = inject(Store);
   private peblobService = inject(PeblobService);
 
   createPeblob$ = createEffect(() =>
@@ -19,12 +16,10 @@ export class PeblobEffects {
       ofType(PeblobActions.createPeblob),
       switchMap(({ userId, structure }) =>
         this.peblobService.createPeblob(userId, structure).pipe(
-          withLatestFrom(this.store.select(selectUser)),
-          filter(([_, user]) => !!user),
-          switchMap(([peblob, user]) => {
+          switchMap((peblob) => {
             return [
               PeblobActions.createPeblobSuccess({ peblob }),
-              UserActions.makeDraftSuccess({ user:user! })
+              UserActions.refreshUserStatus(),
             ];
           }),
           catchError((error) => of(PeblobActions.createPeblobFailure({ error })))

@@ -1,21 +1,21 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as UserActions from './user.actions';
-import { map, switchMap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { map, switchMap, catchError, tap, filter } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService, mapUserFromApi } from '../../../services/auth/auth.service';
 import * as PeblobActions from '../peblob/peblob.actions';
 import { User } from './user.model';
-import { UserService } from '../../../services/auth/user.service';
+import { UserEventsService } from '../../../services/auth/user-events.service';
 
 @Injectable()
 export class UserEffects {
   private actions$ = inject(Actions);
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  private userService = inject(UserService);
+  private userEventsService = inject(UserEventsService);
   private userApiUrl = environment.userApiUrl;
 
   login$ = createEffect(() =>
@@ -39,9 +39,10 @@ export class UserEffects {
   loginSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActions.loginSuccess),
-      switchMap(({ user }) => [
+      switchMap(({ user, access_token }) => [
         UserActions.setUser({ user }),
-        PeblobActions.loadPeblobsByUserIds({ userId: user._id })
+        PeblobActions.loadPeblobsByUserIds({ userId: user._id }),
+        UserActions.connectUserEvents({ token: access_token }),
       ])
     )
   );
@@ -66,9 +67,10 @@ export class UserEffects {
   signupSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActions.signupSuccess),
-      switchMap(({ user }) => [
+      switchMap(({ user, access_token }) => [
         UserActions.setUser({ user }),
-        PeblobActions.loadPeblobsByUserIds({ userId: user._id })
+        PeblobActions.loadPeblobsByUserIds({ userId: user._id }),
+        UserActions.connectUserEvents({ token: access_token }),
       ])
     )
   );
@@ -84,7 +86,8 @@ export class UserEffects {
             const user = JSON.parse(userStr);
             return [
               UserActions.setUser({ user }),
-              PeblobActions.loadPeblobsByUserIds({ userId: user._id })
+              PeblobActions.loadPeblobsByUserIds({ userId: user._id }),
+              UserActions.connectUserEvents({ token }),
             ];
           } catch {
             return [UserActions.clearUser()];
@@ -95,15 +98,39 @@ export class UserEffects {
     )
   );
 
-  makeDraftSuccess$ = createEffect(() => 
+  refreshUserStatus$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(UserActions.makeDraftSuccess),
-      switchMap(({ user }) => {
-        return this.http.post<User>(`${this.userApiUrl}/users/draft`, { user }).pipe(
-          map(updatedUser => UserActions.updateUserSuccess({ user: mapUserFromApi(updatedUser) })),
+      ofType(UserActions.refreshUserStatus),
+      switchMap(() => {
+        return this.http.get<User>(`${this.userApiUrl}/users/me`).pipe(
+          map((updatedUser) =>
+            UserActions.updateUserSuccess({ user: mapUserFromApi(updatedUser) }),
+          ),
           catchError(error => of(UserActions.updateUserFailure({ error })))
         );
       })
     )
+  );
+
+  connectUserEvents$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserActions.connectUserEvents),
+      switchMap(({ token }) =>
+        this.userEventsService.connect(token).pipe(
+          filter((event) => event.type === 'draft.updated'),
+          map(() => UserActions.refreshUserStatus()),
+          catchError(() => EMPTY),
+        ),
+      ),
+    ),
+  );
+
+  disconnectUserEvents$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(UserActions.clearUser, UserActions.disconnectUserEvents),
+        tap(() => this.userEventsService.disconnect()),
+      ),
+    { dispatch: false },
   );
 }
