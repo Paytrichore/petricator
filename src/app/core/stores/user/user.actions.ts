@@ -17,10 +17,6 @@ export const updateUser = createAction('[User] Update User attempt', props<{ use
 export const updateUserSuccess = createAction('[User] Update User Success', props<{ user: User }>());
 export const updateUserFailure = createAction('[User] Update User Failure', props<{ error: any }>());
 
-<<<<<<< HEAD
 export const refreshUserStatus = createAction('[User] Refresh User Status');
 export const connectUserEvents = createAction('[User] Connect User Events', props<{ token: string }>());
 export const disconnectUserEvents = createAction('[User] Disconnect User Events');
-=======
-export const makeDraftSuccess = createAction('[User] Make Draft Success', props<{ user: User }>());
->>>>>>> origin/main
