@@ -6,10 +6,13 @@ import { translateServiceMock } from '../../../tests/mocks/translate.service.moc
 import { TranslateService } from '@ngx-translate/core';
 import { provideMockStore } from '@ngrx/store/testing';
 import { userStoreMock } from '../../../tests/mocks/user.mock';
+import { ActionsSubject } from '@ngrx/store';
+import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
 
 describe('PeblobDraftComponent', () => {
   let component: PeblobDraftComponent;
   let fixture: ComponentFixture<PeblobDraftComponent>;
+  let actionsSubject: ActionsSubject;
   const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
 
   beforeEach(async () => {
@@ -18,13 +21,18 @@ describe('PeblobDraftComponent', () => {
       providers: [
         { provide: TranslateService, useValue: translateServiceMock },
         provideAnimations(),
-        provideMockStore(userStoreMock)
+        provideMockStore(userStoreMock),
+        {
+          provide: ActionsSubject,
+          useFactory: () => new ActionsSubject(),
+        },
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(PeblobDraftComponent);
     component = fixture.componentInstance;
+    actionsSubject = TestBed.inject(ActionsSubject);
     fixture.detectChanges();
   });
 
@@ -60,7 +68,7 @@ describe('PeblobDraftComponent', () => {
     expect(component.confirmSelection).toHaveBeenCalled();
   });
 
-  it('should dispatch createPeblob and emit draftDone when confirmSelection is called', (done) => {
+  it('should dispatch createPeblob and emit draftDone on create success action', () => {
     component.selectedPeblob = fakePeblob;
     (component as any).userId = 'user123';
     spyOn((component as any).store, 'dispatch');
@@ -74,10 +82,15 @@ describe('PeblobDraftComponent', () => {
       structure: fakePeblob
     }));
 
-    setTimeout(() => {
-      expect(component.draftDone.emit).toHaveBeenCalledWith(true);
-      done();
-    }, 450);
+    actionsSubject.next(PeblobActions.createPeblobSuccess({ peblob: {
+      _id: 'peblob-1',
+      userId: 'user123',
+      structure: fakePeblob as any,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } }));
+
+    expect(component.draftDone.emit).toHaveBeenCalledWith(true);
   });
 
   it('should not dispatch or emit if selectedPeblob is undefined', () => {

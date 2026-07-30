@@ -4,9 +4,8 @@ import { PeblobComponent } from '../peblob/peblob.component';
 import { MatButtonModule } from '@angular/material/button';
 import { sequencedFadeInAnimation } from '../../animations/sequenced-fade-in.animation';
 import { TranslateModule } from '@ngx-translate/core';
-import { PeblobService } from '../../../services/peblob/peblob.service';
 import { Subject, takeUntil } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { ActionsSubject, Store } from '@ngrx/store';
 import { selectUser } from '../../../core/stores/user/user.selectors';
 import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
 
@@ -20,7 +19,10 @@ import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
   ]
 })
 export class PeblobDraftComponent implements OnDestroy, OnInit {
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private actionsSubject: ActionsSubject,
+  ) {}
 
   @Input() peblobDraft!: Array<ComposedPeblob>;
   @Output() draftDone = new EventEmitter<boolean>();
@@ -28,6 +30,7 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
   public selectedPeblob?: ComposedPeblob;
   public draftAnimState: 'default' | 'clicked' = 'default';
   private userId?: string;
+  private draftSubmissionPending = false;
   private destroy$ = new Subject<void>();
 
   ngOnInit() {
@@ -35,6 +38,25 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         this.userId = user?._id;
+      });
+
+    this.actionsSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((action) => {
+        if (!this.draftSubmissionPending) {
+          return;
+        }
+
+        if (action.type === PeblobActions.createPeblobSuccess.type) {
+          this.draftSubmissionPending = false;
+          this.draftDone.emit(true);
+          return;
+        }
+
+        if (action.type === PeblobActions.createPeblobFailure.type) {
+          this.draftSubmissionPending = false;
+          this.draftAnimState = 'default';
+        }
       });
   }
 
@@ -47,14 +69,11 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
     if (!this.userId) return;
 
     this.draftAnimState = 'clicked';
+    this.draftSubmissionPending = true;
     this.store.dispatch(PeblobActions.createPeblob({
       userId: this.userId,
       structure: this.selectedPeblob
     }));
-
-    setTimeout(() => {
-      this.draftDone.emit(true);
-    }, 400);
   }
 
   ngOnDestroy() {
