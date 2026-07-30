@@ -61,6 +61,5 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onDraftDone(draftDone: boolean) {
     this.draftDone = draftDone;
-    console.log('Draft done:', this.draftDone);
   }
 }

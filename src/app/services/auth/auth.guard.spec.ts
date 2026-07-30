@@ -10,7 +10,7 @@ describe('authGuard', () => {
   let injector: EnvironmentInjector;
 
   beforeEach(() => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['isAuthenticated']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['hasValidToken']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
@@ -24,18 +24,18 @@ describe('authGuard', () => {
   });
 
   it('should return true if authenticated', () => {
-    authServiceSpy.isAuthenticated.and.returnValue(true);
+    authServiceSpy.hasValidToken.and.returnValue(true);
     const result = runInInjectionContext(injector, () => authGuard({} as any, {} as any));
     expect(result).toBeTrue();
-    expect(authServiceSpy.isAuthenticated).toHaveBeenCalled();
+    expect(authServiceSpy.hasValidToken).toHaveBeenCalled();
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 
   it('should navigate to /login and return false if not authenticated', () => {
-    authServiceSpy.isAuthenticated.and.returnValue(false);
+    authServiceSpy.hasValidToken.and.returnValue(false);
     const result = runInInjectionContext(injector, () => authGuard({} as any, {} as any));
     expect(result).toBeFalse();
-    expect(authServiceSpy.isAuthenticated).toHaveBeenCalled();
+    expect(authServiceSpy.hasValidToken).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 });

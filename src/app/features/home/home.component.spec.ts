@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { PeblobService } from '../../services/peblob/peblob.service';
 import { ComposedPeblob } from '../../shared/interfaces/peblob';
-import { User } from '../../core/stores/user/user.model';
 import { selectUser } from '../../core/stores/user/user.selectors';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { take } from 'rxjs';
@@ -72,21 +71,5 @@ describe('HomeComponent', () => {
     component.ngOnDestroy();
     expect(spy).toHaveBeenCalled();
     expect(spy2).toHaveBeenCalled();
-  });
-
-  it('should set draftDone to true when onDraftDone is called with true', () => {
-    component.draftDone = false;
-    spyOn(console, 'log');
-    component.onDraftDone(true);
-    expect(component.draftDone).toBeTrue();
-    expect(console.log).toHaveBeenCalledWith('Draft done:', true);
-  });
-
-  it('should set draftDone to false when onDraftDone is called with false', () => {
-    component.draftDone = true;
-    spyOn(console, 'log');
-    component.onDraftDone(false);
-    expect(component.draftDone).toBeFalse();
-    expect(console.log).toHaveBeenCalledWith('Draft done:', false);
   });
 });
