@@ -44,16 +44,21 @@ To execute unit tests with the [Karma](https://karma-runner.github.io) test runn
 ng test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Fichiers De Contexte IA
+
+Pour fournir un contexte stable aux assistants IA dans ce depot:
+
+- Instructions globales: `.github/copilot-instructions.md`
+- Instructions ciblees par feature: `.github/collection-feature.instructions.md`
+- Contexte projet detaille: `docs/context/`
+
+Premiers fichiers recommandes a maintenir dans `docs/context/`:
+
+- `domain.md`
+- `architecture.md`
+- `conventions.md`
+- `features/collection.md`

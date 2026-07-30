@@ -14,4 +14,8 @@ export class UserService {
   public updateUser(userId: string, updates: Partial<User>): Observable<User> {
     return this.http.patch<User>(`${this.userApiUrl}/users/${userId}`, updates);
   }
+
+  public makeDraft(user: User): Observable<User> {
+    return this.http.post<User>(`${this.userApiUrl}/users/draft`, { user });
+  }
 }

@@ -1,16 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {
-  setUser,
-  clearUser,
-  hydrateUser,
-  login,
-  loginSuccess,
-  loginFailure,
-  signup,
-  signupSuccess,
-  signupFailure
-} from './user.actions';
+import * as UserActions from './user.actions';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -18,17 +8,19 @@ import { environment } from '../../../../environments/environment';
 import { AuthService, mapUserFromApi } from '../../../services/auth/auth.service';
 import * as PeblobActions from '../peblob/peblob.actions';
 import { User } from './user.model';
+import { UserService } from '../../../services/auth/user.service';
 
 @Injectable()
 export class UserEffects {
   private actions$ = inject(Actions);
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private userApiUrl = environment.userApiUrl;
 
   login$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(login),
+      ofType(UserActions.login),
       switchMap(({ email, password }) =>
         this.http.post<{ access_token: string; userStatus: User }>(`${this.userApiUrl}/auth/login`, { email, password }).pipe(
           map(res => {
@@ -36,9 +28,9 @@ export class UserEffects {
             localStorage.setItem('access_token', res.access_token);
             localStorage.setItem('user', JSON.stringify(mappedUser));
             this.authService.updateUserData(res.userStatus);
-            return loginSuccess({ user: mappedUser, access_token: res.access_token });
+            return UserActions.loginSuccess({ user: mappedUser, access_token: res.access_token });
           }),
-          catchError(error => of(loginFailure({ error })))
+          catchError(error => of(UserActions.loginFailure({ error })))
         )
       )
     )
@@ -46,9 +38,9 @@ export class UserEffects {
 
   loginSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(loginSuccess),
+      ofType(UserActions.loginSuccess),
       switchMap(({ user }) => [
-        setUser({ user }),
+        UserActions.setUser({ user }),
         PeblobActions.loadPeblobsByUserIds({ userId: user._id })
       ])
     )
@@ -56,16 +48,16 @@ export class UserEffects {
 
   signup$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(signup),
+      ofType(UserActions.signup),
       switchMap(({ username, email, password }) =>
         this.http.post<{ access_token: string; user: User }>(`${this.userApiUrl}/auth/register`, { username, email, password }).pipe(
           map(res => {
             const mappedUser = mapUserFromApi(res.user);
             localStorage.setItem('access_token', res.access_token);
             localStorage.setItem('user', JSON.stringify(mappedUser));
-            return signupSuccess({ user: mappedUser, access_token: res.access_token });
+            return UserActions.signupSuccess({ user: mappedUser, access_token: res.access_token });
           }),
-          catchError(error => of(signupFailure({ error })))
+          catchError(error => of(UserActions.signupFailure({ error })))
         )
       )
     )
@@ -73,14 +65,17 @@ export class UserEffects {
 
   signupSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(signupSuccess),
-      map(({ user }) => setUser({ user }))
+      ofType(UserActions.signupSuccess),
+      switchMap(({ user }) => [
+        UserActions.setUser({ user }),
+        PeblobActions.loadPeblobsByUserIds({ userId: user._id })
+      ])
     )
   );
 
   hydrateUser$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(hydrateUser),
+      ofType(UserActions.hydrateUser),
       switchMap(() => {
         const token = localStorage.getItem('access_token');
         const userStr = localStorage.getItem('user');
@@ -88,14 +83,26 @@ export class UserEffects {
           try {
             const user = JSON.parse(userStr);
             return [
-              setUser({ user }),
+              UserActions.setUser({ user }),
               PeblobActions.loadPeblobsByUserIds({ userId: user._id })
             ];
           } catch {
-            return [clearUser()];
+            return [UserActions.clearUser()];
           }
         }
-        return [clearUser()];
+        return [UserActions.clearUser()];
+      })
+    )
+  );
+
+  makeDraftSuccess$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(UserActions.makeDraftSuccess),
+      switchMap(({ user }) => {
+        return this.http.post<User>(`${this.userApiUrl}/users/draft`, { user }).pipe(
+          map(updatedUser => UserActions.updateUserSuccess({ user: mapUserFromApi(updatedUser) })),
+          catchError(error => of(UserActions.updateUserFailure({ error })))
+        );
       })
     )
   );
