@@ -1,14 +1,23 @@
-@if (user$ | async; as user) {
+<div class="grid">
+  @if (user$ | async; as user) {
   <div class="user-info">
     <span>Bienvenue, {{ user.username }}</span>
   </div>
-  @if (!storyDone) {
-    <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
-  } @else if (!draftDone) {
-    <app-peblob-draft [peblobDraft]="peblobDraft" (draftDone)="onDraftDone($event)">
-      <h2>{{ story.result }}</h2>
-    </app-peblob-draft>
-  } @else {
-    <app-action-checked>{{ 'actionChecked.captured' | translate }}</app-action-checked>
+  <aside class="home__container">
+      @if (!storyDone && !user.drafted) {
+        <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
+      } @else if (!draftDone && !user.drafted) {
+        <app-peblob-draft [peblobDraft]="peblobDraft" (draftDone)="onDraftDone($event)">
+          <h2>{{ story.result }}</h2>
+        </app-peblob-draft>
+      } @else {
+        <app-action-checked>{{ 'actionChecked.captured' | translate }}</app-action-checked>
+        <p class="home__info">
+          Prochaine aventure dans 
+          {{ user.timeUntilNextDLA.hours }} {{ user.timeUntilNextDLA.hours > 1 ? 'heures' : 'heure' }} et 
+          {{ user.timeUntilNextDLA.minutes }} {{ user.timeUntilNextDLA.minutes > 1 ? 'minutes' : 'minute' }}
+        </p>
+      }
+  </aside>
   }
-}
+</div>

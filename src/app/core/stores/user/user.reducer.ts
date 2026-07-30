@@ -34,8 +34,6 @@ export const userReducer = createReducer(
   on(UserActions.updateUserSuccess, (state, { user }) => ({
     ...state,
     user,
-    isLoading: false,
-    error: null
   })),
   on(clearUser, state => ({ ...state, user: null })),
   on(AppActions.resetStore, (state) =>  { return { ...initialUserState } })

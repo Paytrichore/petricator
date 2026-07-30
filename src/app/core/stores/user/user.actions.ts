@@ -16,3 +16,5 @@ export const hydrateUser = createAction('[User] Hydrate User');
 export const updateUser = createAction('[User] Update User attempt', props<{ userId: string; updates: Partial<User> }>());
 export const updateUserSuccess = createAction('[User] Update User Success', props<{ user: User }>());
 export const updateUserFailure = createAction('[User] Update User Failure', props<{ error: any }>());
+
+export const makeDraftSuccess = createAction('[User] Make Draft Success', props<{ user: User }>());

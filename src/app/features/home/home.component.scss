@@ -12,7 +12,21 @@ h2 {
     border-bottom: 2px solid var(--mat-sys-on-primary);
     font-style: italic;
     font-weight: 100;
-    margin: 36px auto;
+    margin: 0 auto 36px auto;
     text-align: center;
     width: fit-content;
+}
+
+.home {
+    &__container {
+        // border: 1px solid var(--mat-sys-on-surface);
+        // border-radius: 10px;
+        padding: 36px 12px;
+    }
+
+    &__info {
+        font-size: 12px;
+        font-style: italic;
+        text-align: center;
+    }
 }

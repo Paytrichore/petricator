@@ -43,11 +43,18 @@ export class AuthService {
   }
 
   logout() {
+    this.clearPeblobCache();
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     this.router.navigate(['/login']).then(() => {
       this.store.dispatch(AppActions.resetStore());
     });
+  }
+
+  private clearPeblobCache(): void {
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith('peblobs_'))
+      .forEach((key) => localStorage.removeItem(key));
   }
 
   isAuthenticated(): boolean {
