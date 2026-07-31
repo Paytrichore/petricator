@@ -1,0 +1,7 @@
+@if (!storyDone) {
+  <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
+} @else {
+  <app-peblob-draft [peblobDraft]="peblobDraft">
+    <h2>{{ story?.result }}</h2>
+  </app-peblob-draft>
+}

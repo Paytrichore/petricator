@@ -10,7 +10,7 @@ export class MessageService {
   public openSnackBar(message: string, error = false): void {
     this.snackBar.open(message, 'Fermer', {
       duration: 4000,
-      panelClass: message ? ['snackbar--error'] : undefined
+      panelClass: error ? ['snackbar--error'] : undefined
     });
   }
 }

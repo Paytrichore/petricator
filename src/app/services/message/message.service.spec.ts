@@ -29,9 +29,9 @@ describe('MessageService', () => {
     });
   });
 
-  it('should open a snackbar without error style if message is empty', () => {
-    service.openSnackBar('', false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('', 'Fermer', {
+  it('should open a snackbar without error style when error is false', () => {
+    service.openSnackBar('OK', false);
+    expect(snackBarSpy.open).toHaveBeenCalledWith('OK', 'Fermer', {
       duration: 4000,
       panelClass: undefined
     });

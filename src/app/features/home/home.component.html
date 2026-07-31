@@ -3,21 +3,18 @@
   <div class="user-info">
     <span>Bienvenue, {{ user.username }}</span>
   </div>
-  <aside class="home__container">
-      @if (!storyDone && !user.drafted) {
-        <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
-      } @else if (!draftDone && !user.drafted) {
-        <app-peblob-draft [peblobDraft]="peblobDraft" (draftDone)="onDraftDone($event)">
-          <h2>{{ story.result }}</h2>
-        </app-peblob-draft>
+  <section class="home__container">
+      @if (!user.drafted && isAdventureVisible) {
+        <app-adventure></app-adventure>
       } @else {
-        <app-action-checked>{{ 'actionChecked.captured' | translate }}</app-action-checked>
-        <p class="home__info">
-          Prochaine aventure dans 
-          {{ user.timeUntilNextDLA.hours }} {{ user.timeUntilNextDLA.hours > 1 ? 'heures' : 'heure' }} et 
-          {{ user.timeUntilNextDLA.minutes }} {{ user.timeUntilNextDLA.minutes > 1 ? 'minutes' : 'minute' }}
-        </p>
+        <app-full-card>
+          <app-adventure-status
+            [user]="user"
+            [countdown]="countdown"
+            (ctaClicked)="showAdventure()"
+          ></app-adventure-status>
+        </app-full-card>
       }
-  </aside>
+  </section>
   }
 </div>

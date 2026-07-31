@@ -1,65 +1,130 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ComposedPeblob, tintMap } from '../../shared/interfaces/peblob';
-import { PeblobService } from '../../services/peblob/peblob.service';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { selectUser } from '../../core/stores/user/user.selectors';
 import { User } from '../../core/stores/user/user.model';
 import { AsyncPipe } from '@angular/common';
-import { StoryComponent } from "../../shared/components/story/story.component";
-import { shuffleArray } from '../../shared/helpers/array.helpers';
-import { MatButtonModule } from '@angular/material/button';
-import { PeblobDraftComponent } from '../../shared/components/peblob-draft/peblob-draft.component';
-import { MatIconModule } from '@angular/material/icon';
-import { ActionCheckedComponent } from '../../shared/components/action-checked/action-checked.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { AdventureComponent } from './adventure/adventure.component';
+import { AdventureStatusComponent, AdventureCountdown } from './adventure-status/adventure-status.component';
+import { FullCardComponent } from '../../shared/components/full-card/full-card.component';
 
 @Component({
   selector: 'app-home',
   imports: [
-    ActionCheckedComponent,
-    PeblobDraftComponent,
-    StoryComponent,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule,
+    AdventureComponent,
+    AdventureStatusComponent,
+    FullCardComponent,
     AsyncPipe,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  public peblobs$!: Observable<ComposedPeblob[]>;
-  public peblobDraft!: Array<ComposedPeblob>;
   public user$!: Observable<User | null>;
-  public storyDone = false;
-  public story?: any;
-  public draftDone = false;
+  public isAdventureVisible = false;
+  public countdown: AdventureCountdown = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  };
+
+  private countdownInterval?: ReturnType<typeof setInterval>;
+  private countdownDeadline?: number;
   private destroy$ = new Subject<void>();
 
-  constructor(private peblobService: PeblobService, private store: Store) {}
+  constructor(
+    private store: Store,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.user$ = this.store.select(selectUser);
-  }
 
-  onChoiceSelected(choice: { color: string; action: string; result: string }) {
-    this.peblobDraft = [
-      this.peblobService.composedPeblobGenerator(tintMap[choice.color.toLowerCase()]),
-      this.peblobService.composedPeblobGenerator(),
-      this.peblobService.composedPeblobGenerator()
-    ];
-    this.peblobDraft = shuffleArray(this.peblobDraft);
-    this.storyDone = true;
-    this.story = choice;
+    this.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        if (!user?.drafted) {
+          this.clearCountdown();
+          this.countdown = { hours: 0, minutes: 0, seconds: 0 };
+          this.cdr.detectChanges();
+          return;
+        }
+
+        const nextDeadline = this.resolveDeadline(user);
+        if (!nextDeadline) {
+          this.clearCountdown();
+          return;
+        }
+
+        const shouldRestart = !this.countdownInterval || this.countdownDeadline !== nextDeadline;
+        if (shouldRestart) {
+          this.startCountdown(nextDeadline);
+        }
+      });
   }
 
   ngOnDestroy(): void {
+    this.clearCountdown();
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  onDraftDone(draftDone: boolean) {
-    this.draftDone = draftDone;
+  public showAdventure() {
+    this.isAdventureVisible = true;
+  }
+
+  private startCountdown(deadline: number) {
+    this.clearCountdown();
+    this.countdownDeadline = deadline;
+
+    this.updateCountdown(deadline);
+    this.countdownInterval = setInterval(() => {
+      this.updateCountdown(deadline);
+    }, 1000);
+  }
+
+  private resolveDeadline(user: User): number | null {
+    const deadlineFromDate = Date.parse(user.nextDLA);
+    if (Number.isFinite(deadlineFromDate) && deadlineFromDate > Date.now()) {
+      return deadlineFromDate;
+    }
+
+    if (this.countdownInterval && this.countdownDeadline && this.countdownDeadline > Date.now()) {
+      return this.countdownDeadline;
+    }
+
+    const fallbackSeconds = (user.timeUntilNextDLA.hours * 3600) + (user.timeUntilNextDLA.minutes * 60);
+    if (fallbackSeconds <= 0) {
+      return null;
+    }
+
+    return Date.now() + (fallbackSeconds * 1000);
+  }
+
+  private updateCountdown(deadline: number) {
+    const remainingMs = Math.max(deadline - Date.now(), 0);
+    const totalSeconds = Math.floor(remainingMs / 1000);
+
+    this.countdown = {
+      hours: Math.floor(totalSeconds / 3600),
+      minutes: Math.floor((totalSeconds % 3600) / 60),
+      seconds: totalSeconds % 60,
+    };
+
+    if (totalSeconds === 0) {
+      this.clearCountdown();
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  private clearCountdown() {
+    if (!this.countdownInterval) {
+      return;
+    }
+
+    clearInterval(this.countdownInterval);
+    this.countdownInterval = undefined;
+    this.countdownDeadline = undefined;
   }
 }
