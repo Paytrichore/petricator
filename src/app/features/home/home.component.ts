@@ -1,4 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { selectUser } from '../../core/stores/user/user.selectors';
@@ -6,15 +8,15 @@ import { User } from '../../core/stores/user/user.model';
 import { AsyncPipe } from '@angular/common';
 import { AdventureComponent } from './adventure/adventure.component';
 import { AdventureStatusComponent, AdventureCountdown } from './adventure-status/adventure-status.component';
-import { FullCardComponent } from '../../shared/components/full-card/full-card.component';
 
 @Component({
   selector: 'app-home',
   imports: [
     AdventureComponent,
     AdventureStatusComponent,
-    FullCardComponent,
     AsyncPipe,
+    MatCardModule,
+    MatButtonModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

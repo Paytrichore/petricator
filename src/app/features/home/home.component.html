@@ -3,18 +3,45 @@
   <div class="user-info">
     <span>Bienvenue, {{ user.username }}</span>
   </div>
-  <section class="home__container">
+  <section class="home__container grid grid--cols-2 grid--gap-12">
       @if (!user.drafted && isAdventureVisible) {
-        <app-adventure></app-adventure>
+        <app-adventure class="col-span-2"></app-adventure>
       } @else {
-        <app-full-card>
+        <mat-card appearance="filled" class="card-primary col-span-2">
+          <mat-card-content>
           <app-adventure-status
-            [user]="user"
-            [countdown]="countdown"
-            (ctaClicked)="showAdventure()"
-          ></app-adventure-status>
-        </app-full-card>
+              [user]="user"
+              [countdown]="countdown"
+              (ctaClicked)="showAdventure()"
+            ></app-adventure-status>
+        </mat-card-content>
+        </mat-card>
+
+        <mat-card appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Derniers évènements</mat-card-title>
+          <mat-card-subtitle>Test sous-titre</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            test
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Dernières actions</mat-card-title>
+          <mat-card-subtitle>Test sous-titre</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            test
+          </div>
+        </mat-card-content>
+      </mat-card>
       }
+
   </section>
-  }
+}
 </div>

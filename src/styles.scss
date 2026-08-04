@@ -25,14 +25,45 @@ a {
     }
 }
 
-p {
-    margin: 0;
-}
-
 .pixel-font {
-    font-family: "Jersey 15", sans-serif !important; 
+    font-family: 'Jersey 15', sans-serif !important; 
     font-weight: 400 !important;
     font-style: normal !important;
+}
+
+/* Snackbar styling with Material theme */
+.snackbar--error {
+  .mdc-snackbar__surface {
+    background-color: var(--mat-sys-error-container) !important;
+  }
+
+  .mdc-snackbar__label {
+    color: var(--mat-sys-error) !important;
+  }
+
+  .mdc-button {
+    color: var(--mat-sys-error) !important;
+  }
+}
+
+.snackbar--success {
+  .mdc-snackbar__surface {
+    background-color: var(--mat-sys-primary-container) !important;
+  }
+
+  .mdc-snackbar__label {
+    color: var(--mat-sys-primary) !important;
+  }
+
+  .mdc-button {
+    color: var(--mat-sys-primary) !important;
+  }
+}
+
+::ng-deep .mat-mdc-card-title {
+  font-family: 'Jersey 15', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
 }
 
 :root {

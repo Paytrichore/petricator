@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalLoaderComponent } from './global-loader.component';
 import { LoadingService } from '../../../core/services/loading/loading.service';
@@ -13,6 +14,7 @@ describe('GlobalLoaderComponent', () => {
     await TestBed.configureTestingModule({
       imports: [GlobalLoaderComponent],
       providers: [
+        provideAnimations(),
         { provide: TranslateService, useValue: translateServiceMock },
       ],
     }).compileComponents();

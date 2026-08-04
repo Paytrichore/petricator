@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../../core/stores/user/user.model';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface AdventureCountdown {
   hours: number;
@@ -10,6 +11,7 @@ export interface AdventureCountdown {
 @Component({
   selector: 'app-adventure-status',
   standalone: true,
+  imports: [MatButtonModule],
   templateUrl: './adventure-status.component.html',
   styleUrl: './adventure-status.component.scss',
 })

@@ -14,6 +14,7 @@ describe('LoadingInterceptor', () => {
     routerStub.url = '/';
     TestBed.configureTestingModule({
       providers: [
+        LoadingService,
         { provide: Router, useValue: routerStub },
       ],
     });
@@ -35,9 +36,6 @@ describe('LoadingInterceptor', () => {
     events$.next(new HttpResponse({ status: 200 }));
     events$.complete();
 
-    expect(loadingService.isLoading()).toBeTrue();
-
-    tick(1000);
     expect(loadingService.isLoading()).toBeFalse();
   }));
 

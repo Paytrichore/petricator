@@ -1,6 +1,6 @@
 @if (loadingService.isLoading()) {
-  <div class="global-loader" role="status" aria-live="polite" aria-label="Chargement global en cours">
-    <div class="global-loader__text">{{ message }}</div>
+  <div class="global-loader" [@loaderAnimation] role="status" aria-live="polite" aria-label="Chargement global en cours">
+    <div class="global-loader__text">{{ message() }}</div>
     <div class="pixel-loader" aria-hidden="true">
       <span class="pixel"></span>
       <span class="pixel"></span>
