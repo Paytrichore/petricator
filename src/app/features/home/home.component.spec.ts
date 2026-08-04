@@ -1,45 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
-import { RouterOutlet } from '@angular/router';
-import { NavComponent } from '../main/nav/nav.component';
-import { ActivatedRoute } from '@angular/router';
-import { provideMockStore } from '@ngrx/store/testing';
-import { PeblobService } from '../../services/peblob/peblob.service';
-import { ComposedPeblob } from '../../shared/interfaces/peblob';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { selectUser } from '../../core/stores/user/user.selectors';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { take } from 'rxjs';
 import { userMock } from '../../tests/mocks/user.mock';
+import { User } from '../../core/stores/user/user.model';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-  let peblobService: jasmine.SpyObj<PeblobService>;
+  let store: MockStore;
 
   beforeEach(async () => {
-    const peblobMock: ComposedPeblob = [
-      [{ r: 1, g: 2, b: 3 }],
-      [{ r: 4, g: 5, b: 6 }],
-      [{ r: 7, g: 8, b: 9 }]
-    ];
-    peblobService = jasmine.createSpyObj('PeblobService', ['composedPeblobGenerator']);
-    peblobService.composedPeblobGenerator.and.returnValue(peblobMock);
     await TestBed.configureTestingModule({
-      imports: [HomeComponent, RouterOutlet, NavComponent],
+      imports: [HomeComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: {} },
-        { provide: PeblobService, useValue: peblobService },
         provideMockStore({
           selectors: [
             {
               selector: selectUser,
-              value: userMock
+              value: userMock,
             }
           ]
         }),
         provideAnimations()
       ]
     }).compileComponents();
+
+    store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -49,27 +38,73 @@ describe('HomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should assign user$', (done) => {
-  component.ngOnInit();
-  component.user$.pipe(take(1)).subscribe(user => {
-    expect(user?.username).toBe('user');
-    done();
-  });
-});
+  it('should display adventure when showAdventure is called', () => {
+    component.showAdventure();
 
-  it('should generate and shuffle peblobDraft, set storyDone and story on onChoiceSelected', () => {
-    const choice = { color: 'orange', action: 'a', result: 'r' };
-    component.onChoiceSelected(choice);
-    expect(component.peblobDraft.length).toBe(3);
-    expect(component.storyDone).toBeTrue();
-    expect(component.story).toEqual(choice);
+    expect(component.isAdventureVisible).toBeTrue();
   });
+
+  it('should compute a real-time countdown from nextDLA for drafted users', fakeAsync(() => {
+    const draftedUser: User = {
+      ...userMock,
+      drafted: true,
+      nextDLA: new Date(Date.now() + 3665000).toISOString(),
+    };
+
+    store.overrideSelector(selectUser, draftedUser);
+    store.refreshState();
+    tick(0);
+
+    expect(component.countdown.hours).toBe(1);
+    expect(component.countdown.minutes).toBe(1);
+    expect(component.countdown.seconds).toBe(5);
+  }));
+
+  it('should decrement countdown every second', fakeAsync(() => {
+    const draftedUser: User = {
+      ...userMock,
+      drafted: true,
+      nextDLA: new Date(Date.now() + 5000).toISOString(),
+    };
+
+    store.overrideSelector(selectUser, draftedUser);
+    store.refreshState();
+    tick(0);
+
+    const firstSecond = component.countdown.seconds;
+
+    tick(1000);
+
+    expect(component.countdown.seconds).toBe(firstSecond - 1);
+  }));
+
+  it('should fallback to timeUntilNextDLA when nextDLA is invalid', fakeAsync(() => {
+    const draftedUser: User = {
+      ...userMock,
+      drafted: true,
+      nextDLA: 'invalid-date',
+      timeUntilNextDLA: {
+        hours: 0,
+        minutes: 1,
+      },
+    };
+
+    store.overrideSelector(selectUser, draftedUser);
+    store.refreshState();
+    tick(0);
+
+    expect(component.countdown.hours).toBe(0);
+    expect(component.countdown.minutes).toBe(1);
+    expect(component.countdown.seconds).toBe(0);
+  }));
 
   it('should complete destroy$ on ngOnDestroy', () => {
-    const spy = spyOn((component as any).destroy$, 'next').and.callThrough();
-    const spy2 = spyOn((component as any).destroy$, 'complete').and.callThrough();
+    const nextSpy = spyOn((component as any).destroy$, 'next').and.callThrough();
+    const completeSpy = spyOn((component as any).destroy$, 'complete').and.callThrough();
+
     component.ngOnDestroy();
-    expect(spy).toHaveBeenCalled();
-    expect(spy2).toHaveBeenCalled();
+
+    expect(nextSpy).toHaveBeenCalled();
+    expect(completeSpy).toHaveBeenCalled();
   });
 });

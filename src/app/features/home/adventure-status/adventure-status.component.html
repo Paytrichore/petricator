@@ -1,0 +1,17 @@
+@if (!user.drafted) {
+  <div class="adventure-status__container">
+    <span>Une aventure te tend les bras !</span>
+    <button matButton (click)="onCtaClick()" class="typo-link">Clique ici !</button> 
+  </div>
+} @else {
+  <span>
+    Prochaine aventure dans
+    @if (countdown.hours > 0) {
+      {{ countdown.hours }} {{ countdown.hours > 1 ? 'heures' : 'heure' }},
+    }
+    @if (countdown.minutes > 0) {
+      {{ countdown.minutes }} {{ countdown.minutes > 1 ? 'minutes' : 'minute' }} et
+    }
+    {{ countdown.seconds }} {{ countdown.seconds > 1 ? 'secondes' : 'seconde' }}
+  </span>
+}

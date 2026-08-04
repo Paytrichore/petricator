@@ -1,0 +1,13 @@
+.adventure-status {
+  &__container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__info {
+    font-size: 12px;
+    font-style: italic;
+    text-align: center;
+  }
+}

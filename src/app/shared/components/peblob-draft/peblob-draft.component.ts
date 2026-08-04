@@ -8,6 +8,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ActionsSubject, Store } from '@ngrx/store';
 import { selectUser } from '../../../core/stores/user/user.selectors';
 import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
+import { MessageService } from '../../../services/message/message.service';
 
 @Component({
   selector: 'app-peblob-draft',
@@ -22,6 +23,7 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
   constructor(
     private store: Store,
     private actionsSubject: ActionsSubject,
+    private messageService: MessageService,
   ) {}
 
   @Input() peblobDraft!: Array<ComposedPeblob>;
@@ -49,6 +51,7 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
 
         if (action.type === PeblobActions.createPeblobSuccess.type) {
           this.draftSubmissionPending = false;
+          this.messageService.openSnackBar('Le péblob a été capturé.');
           this.draftDone.emit(true);
           return;
         }

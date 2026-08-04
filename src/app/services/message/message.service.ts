@@ -8,9 +8,13 @@ export class MessageService {
   constructor(private snackBar: MatSnackBar) {}
 
   public openSnackBar(message: string, error = false): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 4000,
-      panelClass: message ? ['snackbar--error'] : undefined
-    });
+    setTimeout(() => {
+      this.snackBar.open(message, 'Fermer', {
+        duration: 4000,
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        panelClass: error ? ['snackbar--error'] : ['snackbar--success']
+      });
+    }, 500);
   }
 }

@@ -8,18 +8,23 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { userStoreMock } from '../../../tests/mocks/user.mock';
 import { ActionsSubject } from '@ngrx/store';
 import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
+import { MessageService } from '../../../services/message/message.service';
 
 describe('PeblobDraftComponent', () => {
   let component: PeblobDraftComponent;
   let fixture: ComponentFixture<PeblobDraftComponent>;
   let actionsSubject: ActionsSubject;
+  let messageServiceSpy: jasmine.SpyObj<MessageService>;
   const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
 
   beforeEach(async () => {
+    messageServiceSpy = jasmine.createSpyObj('MessageService', ['openSnackBar']);
+
     await TestBed.configureTestingModule({
       imports: [PeblobDraftComponent],
       providers: [
         { provide: TranslateService, useValue: translateServiceMock },
+        { provide: MessageService, useValue: messageServiceSpy },
         provideAnimations(),
         provideMockStore(userStoreMock),
         {
@@ -90,6 +95,7 @@ describe('PeblobDraftComponent', () => {
       updatedAt: new Date(),
     } }));
 
+    expect(messageServiceSpy.openSnackBar).toHaveBeenCalledWith('Le péblob a été capturé.');
     expect(component.draftDone.emit).toHaveBeenCalledWith(true);
   });
 
