@@ -1,5 +1,22 @@
 @use "sass:meta";
 
+// Utilities de margin generees automatiquement.
+//
+// Convention:
+// - Prefixe: .m (margin)
+// - Direction:
+//   - b: bottom  -> .mb-12
+//   - t: top     -> .mt-24
+//   - l: left    -> .ml-36
+//   - r: right   -> .mr-12
+//   - x: left+right -> .mx-24
+//   - y: top+bottom -> .my-36
+// - Valeurs disponibles (en px): 12, 24, 36
+//
+// Exemples:
+// - .mt-12 => margin-top: 12px
+// - .mx-24 => margin-left: 24px + margin-right: 24px
+// - .my-36 => margin-top: 36px + margin-bottom: 36px
 $spacing-values: 12, 24, 36;
 $spacing-directions: (
   b: bottom,
@@ -11,10 +28,13 @@ $spacing-directions: (
 );
 
 .m {
+  // Boucle sur chaque direction pour construire les classes .m{dir}-{val}
   @each $dir, $prop in $spacing-directions {
     &#{ $dir } {
+      // Boucle sur chaque valeur de spacing disponible
       @each $val in $spacing-values {
         &-#{$val} {
+          // Cas multi-proprietes (x/y) vs propriete simple (t/b/l/r)
           @if meta.type-of($prop) == 'list' {
             @each $p in $prop {
               margin-#{$p}: #{$val}px;

@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+
+.card-primary {
+  @include mat.card-overrides((
+    filled-container-color: var(--mat-sys-primary-container),
+  ));
+}
+
+.mat-mdc-card-title {
+  font-family: 'Jersey 15', sans-serif !important;
+  font-size: 24px !important;
+}
+
+.mat-mdc-card-subtitle {
+  font-size: 14px !important;
+  font-style: italic !important;
+  font-weight: 100 !important;
+}

@@ -1,0 +1,51 @@
+.global-loader {
+  align-items: center;
+  bottom: 20px;
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+  position: fixed;
+  right: 20px;
+  z-index: 2000;
+
+  &__text {
+    color: #ffffff;
+    font-size: 11px;
+    font-style: italic;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+  }
+}
+
+.pixel-loader {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(3, 8px);
+  grid-template-rows: repeat(3, 8px);
+}
+
+.pixel {
+  animation: pixel-flicker var(--duration, 1.35s) infinite cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: var(--delay, 0s);
+  background: #ffffff;
+  border-radius: 1px;
+  opacity: 0.22;
+}
+
+.pixel:nth-child(1) { --delay: 0.04s; --duration: 1.42s; }
+.pixel:nth-child(2) { --delay: 0.28s; --duration: 1.26s; }
+.pixel:nth-child(3) { --delay: 0.16s; --duration: 1.55s; }
+.pixel:nth-child(4) { --delay: 0.41s; --duration: 1.33s; }
+.pixel:nth-child(5) { --delay: 0.1s; --duration: 1.21s; }
+.pixel:nth-child(6) { --delay: 0.47s; --duration: 1.49s; }
+.pixel:nth-child(7) { --delay: 0.23s; --duration: 1.61s; }
+.pixel:nth-child(8) { --delay: 0.36s; --duration: 1.29s; }
+.pixel:nth-child(9) { --delay: 0.14s; --duration: 1.52s; }
+
+@keyframes pixel-flicker {
+  0% { opacity: 0.18; }
+  22% { opacity: 0.34; }
+  48% { opacity: 0.56; }
+  72% { opacity: 0.31; }
+  100% { opacity: 0.46; }
+}

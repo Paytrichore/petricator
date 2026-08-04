@@ -14,6 +14,7 @@ import { peblobReducer } from './core/stores/peblob/peblob.reducer';
 import { PeblobEffects } from './core/stores/peblob/peblob.effects';
 import { appReducer } from './core/stores/app/app.reducer';
 import { AuthInterceptor } from './core/interceptors.ts/auth.interceptor';
+import { LoadingInterceptor } from './core/interceptors.ts/loading.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/i18n/', '.json');
@@ -25,7 +26,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptors([AuthInterceptor])
+      withInterceptors([AuthInterceptor, LoadingInterceptor])
     ),
     provideAnimations(),
     importProvidersFrom(

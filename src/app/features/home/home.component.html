@@ -3,21 +3,45 @@
   <div class="user-info">
     <span>Bienvenue, {{ user.username }}</span>
   </div>
-  <aside class="home__container">
-      @if (!storyDone && !user.drafted) {
-        <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
-      } @else if (!draftDone && !user.drafted) {
-        <app-peblob-draft [peblobDraft]="peblobDraft" (draftDone)="onDraftDone($event)">
-          <h2>{{ story.result }}</h2>
-        </app-peblob-draft>
+  <section class="home__container grid grid--cols-2 grid--gap-12">
+      @if (!user.drafted && isAdventureVisible) {
+        <app-adventure class="col-span-2"></app-adventure>
       } @else {
-        <app-action-checked>{{ 'actionChecked.captured' | translate }}</app-action-checked>
-        <p class="home__info">
-          Prochaine aventure dans 
-          {{ user.timeUntilNextDLA.hours }} {{ user.timeUntilNextDLA.hours > 1 ? 'heures' : 'heure' }} et 
-          {{ user.timeUntilNextDLA.minutes }} {{ user.timeUntilNextDLA.minutes > 1 ? 'minutes' : 'minute' }}
-        </p>
+        <mat-card appearance="filled" class="card-primary col-span-2">
+          <mat-card-content>
+          <app-adventure-status
+              [user]="user"
+              [countdown]="countdown"
+              (ctaClicked)="showAdventure()"
+            ></app-adventure-status>
+        </mat-card-content>
+        </mat-card>
+
+        <mat-card appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Derniers évènements</mat-card-title>
+          <mat-card-subtitle>Test sous-titre</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            test
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Dernières actions</mat-card-title>
+          <mat-card-subtitle>Test sous-titre</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            test
+          </div>
+        </mat-card-content>
+      </mat-card>
       }
-  </aside>
-  }
+
+  </section>
+}
 </div>

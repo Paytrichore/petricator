@@ -1,0 +1,11 @@
+.typo {
+    &-link {
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: underline;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
