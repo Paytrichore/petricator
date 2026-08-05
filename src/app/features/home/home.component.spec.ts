@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { selectUser } from '../../core/stores/user/user.selectors';
+import { selectUser, selectIsHydrating } from '../../core/stores/user/user.selectors';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { userMock } from '../../tests/mocks/user.mock';
 import { User } from '../../core/stores/user/user.model';
@@ -21,6 +21,10 @@ describe('HomeComponent', () => {
             {
               selector: selectUser,
               value: userMock,
+            },
+            {
+              selector: selectIsHydrating,
+              value: false,
             }
           ]
         }),

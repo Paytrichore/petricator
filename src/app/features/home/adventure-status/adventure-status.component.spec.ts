@@ -29,8 +29,26 @@ describe('AdventureStatusComponent', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
+  it('should show skeleton when isHydrating is true', () => {
+    component.isHydrating = true;
+    fixture.detectChanges();
+
+    const skeleton = fixture.nativeElement.querySelector('.skeleton');
+    expect(skeleton).toBeTruthy();
+  });
+
+  it('should show adventure message when not hydrating and user is not drafted', () => {
+    component.user = { ...userMock, drafted: false };
+    component.isHydrating = false;
+    fixture.detectChanges();
+
+    const content = fixture.nativeElement.textContent as string;
+    expect(content).toContain('Une aventure te tend les bras !');
+  });
+
   it('should show countdown text when user is drafted', () => {
     component.user = { ...userMock, drafted: true };
+    component.isHydrating = false;
     component.countdown = { hours: 1, minutes: 2, seconds: 3 };
 
     fixture.detectChanges();
@@ -42,3 +60,4 @@ describe('AdventureStatusComponent', () => {
     expect(content).toContain('3 secondes');
   });
 });
+
