@@ -10,6 +10,7 @@ const routes: Routes = [
       { path: 'home', loadComponent: () => import('../../home/home.component').then(m => m.HomeComponent) },
       { path: 'profile', loadComponent: () => import('../../home/home.component').then(m => m.HomeComponent) },
       { path: 'collection', loadComponent: () => import('../../collection/collection/collection.component').then(m => m.CollectionComponent) },
+      { path: 'world', loadComponent: () => import('../../world/world.component').then(m => m.WorldComponent) },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   }

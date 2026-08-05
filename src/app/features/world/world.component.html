@@ -1,0 +1,58 @@
+<div class="world">
+  <mat-card class="world__status">
+    <div class="world__status-row">
+      <span>Connexion WS : <strong>{{ (connected$ | async) ? 'connectée' : 'déconnectée' }}</strong></span>
+      <span>Chargement : <strong>{{ (loading$ | async) ? 'en cours' : 'idle' }}</strong></span>
+    </div>
+    <div class="world__actions">
+      <button mat-flat-button color="primary" (click)="loadSnapshot()">Charger le snapshot</button>
+      <button mat-stroked-button (click)="connectWs()">Connecter WS</button>
+      <button mat-stroked-button (click)="disconnectWs()">Déconnecter WS</button>
+    </div>
+  </mat-card>
+
+  <mat-card class="world__form">
+    <h3>Simuler un cell:update</h3>
+    <form [formGroup]="cellUpdateForm" (ngSubmit)="simulateCellUpdate()" class="world__form-fields">
+      <mat-form-field>
+        <mat-label>X</mat-label>
+        <input matInput type="number" formControlName="x">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Y</mat-label>
+        <input matInput type="number" formControlName="y">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Occupants (séparés par des virgules)</mat-label>
+        <input matInput type="text" formControlName="occupants">
+      </mat-form-field>
+      <button mat-flat-button color="accent" type="submit" [disabled]="cellUpdateForm.invalid">Envoyer</button>
+    </form>
+  </mat-card>
+
+  <mat-card class="world__cells">
+    <h3>Cellules ({{ (cells$ | async)?.length ?? 0 }})</h3>
+    @if (cells$ | async; as cells) {
+      @if (cells.length) {
+        <div class="world__cell-list">
+          @for (cell of cells; track cell._id) {
+            <mat-card class="world__cell">
+              <span class="world__cell-coords">({{ cell.x }}, {{ cell.y }})</span>
+              <div class="world__cell-occupants">
+                @for (occupant of cell.occupants; track occupant) {
+                  <mat-chip>{{ occupant }}</mat-chip>
+                }
+                @if (!cell.occupants.length) {
+                  <span class="world__cell-empty">Aucun occupant</span>
+                }
+              </div>
+              <span class="world__cell-updated">Maj : {{ cell.updatedAt }}</span>
+            </mat-card>
+          }
+        </div>
+      } @else {
+        <p>Aucune cellule chargée.</p>
+      }
+    }
+  </mat-card>
+</div>

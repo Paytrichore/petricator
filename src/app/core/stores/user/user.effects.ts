@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService, mapUserFromApi } from '../../../services/auth/auth.service';
 import * as PeblobActions from '../peblob/peblob.actions';
+import * as WorldActions from '../world/world.actions';
 import { User } from './user.model';
 import { UserEventsService } from '../../../services/auth/user-events.service';
 
@@ -43,6 +44,7 @@ export class UserEffects {
         UserActions.setUser({ user }),
         PeblobActions.loadPeblobsByUserIds({ userId: user._id }),
         UserActions.connectUserEvents({ token: access_token }),
+        WorldActions.connectWs({ token: access_token }),
       ])
     )
   );
@@ -71,6 +73,7 @@ export class UserEffects {
         UserActions.setUser({ user }),
         PeblobActions.loadPeblobsByUserIds({ userId: user._id }),
         UserActions.connectUserEvents({ token: access_token }),
+        WorldActions.connectWs({ token: access_token }),
       ])
     )
   );
@@ -88,6 +91,7 @@ export class UserEffects {
               UserActions.setUser({ user }),
               PeblobActions.loadPeblobsByUserIds({ userId: user._id }),
               UserActions.connectUserEvents({ token }),
+              WorldActions.connectWs({ token }),
             ];
           } catch {
             return [UserActions.clearUser()];
@@ -132,5 +136,12 @@ export class UserEffects {
         tap(() => this.userEventsService.disconnect()),
       ),
     { dispatch: false },
+  );
+
+  disconnectWorldWs$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserActions.clearUser, UserActions.disconnectUserEvents),
+      map(() => WorldActions.disconnectWs()),
+    ),
   );
 }
