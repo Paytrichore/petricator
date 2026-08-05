@@ -6,9 +6,11 @@ import * as UserActions from './user.actions';
 
 export interface UserState {
   user: User | null;
+  isHydrating: boolean;
 }
 
 export const initialUserState: UserState = {
+  isHydrating: true,
   user: {
     _id: '',
     username: '',
@@ -25,16 +27,21 @@ export const initialUserState: UserState = {
 
 export const userReducer = createReducer(
   initialUserState,
+  on(UserActions.hydrateUser, (state) => ({
+    ...state,
+    isHydrating: true,
+  })),
   on(setUser, (state, { user }) => ({ 
     ...state, 
     user: {
       ...user,
-    }
+    },
+    isHydrating: false,
   })),
   on(UserActions.updateUserSuccess, (state, { user }) => ({
     ...state,
     user,
   })),
-  on(clearUser, state => ({ ...state, user: null })),
+  on(clearUser, state => ({ ...state, user: null, isHydrating: false })),
   on(AppActions.resetStore, (state) =>  { return { ...initialUserState } })
 );

@@ -12,6 +12,7 @@
           <app-adventure-status
               [user]="user"
               [countdown]="countdown"
+              [isHydrating]="(isHydrating$ | async) ?? false"
               (ctaClicked)="showAdventure()"
             ></app-adventure-status>
         </mat-card-content>

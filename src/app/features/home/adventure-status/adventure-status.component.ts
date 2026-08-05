@@ -22,6 +22,7 @@ export class AdventureStatusComponent {
     minutes: 0,
     seconds: 0,
   };
+  @Input() isHydrating = false;
 
   @Output() ctaClicked = new EventEmitter<void>();
 

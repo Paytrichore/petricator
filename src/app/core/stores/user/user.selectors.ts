@@ -5,3 +5,4 @@ import { User } from './user.model';
 export const selectUserState = createFeatureSelector<UserState>('user');
 export const selectUser = createSelector(selectUserState, (state: UserState) => state.user);
 export const selectIsLoggedIn = createSelector(selectUser, (user: User | null) => !!user);
+export const selectIsHydrating = createSelector(selectUserState, (state: UserState) => state.isHydrating);

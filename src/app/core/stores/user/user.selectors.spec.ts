@@ -5,11 +5,11 @@ import { userMock } from '../../../tests/mocks/user.mock';
 describe('User Selectors', () => {
   describe('selectUser', () => {
     it('should return the user from state', () => {
-      const state: UserState = { user: userMock };
+      const state: UserState = { user: userMock, isHydrating: false };
       expect(selectUser.projector(state)).toEqual(userMock);
     });
     it('should return null if user is null', () => {
-      const state: UserState = { user: null };
+      const state: UserState = { user: null, isHydrating: false };
       expect(selectUser.projector(state)).toBeNull();
     });
   });

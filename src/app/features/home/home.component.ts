@@ -3,7 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { selectUser } from '../../core/stores/user/user.selectors';
+import { selectUser, selectIsHydrating } from '../../core/stores/user/user.selectors';
 import { User } from '../../core/stores/user/user.model';
 import { AsyncPipe } from '@angular/common';
 import { AdventureComponent } from './adventure/adventure.component';
@@ -23,6 +23,7 @@ import { AdventureStatusComponent, AdventureCountdown } from './adventure-status
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public user$!: Observable<User | null>;
+  public isHydrating$!: Observable<boolean>;
   public isAdventureVisible = false;
   public countdown: AdventureCountdown = {
     hours: 0,
@@ -41,6 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user$ = this.store.select(selectUser);
+    this.isHydrating$ = this.store.select(selectIsHydrating);
 
     this.user$
       .pipe(takeUntil(this.destroy$))
