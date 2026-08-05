@@ -2,11 +2,12 @@
 
 ## Vue d'ensemble
 
-Le systeme est compose de trois depots complementaires:
+Le systeme est compose de quatre dépôts complémentaires:
 
 - `petricator`: frontend Angular (UI, orchestration metier cote client, etat local)
 - `papi-user`: API NestJS pour authentification et statut utilisateur (DLA, points d'action, draft)
 - `papi-peblob`: API NestJS pour la gestion des peblobs (creation, lecture, mise a jour)
+- `papi-world`: API NestJS avec support WebSocket pour la gestion d'état monde partagé (snapshots, mises a jour cellulaires)
 
 Le frontend consomme ces APIs via HTTP JSON avec JWT Bearer dans l'entete `Authorization`.
 
@@ -17,6 +18,7 @@ Perimetre d'intervention autorise pour les evolutions techniques liees a cette a
 - Repo frontend: `petricator`
 - Repo backend auth/utilisateur: `papi-user`
 - Repo backend peblob: `papi-peblob`
+- Repo backend monde: `papi-world`
 
 Objectif: permettre des changements coherents de bout en bout quand un contrat API ou un flux metier evolue.
 
@@ -64,9 +66,11 @@ Notes:
 - Dev:
 	- `userApiUrl = https://papi-user-dev-812288085862.us-central1.run.app`
 	- `peblobApiUrl = https://papi-peblob-dev-812288085862.us-central1.run.app`
+	- `worldApiUrl = https://papi-world-dev-812288085862.us-central1.run.app`
 - Prod:
 	- `userApiUrl = https://papi-user-812288085862.us-central1.run.app`
 	- `peblobApiUrl = https://papi-peblob-812288085862.us-central1.run.app`
+	- `worldApiUrl = https://papi-world288085862.us-central1.run.app`
 
 ### API `papi-user` (consommee par `petricator`)
 
@@ -120,6 +124,28 @@ Routes utiles mais non branchees dans le front actuel:
 Swagger:
 
 - `GET /api` sur le service `papi-peblob`
+
+### API `papi-world` (consommee par `petricator`)
+
+Routes utilisees par le frontend:
+
+- `GET /world/snapshot`
+	- retour: snapshot complet de l'etat du monde (matrice de cellules avec leurs etats)
+	- absence d'authentification: donnees publiques
+
+WebSocket events (sur connexion WebSocket au service `papi-world`):
+
+- `join-world`
+	- emis par le client au connection
+	- subscribe le client aux mises a jour du monde
+- `cell:update`
+	- emis par le serveur vers les clients connectes
+	- body: `{ row: number, col: number, state: any }`
+	- notifie les changements cellulaires en temps reel
+
+Swagger:
+
+- `GET /api` sur le service `papi-world`
 
 ## Frontieres API et contrats
 
