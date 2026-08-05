@@ -52,7 +52,8 @@
     "menu": {
       "home": "Accueil",
       "profile": "Profil",
-      "collection": "Mes Peblobs"
+      "collection": "Mes Peblobs",
+      "world": "Monde"
     }
   },
   "peblobDraft": {

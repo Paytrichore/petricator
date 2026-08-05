@@ -32,6 +32,12 @@
             <span class="nav__link--text">{{ 'nav.menu.collection' | translate }}</span>
           </span>
         </a>
+        <a mat-list-item routerLink="world" routerLinkActive="active-link">
+          <span class="nav__link">
+            <mat-icon>public</mat-icon>
+            <span class="nav__link--text">{{ 'nav.menu.world' | translate }}</span>
+          </span>
+        </a>
       } @else {
         <button mat-icon-button routerLink="home" routerLinkActive="active-link" class="nav__link--minify">
           <mat-icon>home</mat-icon>
@@ -41,6 +47,9 @@
         </button>
         <button mat-icon-button routerLink="collection" routerLinkActive="active-link" class="nav__link--minify">
           <mat-icon>widgets</mat-icon>
+        </button>
+        <button mat-icon-button routerLink="world" routerLinkActive="active-link" class="nav__link--minify">
+          <mat-icon>public</mat-icon>
         </button>
       }
     </mat-nav-list>

@@ -12,6 +12,8 @@ import { UserEffects } from './core/stores/user/user.effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { peblobReducer } from './core/stores/peblob/peblob.reducer';
 import { PeblobEffects } from './core/stores/peblob/peblob.effects';
+import { worldReducer } from './core/stores/world/world.reducer';
+import { WorldEffects } from './core/stores/world/world.effects';
 import { appReducer } from './core/stores/app/app.reducer';
 import { AuthInterceptor } from './core/interceptors.ts/auth.interceptor';
 import { LoadingInterceptor } from './core/interceptors.ts/loading.interceptor';
@@ -41,9 +43,10 @@ export const appConfig: ApplicationConfig = {
     provideStore({ 
       app: appReducer,
       user: userReducer,
-      peblob: peblobReducer
+      peblob: peblobReducer,
+      world: worldReducer
    }),
-    provideEffects([UserEffects, PeblobEffects]),
+    provideEffects([UserEffects, PeblobEffects, WorldEffects]),
     provideStoreDevtools(),
   ]
 };
