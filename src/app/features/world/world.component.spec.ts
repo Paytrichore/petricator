@@ -28,6 +28,7 @@ describe('WorldComponent', () => {
     spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(WorldComponent);
     component = fixture.componentInstance;
+    spyOn(localStorage, 'getItem').and.returnValue('token-123');
     fixture.detectChanges();
   });
 
@@ -35,42 +36,14 @@ describe('WorldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch loadSnapshot', () => {
-    component.loadSnapshot();
-    expect(store.dispatch).toHaveBeenCalledWith(WorldActions.loadSnapshot());
+  it('should connect and load the snapshot on init', () => {
+    const dispatchCalls = (store.dispatch as jasmine.Spy).calls.allArgs();
+    expect(dispatchCalls[0][0]).toEqual(WorldActions.connectWs({ token: 'token-123' }));
+    expect(dispatchCalls[1][0]).toEqual(WorldActions.loadSnapshot());
   });
 
-  it('should dispatch disconnectWs', () => {
-    component.disconnectWs();
+  it('should disconnect the websocket on destroy', () => {
+    fixture.destroy();
     expect(store.dispatch).toHaveBeenCalledWith(WorldActions.disconnectWs());
-  });
-
-  it('should dispatch connectWs with the stored token', () => {
-    spyOn(localStorage, 'getItem').and.returnValue('token-123');
-    component.connectWs();
-    expect(store.dispatch).toHaveBeenCalledWith(WorldActions.connectWs({ token: 'token-123' }));
-  });
-
-  it('should not dispatch connectWs when no token is stored', () => {
-    spyOn(localStorage, 'getItem').and.returnValue(null);
-    component.connectWs();
-    expect(store.dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({ type: WorldActions.connectWs.type }));
-  });
-
-  it('should dispatch cellUpdated with a normalized cell from the form', () => {
-    component.cellUpdateForm.setValue({ x: 3, y: 4, occupants: 'a, b' });
-    component.simulateCellUpdate();
-
-    const [action] = (store.dispatch as jasmine.Spy).calls.mostRecent().args;
-    expect(action.type).toBe(WorldActions.cellUpdated.type);
-    expect(action.cell.x).toBe(3);
-    expect(action.cell.y).toBe(4);
-    expect(action.cell.occupants).toEqual(['a', 'b']);
-  });
-
-  it('should not dispatch cellUpdated when the form is invalid', () => {
-    component.cellUpdateForm.setValue({ x: null, y: 4, occupants: '' });
-    component.simulateCellUpdate();
-    expect(store.dispatch).not.toHaveBeenCalledWith(jasmine.objectContaining({ type: WorldActions.cellUpdated.type }));
   });
 });

@@ -27,8 +27,7 @@ export class PeblobService {
   }
 
   public loadPeblobsByIds(peblobIds: string[]): Observable<PeblobEntity[]> {
-    const idsParam = peblobIds.join(',');
-    return this.http.get<PeblobEntity[]>(`${this.peblobApiUrl}/peblob?ids=${idsParam}`);
+    return this.http.post<PeblobEntity[]>(`${this.peblobApiUrl}/peblob/by-ids`, { ids: peblobIds });
   }
 
   public composedPeblobGenerator(tint?: Tint): ComposedPeblob {

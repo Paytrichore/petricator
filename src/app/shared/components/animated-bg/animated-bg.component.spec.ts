@@ -27,7 +27,7 @@ describe('AnimatedBgComponent', () => {
       writable: true
     });
     ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-    getContextSpy = spyOn(canvas, 'getContext').and.returnValue(ctx);
+    getContextSpy = spyOn(canvas, 'getContext').and.returnValue(ctx as never);
     spyOn(window, 'getComputedStyle').and.callFake(() => ({
       getPropertyValue: (name: string) => '#123456',
     }) as any);
