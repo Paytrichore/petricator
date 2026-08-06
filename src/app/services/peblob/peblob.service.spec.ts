@@ -149,10 +149,10 @@ describe('PeblobService', () => {
       { _id: 'p1', userId: 'u1', structure: [[{ r: 1, g: 2, b: 3 }]], createdAt: new Date(), updatedAt: new Date() },
       { _id: 'p2', userId: 'u2', structure: [[{ r: 4, g: 5, b: 6 }]], createdAt: new Date(), updatedAt: new Date() }
     ];
-    httpSpy.get.and.returnValue(of(mockPeblobs));
+    httpSpy.post.and.returnValue(of(mockPeblobs));
 
     service.loadPeblobsByIds(ids).subscribe(result => {
-      expect(httpSpy.get).toHaveBeenCalledWith(`${service['peblobApiUrl']}/peblob?ids=p1,p2`);
+      expect(httpSpy.post).toHaveBeenCalledWith(`${service['peblobApiUrl']}/peblob/by-ids`, { ids });
       expect(result).toEqual(mockPeblobs);
       done();
     });
