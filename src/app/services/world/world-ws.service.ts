@@ -33,7 +33,10 @@ export class WorldWsService {
     });
 
     this.socket.on('cell:update', (cell: Cell) => this.cellUpdatesSubject.next(cell));
-    this.socket.on('connect', () => this.connectionStatusSubject.next(true));
+    this.socket.on('connect', () => {
+      this.connectionStatusSubject.next(true);
+      this.socket?.emit('join-world');
+    });
     this.socket.on('disconnect', () => this.connectionStatusSubject.next(false));
   }
 

@@ -54,6 +54,9 @@ export class WorldComponent implements OnInit, OnDestroy {
   @ViewChild('placementForm', { read: ElementRef })
   private placementForm?: ElementRef<HTMLElement>;
 
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private closePlacementTimeout?: ReturnType<typeof setTimeout>;
+
   cells$ = this.store.select(selectAllCells);
   loading$ = this.store.select(selectWorldLoading);
   connected$ = this.store.select(selectIsConnected);
@@ -129,10 +132,22 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   cancelPlacement(): void {
+    this.menuTrigger?.closeMenu();
+
+    const scrollContainer = this.elementRef.nativeElement.closest('.nav__content') as HTMLElement | null;
+    if (!scrollContainer || scrollContainer.scrollTop === 0) {
+      this.finishCancelPlacement();
+      return;
+    }
+
+    scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    this.closePlacementTimeout = setTimeout(() => this.finishCancelPlacement(), 250);
+  }
+
+  private finishCancelPlacement(): void {
     this.selectedCell = null;
     this.placementFormOpen = false;
     this.placementPeblobControl.reset('');
-    this.menuTrigger?.closeMenu();
   }
 
   placePeblob(): void {
@@ -168,6 +183,9 @@ export class WorldComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.isDestroyed = true;
+    if (this.closePlacementTimeout) {
+      clearTimeout(this.closePlacementTimeout);
+    }
     this.destroy$.next();
     this.destroy$.complete();
     this.store.dispatch(WorldActions.disconnectWs());
