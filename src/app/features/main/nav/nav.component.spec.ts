@@ -68,6 +68,24 @@ describe('NavComponent', () => {
     expect(component.mini).toBeFalse();
   });
 
+  it('should minify the title when the content is scrolled', () => {
+    const content = document.createElement('main');
+    Object.defineProperty(content, 'scrollTop', { value: 12 });
+
+    component.onContentScroll({ target: content } as unknown as Event);
+
+    expect(component.isScrolled).toBeTrue();
+  });
+
+  it('should restore the title when the content returns to the top', () => {
+    const content = document.createElement('main');
+    Object.defineProperty(content, 'scrollTop', { value: 0 });
+
+    component.onContentScroll({ target: content } as unknown as Event);
+
+    expect(component.isScrolled).toBeFalse();
+  });
+
   it('should close drawer on click if handset', () => {
     const drawerMock = { close: jasmine.createSpy('close') };
     component.isHandset = true;

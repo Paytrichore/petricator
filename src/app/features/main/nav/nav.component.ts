@@ -45,6 +45,7 @@ export class NavComponent {
 
   isHandset = false;
   mini = false;
+  isScrolled = false;
 
   constructor() {
     this.isHandset$.subscribe(value => {
@@ -64,5 +65,9 @@ export class NavComponent {
 
   toggleMini() {
     this.mini = !this.mini;
+  }
+
+  onContentScroll(event: Event): void {
+    this.isScrolled = (event.target as HTMLElement).scrollTop > 0;
   }
 }
