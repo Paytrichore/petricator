@@ -22,3 +22,8 @@ export const selectWorldLoading = createSelector(
   selectWorldState,
   (state: WorldState) => state.loading
 );
+
+export const selectWorldError = createSelector(
+  selectWorldState,
+  (state: WorldState) => state.error
+);

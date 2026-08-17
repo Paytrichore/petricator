@@ -4,7 +4,7 @@
   min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #101820;
+  background: var(--mat-sys-surface);
   cursor: grab;
 }
 

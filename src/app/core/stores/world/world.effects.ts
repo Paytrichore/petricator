@@ -24,6 +24,18 @@ export class WorldEffects {
     )
   );
 
+  placeOnCell$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(WorldActions.placeOnCell),
+      switchMap(({ x, y, peblobIds }) =>
+        this.worldService.placeOnCell(x, y, peblobIds[0]).pipe(
+          map(() => WorldActions.placeOnCellSuccess()),
+          catchError((error) => of(WorldActions.placeOnCellFailure({ error: error?.message ?? 'Unknown error' })))
+        )
+      )
+    )
+  );
+
   connectWs$ = createEffect(() =>
     this.actions$.pipe(
       ofType(WorldActions.connectWs),

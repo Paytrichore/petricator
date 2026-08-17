@@ -56,7 +56,11 @@
     <app-logout></app-logout>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary" class="nav__title" [class.nav__title--minify]="mini">
+    <mat-toolbar
+      color="primary"
+      class="nav__title"
+      [class.nav__title--minify]="mini"
+      [class.nav__title--scrolled]="isScrolled">
       @if (isHandset$ | async) {
         <button
           type="button"
@@ -68,7 +72,10 @@
       }
       <h1 class="pixel-font">{{ 'title' | translate }}</h1>
     </mat-toolbar>
-    <main class="nav__content" [class.nav__content--minify]="mini">
+    <main
+      class="nav__content"
+      [class.nav__content--minify]="mini"
+      (scroll)="onContentScroll($event)">
       <router-outlet></router-outlet>
     </main>
   </mat-sidenav-content>

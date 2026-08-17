@@ -1,11 +1,99 @@
 <div class="world">
-  <header class="world__status" aria-live="polite">
-    <span>{{ (connected$ | async) ? 'Monde connecté' : 'Connexion au monde...' }}</span>
-    @if (loading$ | async) {
-      <span>Synchronisation...</span>
-    }
-  </header>
+  <mat-card appearance="outlined" class="world__map-card">
+    <mat-card-header>
+      <mat-card-title>Monde</mat-card-title>
+      <mat-card-subtitle>
+        {{ (connected$ | async) ? 'Monde connecté' : 'Connexion au monde...' }}
+        @if (loading$ | async) {
+          <span> · Synchronisation...</span>
+        }
+      </mat-card-subtitle>
+      <div class="world__map-controls">
+        <mat-form-field appearance="outline" class="world__zoom-field">
+          <mat-label>Zoom</mat-label>
+          <mat-select [(value)]="mapZoom" aria-label="Niveau de zoom de la carte">
+            <mat-option [value]="0.25">25%</mat-option>
+            <mat-option [value]="0.5">50%</mat-option>
+            <mat-option [value]="1">100%</mat-option>
+            <mat-option [value]="2">200%</mat-option>
+            <mat-option [value]="3">300%</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-slide-toggle
+          [checked]="showAxes"
+          (change)="showAxes = $event.checked"
+          aria-label="Afficher les axes de la carte">
+          Axes
+        </mat-slide-toggle>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <app-pixi-map
+        [cells]="(cells$ | async) ?? []"
+        [peblobs]="(peblobs$ | async) ?? []"
+        [zoom]="mapZoom"
+        [showAxes]="showAxes"
+        (cellSelected)="selectCell($event)"></app-pixi-map>
+    </mat-card-content>
+  </mat-card>
 
-  <app-pixi-map
-    [cells]="(cells$ | async) ?? []"></app-pixi-map>
+  <button
+    #cellMenuAnchor="matMenuTrigger"
+    class="world__menu-anchor"
+    type="button"
+    [style.left]="menuPosition.left"
+    [style.top]="menuPosition.top"
+    [matMenuTriggerFor]="cellMenu"
+    aria-label="Ouvrir les actions de la cellule sélectionnée">
+  </button>
+
+  <mat-menu #cellMenu="matMenu">
+    <button mat-menu-item type="button" (click)="openPlacementForm()">
+      <mat-icon>add_location_alt</mat-icon>
+      <span>Placer</span>
+    </button>
+  </mat-menu>
+
+  @if (placementFormOpen && selectedCell; as cell) {
+    <mat-card #placementForm appearance="outlined" class="placement-card">
+      <mat-card-header>
+        <mat-card-title>Placer un Péblob</mat-card-title>
+        <mat-card-subtitle>Case sélectionnée : ({{ cell.x }}, {{ cell.y }}) · 2 PA</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="placement-card__field">
+          <mat-label>Péblob</mat-label>
+          <input
+            matInput
+            type="text"
+            [formControl]="placementPeblobControl"
+            [matAutocomplete]="peblobAutocomplete"
+            placeholder="Rechercher un péblob">
+          <mat-autocomplete
+            #peblobAutocomplete="matAutocomplete"
+            [displayWith]="displayPeblob">
+            @for (peblob of filteredPeblobs$ | async; track trackPeblob($index, peblob)) {
+              <mat-option [value]="peblob">
+                <span class="peblob-option">
+                  <app-peblob [composed]="peblob.structure"></app-peblob>
+                  <span>{{ peblob._id }}</span>
+                </span>
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-button type="button" [disabled]="placementPending" (click)="cancelPlacement()">Annuler</button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          [disabled]="placementPending || !(placementPeblobControl.value && typeof placementPeblobControl.value !== 'string')"
+          (click)="placePeblob()">
+          {{ placementPending ? 'Placement...' : 'Confirmer' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  }
 </div>

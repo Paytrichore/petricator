@@ -1,12 +1,17 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
-import { Application, Container, Graphics } from 'pixi.js';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Application, Container, FederatedPointerEvent, Graphics, Text } from 'pixi.js';
 import { PeblobEntity } from '../../../core/stores/peblob/peblob.model';
 import { Cell } from '../../../shared/interfaces/world.interface';
 
 const CELL_SIZE = 8;
-const MIN_ZOOM = 0.25;
-const MAX_ZOOM = 8;
-const ZOOM_STEP = 1.1;
+const CELL_GAP = 1;
+const CELL_PITCH = CELL_SIZE + CELL_GAP;
+const DRAG_THRESHOLD = 5;
+const MIN_COORDINATE = -100;
+const MAX_COORDINATE = 100;
+const MAP_SIZE = MAX_COORDINATE - MIN_COORDINATE + 1;
+const MAP_EXTENT = (MAP_SIZE - 1) * CELL_PITCH + CELL_SIZE;
+const MAP_CENTER_OFFSET = CELL_SIZE / 2;
 
 @Component({
   selector: 'app-pixi-map',
@@ -17,6 +22,9 @@ const ZOOM_STEP = 1.1;
 export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() cells: Cell[] = [];
   @Input() peblobs: PeblobEntity[] = [];
+  @Input() zoom = 1;
+  @Input() showAxes = true;
+  @Output() cellSelected = new EventEmitter<{ x: number; y: number; clientX: number; clientY: number }>();
 
   @ViewChild('canvas', { static: true })
   private readonly canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -24,14 +32,21 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private mapContainer: Container | null = null;
   private isDestroyed = false;
   private isDragging = false;
+  private didDrag = false;
   private lastPointer = { x: 0, y: 0 };
+  private pointerDown = { x: 0, y: 0 };
+  private tooltip: Text | null = null;
+  private defaultCellLayer: Graphics | null = null;
+  private axisLayer: Graphics | null = null;
+  private interactionLayer: Graphics | null = null;
+  private occupiedCells = new Map<string, Cell>();
 
   async ngAfterViewInit(): Promise<void> {
     const canvas = this.canvasRef.nativeElement;
     const application = new Application();
     await application.init({
       canvas,
-      backgroundColor: 0x101820,
+      backgroundAlpha: 0,
       antialias: false,
       resizeTo: canvas.parentElement ?? undefined
     });
@@ -43,31 +58,37 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
     this.application = application;
     this.mapContainer = new Container();
-    this.mapContainer.position.set(application.screen.width / 2, application.screen.height / 2);
+    this.mapContainer.scale.set(this.zoom);
+    this.mapContainer.position.set(
+      application.screen.width / 2 - MAP_CENTER_OFFSET * this.zoom,
+      application.screen.height / 2 - MAP_CENTER_OFFSET * this.zoom
+    );
     application.stage.addChild(this.mapContainer);
+    this.createInteractionLayer();
     this.drawCells();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['zoom'] && this.mapContainer) {
+      this.mapContainer.scale.set(this.zoom);
+      this.clampMapPosition();
+      this.drawAxes();
+    }
+
+    if (changes['showAxes'] && this.mapContainer) {
+      this.drawAxes();
+    }
+
     if ((changes['cells'] || changes['peblobs']) && this.application) {
       this.drawCells();
     }
   }
 
-  onWheel(event: WheelEvent): void {
-    event.preventDefault();
-    if (!this.mapContainer) {
-      return;
-    }
-
-    const direction = event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
-    const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, this.mapContainer.scale.x * direction));
-    this.mapContainer.scale.set(nextZoom);
-  }
-
   onPointerDown(event: PointerEvent): void {
     this.isDragging = true;
+    this.didDrag = false;
     this.lastPointer = { x: event.clientX, y: event.clientY };
+    this.pointerDown = { x: event.clientX, y: event.clientY };
     this.canvasRef.nativeElement.setPointerCapture(event.pointerId);
   }
 
@@ -76,9 +97,16 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       return;
     }
 
+    const distanceX = event.clientX - this.pointerDown.x;
+    const distanceY = event.clientY - this.pointerDown.y;
+    if (Math.hypot(distanceX, distanceY) >= DRAG_THRESHOLD) {
+      this.didDrag = true;
+    }
+
     this.mapContainer.position.x += event.clientX - this.lastPointer.x;
     this.mapContainer.position.y += event.clientY - this.lastPointer.y;
     this.lastPointer = { x: event.clientX, y: event.clientY };
+    this.clampMapPosition();
   }
 
   onPointerUp(event: PointerEvent): void {
@@ -93,6 +121,10 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.application?.destroy(true);
     this.application = null;
     this.mapContainer = null;
+    this.tooltip = null;
+    this.defaultCellLayer = null;
+    this.axisLayer = null;
+    this.interactionLayer = null;
   }
 
   private drawCells(): void {
@@ -100,12 +132,18 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       return;
     }
 
-    for (const child of this.mapContainer.removeChildren()) {
-      child.destroy();
+    for (const child of [...this.mapContainer.children]) {
+      if (child !== this.defaultCellLayer && child !== this.axisLayer && child !== this.interactionLayer) {
+        this.mapContainer.removeChild(child);
+        child.destroy();
+      }
     }
 
-    for (const cell of this.cells) {
-      if (!cell.occupants.length) {
+    this.occupiedCells = new Map(this.cells.map(cell => [`${cell.x}_${cell.y}`, cell]));
+    this.drawDefaultCells();
+
+    for (const cell of this.occupiedCells.values()) {
+      if (!cell.occupants.length || !this.isInBounds(cell.x, cell.y)) {
         continue;
       }
 
@@ -115,18 +153,160 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       } else {
         const graphics = new Graphics();
         graphics
-          .rect(cell.x * CELL_SIZE, cell.y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+          .rect(cell.x * CELL_PITCH, cell.y * CELL_PITCH, CELL_SIZE, CELL_SIZE)
           .fill(this.occupantColor(cell.occupants.length));
         this.mapContainer.addChild(graphics);
       }
     }
+
+    this.drawAxes();
+  }
+
+  private drawDefaultCells(): void {
+    if (!this.mapContainer) {
+      return;
+    }
+
+    this.defaultCellLayer?.destroy();
+    this.defaultCellLayer = new Graphics();
+    const defaultColor = this.cssColor('--mat-sys-surface-container-high', '#2b2d31');
+
+    for (let y = MIN_COORDINATE; y <= MAX_COORDINATE; y += 1) {
+      for (let x = MIN_COORDINATE; x <= MAX_COORDINATE; x += 1) {
+        this.defaultCellLayer
+          .rect(x * CELL_PITCH, y * CELL_PITCH, CELL_SIZE, CELL_SIZE)
+          .fill(defaultColor);
+      }
+    }
+
+    this.mapContainer.addChildAt(this.defaultCellLayer, 0);
+  }
+
+  private drawAxes(): void {
+    if (!this.mapContainer) {
+      return;
+    }
+
+    this.axisLayer?.destroy();
+    this.axisLayer = null;
+    if (!this.showAxes) {
+      return;
+    }
+
+    this.axisLayer = new Graphics();
+    const zoom = this.mapContainer.scale.x;
+    const lineWidth = 1 / zoom;
+    const start = MIN_COORDINATE * CELL_PITCH;
+    const end = MIN_COORDINATE * CELL_PITCH + MAP_EXTENT;
+    const axisX = CELL_SIZE / 2;
+    const axisY = CELL_SIZE / 2;
+    const axisColor = this.cssColor('--mat-sys-error', '#ffb4ab');
+
+    this.axisLayer
+      .moveTo(axisX, start)
+      .lineTo(axisX, end)
+      .moveTo(start, axisY)
+      .lineTo(end, axisY)
+      .stroke({ color: axisColor, width: lineWidth, alpha: 0.9 });
+    this.mapContainer.addChild(this.axisLayer);
+  }
+
+  private createInteractionLayer(): void {
+    if (!this.mapContainer) {
+      return;
+    }
+
+    this.interactionLayer = new Graphics()
+      .rect(MIN_COORDINATE * CELL_PITCH, MIN_COORDINATE * CELL_PITCH, MAP_EXTENT, MAP_EXTENT)
+      .fill({ color: 0xffffff, alpha: 0.001 });
+    this.interactionLayer.eventMode = 'static';
+    this.interactionLayer.cursor = 'pointer';
+    this.interactionLayer.on('pointermove', (event: FederatedPointerEvent) => this.onMapHover(event));
+    this.interactionLayer.on('pointerout', () => this.hideTooltip());
+    this.interactionLayer.on('pointertap', (event: FederatedPointerEvent) => this.onMapClick(event));
+    this.mapContainer.addChild(this.interactionLayer);
+  }
+
+  private onMapHover(event: FederatedPointerEvent): void {
+    const cell = this.cellFromEvent(event);
+    if (!cell || this.occupiedCells.has(`${cell.x}_${cell.y}`)) {
+      this.hideTooltip();
+      return;
+    }
+
+    this.showTooltip(cell.x, cell.y);
+  }
+
+  private onMapClick(event: FederatedPointerEvent): void {
+    if (this.didDrag) {
+      return;
+    }
+
+    const cell = this.cellFromEvent(event);
+    if (!cell || this.occupiedCells.has(`${cell.x}_${cell.y}`)) {
+      return;
+    }
+
+    const bounds = this.canvasRef.nativeElement.getBoundingClientRect();
+    this.cellSelected.emit({
+      ...cell,
+      clientX: bounds.left + event.global.x,
+      clientY: bounds.top + event.global.y
+    });
+  }
+
+  private cellFromEvent(event: FederatedPointerEvent): { x: number; y: number } | null {
+    if (!this.mapContainer) {
+      return null;
+    }
+
+    const local = this.mapContainer.toLocal(event.global);
+    const x = Math.floor(local.x / CELL_PITCH);
+    const y = Math.floor(local.y / CELL_PITCH);
+    if (local.x - x * CELL_PITCH >= CELL_SIZE || local.y - y * CELL_PITCH >= CELL_SIZE) {
+      return null;
+    }
+    return this.isInBounds(x, y) ? { x, y } : null;
+  }
+
+  private isInBounds(x: number, y: number): boolean {
+    return x >= MIN_COORDINATE && x <= MAX_COORDINATE && y >= MIN_COORDINATE && y <= MAX_COORDINATE;
+  }
+
+  private clampMapPosition(): void {
+    if (!this.application || !this.mapContainer) {
+      return;
+    }
+
+    const halfMap = MAP_EXTENT * this.mapContainer.scale.x / 2;
+    const halfViewport = Math.min(this.application.screen.width, this.application.screen.height) / 2;
+    const limit = Math.max(0, halfMap - halfViewport);
+    const centerX = this.application.screen.width / 2 - MAP_CENTER_OFFSET * this.mapContainer.scale.x;
+    const centerY = this.application.screen.height / 2 - MAP_CENTER_OFFSET * this.mapContainer.scale.x;
+    this.mapContainer.position.x = Math.min(centerX + limit, Math.max(centerX - limit, this.mapContainer.position.x));
+    this.mapContainer.position.y = Math.min(centerY + limit, Math.max(centerY - limit, this.mapContainer.position.y));
+  }
+
+  private showTooltip(x: number, y: number): void {
+    this.hideTooltip();
+    this.tooltip = new Text({
+      text: `(${x}, ${y})`,
+      style: { fill: 0xffffff, fontSize: 11, padding: 3 }
+    });
+    this.tooltip.position.set(x * CELL_PITCH + CELL_SIZE + 2, y * CELL_PITCH - 12);
+    this.mapContainer?.addChild(this.tooltip);
+  }
+
+  private hideTooltip(): void {
+    this.tooltip?.destroy();
+    this.tooltip = null;
   }
 
   private drawPeblob(cell: Cell, peblob: PeblobEntity): void {
     const structureSize = Math.max(peblob.structure.length, 1);
     const pixelSize = CELL_SIZE / structureSize;
-    const originX = cell.x * CELL_SIZE;
-    const originY = cell.y * CELL_SIZE;
+    const originX = cell.x * CELL_PITCH;
+    const originY = cell.y * CELL_PITCH;
 
     peblob.structure.forEach((row, rowIndex) => {
       row.forEach((pixel, columnIndex) => {
@@ -149,5 +329,10 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private rgbColor(red: number, green: number, blue: number): number {
     const clamp = (value: number) => Math.min(255, Math.max(0, Math.round(value)));
     return (clamp(red) << 16) | (clamp(green) << 8) | clamp(blue);
+  }
+
+  private cssColor(variable: string, fallback: string): string {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+    return value || fallback;
   }
 }
