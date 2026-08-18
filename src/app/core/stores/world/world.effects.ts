@@ -3,8 +3,10 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as WorldActions from './world.actions';
+import * as UserActions from '../user/user.actions';
 import { WorldService } from '../../../services/world/world.service';
 import { WorldWsService } from '../../../services/world/world-ws.service';
+import { extractWorldError } from './world-error';
 
 @Injectable()
 export class WorldEffects {
@@ -18,7 +20,9 @@ export class WorldEffects {
       switchMap(() =>
         this.worldService.loadSnapshot().pipe(
           map((cells) => WorldActions.loadSnapshotSuccess({ cells })),
-          catchError((error) => of(WorldActions.loadSnapshotFailure({ error: error?.message ?? 'Unknown error' })))
+          catchError((error) => of(WorldActions.loadSnapshotFailure({
+            error: extractWorldError(error, 'WORLD_LOAD_FAILED')
+          })))
         )
       )
     )
@@ -32,8 +36,11 @@ export class WorldEffects {
           switchMap((cell) => [
             WorldActions.cellUpdated({ cell }),
             WorldActions.placeOnCellSuccess(),
+            UserActions.refreshUserStatus(),
           ]),
-          catchError((error) => of(WorldActions.placeOnCellFailure({ error: error?.message ?? 'Unknown error' })))
+          catchError((error) => of(WorldActions.placeOnCellFailure({
+            error: extractWorldError(error, 'PLACEMENT_FAILED')
+          })))
         )
       )
     )

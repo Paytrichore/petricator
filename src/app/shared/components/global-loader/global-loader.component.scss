@@ -6,7 +6,11 @@
   pointer-events: none;
   position: fixed;
   right: 20px;
-  z-index: 2000;
+  z-index: 1900;
+
+  &--authenticated {
+    bottom: 96px;
+  }
 
   &__text {
     color: #ffffff;
@@ -14,6 +18,12 @@
     font-style: italic;
     opacity: 0.9;
     text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+  }
+}
+
+@media (max-width: 600px) {
+  .global-loader--authenticated {
+    bottom: 112px;
   }
 }
 

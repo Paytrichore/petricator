@@ -1,5 +1,6 @@
 import { initialState, mockCell, mockCell2 } from '../../../tests/mocks/world.mock';
 import { WorldState } from './world.model';
+import { WorldError } from './world-error';
 import * as WorldSelectors from './world.selectors';
 
 describe('World Selectors', () => {
@@ -63,9 +64,10 @@ describe('World Selectors', () => {
 
   describe('error state', () => {
     it('should select the error from state', () => {
-      const errorState: WorldState = { ...initialState, error: 'Something went wrong' };
+      const error: WorldError = { code: 'PLACEMENT_FAILED', status: 500 };
+      const errorState: WorldState = { ...initialState, error };
       const result = WorldSelectors.selectWorldState.projector(errorState);
-      expect(result.error).toBe('Something went wrong');
+      expect(result.error).toEqual(error);
     });
 
     it('should have a null error in the nominal state', () => {

@@ -61,8 +61,8 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    height: 100px;
-    width: 100px;
+    height: var(--peblob-size, 100px);
+    width: var(--peblob-size, 100px);
     position: relative;
     z-index: 3;
 

@@ -5,6 +5,7 @@ import { PeblobState } from './peblob.model';
 
 export const initialPeblobState: PeblobState = {
   peblobs: [],
+  mapPeblobs: [],
   loading: false,
   error: null
 };
@@ -63,6 +64,20 @@ export const peblobReducer = createReducer(
   on(PeblobActions.loadPeblobsFailure, (state, { error }) => ({
     ...state,
     loading: false,
+    error
+  })),
+
+  on(PeblobActions.loadMapPeblobsSuccess, (state, { peblobs }) => {
+    const knownPeblobs = new Map(state.mapPeblobs.map(peblob => [peblob._id, peblob]));
+    peblobs.forEach(peblob => knownPeblobs.set(peblob._id, peblob));
+    return {
+      ...state,
+      mapPeblobs: [...knownPeblobs.values()],
+      error: null
+    };
+  }),
+  on(PeblobActions.loadMapPeblobsFailure, (state, { error }) => ({
+    ...state,
     error
   })),
 

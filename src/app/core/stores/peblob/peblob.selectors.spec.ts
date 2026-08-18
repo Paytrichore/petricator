@@ -12,6 +12,14 @@ describe('Peblob Selectors', () => {
     expect(result).toEqual([mockPeblob]);
   });
 
+  it('should select peblobs displayed on the map separately', () => {
+    const result = PeblobSelectors.selectMapPeblobs.projector({
+      ...initialState,
+      mapPeblobs: [mockPeblob]
+    });
+    expect(result).toEqual([mockPeblob]);
+  });
+
   it('should select loading', () => {
     const result = PeblobSelectors.selectPeblobsLoading.projector(initialState);
     expect(result).toBe(false);

@@ -1,16 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { CollectionComponent } from './collection.component';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { selectPeblobs } from '../../../core/stores/peblob/peblob.selectors';
-import { ComposedPeblob } from '../../../shared/interfaces/peblob';
+import { PeblobEntity } from '../../../core/stores/peblob/peblob.model';
 import { mockPeblobs } from '../../../tests/mocks/peblob.mock';
 import { selectUser } from '../../../core/stores/user/user.selectors';
 import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
+import { PeblobComponent } from '../../../shared/components/peblob/peblob.component';
 
 describe('CollectionComponent', () => {
   let component: CollectionComponent;
   let fixture: ComponentFixture<CollectionComponent>;
   let store: MockStore;
+  const collectionPeblobs: PeblobEntity[] = [
+    {
+      _id: 'peblob-1',
+      userId: 'user-123',
+      structure: mockPeblobs[0],
+      createdAt: new Date('2026-01-01'),
+      updatedAt: new Date('2026-01-01')
+    },
+    {
+      _id: 'peblob-2',
+      userId: 'user-123',
+      structure: mockPeblobs[1],
+      createdAt: new Date('2026-01-02'),
+      updatedAt: new Date('2026-01-02')
+    }
+  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -20,10 +38,7 @@ describe('CollectionComponent', () => {
           selectors: [
             {
               selector: selectPeblobs,
-              value: [
-                { structure: mockPeblobs[0] },
-                { structure: mockPeblobs[1] }
-              ]
+              value: collectionPeblobs
             },
             {
               selector: selectUser,
@@ -56,10 +71,32 @@ describe('CollectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should expose peblobs$ as an observable of ComposedPeblob[]', (done) => {
+  it('should expose peblobs$ as an observable of PeblobEntity[]', (done) => {
     component.peblobs$.subscribe(peblobs => {
-      expect(peblobs).toEqual(mockPeblobs);
+      expect(peblobs).toEqual(collectionPeblobs);
       done();
+    });
+  });
+
+  it('should reuse rendered peblobs when refreshed entities keep the same ids', () => {
+    const initialComponents = fixture.debugElement
+      .queryAll(By.directive(PeblobComponent))
+      .map(({ componentInstance }) => componentInstance);
+    const refreshedPeblobs = collectionPeblobs.map((peblob) => ({
+      ...peblob,
+      structure: peblob.structure.map((row) => row.map((pixel) => ({ ...pixel })))
+    }));
+
+    store.overrideSelector(selectPeblobs, refreshedPeblobs);
+    store.refreshState();
+    fixture.detectChanges();
+
+    const refreshedComponents = fixture.debugElement
+      .queryAll(By.directive(PeblobComponent))
+      .map(({ componentInstance }) => componentInstance);
+
+    refreshedComponents.forEach((refreshedComponent, index) => {
+      expect(refreshedComponent).toBe(initialComponents[index]);
     });
   });
 

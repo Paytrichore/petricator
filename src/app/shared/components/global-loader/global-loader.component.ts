@@ -1,5 +1,8 @@
-import { Component, OnInit, effect, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, effect, inject, signal } from '@angular/core';
 import { trigger, transition, animate, style } from '@angular/animations';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoadingService } from '../../../core/services/loading/loading.service';
 import loadingData from '../../../../assets/i18n/loading-fr.json';
 
@@ -20,6 +23,10 @@ import loadingData from '../../../../assets/i18n/loading-fr.json';
 })
 export class GlobalLoaderComponent implements OnInit {
   public message = signal('');
+  public isAuthenticatedRoute = signal(false);
+
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     public loadingService: LoadingService,
@@ -32,7 +39,19 @@ export class GlobalLoaderComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.isAuthenticatedRoute.set(this.isAuthenticatedUrl(this.router.url));
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(event => this.isAuthenticatedRoute.set(this.isAuthenticatedUrl(event.urlAfterRedirects)));
+
     this.message.set(this.getRandomMessage());
+  }
+
+  private isAuthenticatedUrl(url: string): boolean {
+    return !url.startsWith('/login') && !url.startsWith('/signup');
   }
 
   private getRandomMessage(): string {

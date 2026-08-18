@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -15,11 +15,16 @@ import { Observable, Subject, combineLatest, map, startWith, takeUntil } from 'r
 import { Store } from '@ngrx/store';
 import * as WorldActions from '../../core/stores/world/world.actions';
 import { selectAllCells, selectIsConnected, selectWorldError, selectWorldLoading } from '../../core/stores/world/world.selectors';
-import { selectPeblobs } from '../../core/stores/peblob/peblob.selectors';
+import { selectMapPeblobs, selectPeblobs } from '../../core/stores/peblob/peblob.selectors';
+import { selectUser } from '../../core/stores/user/user.selectors';
+import { User } from '../../core/stores/user/user.model';
 import { PeblobEntity } from '../../core/stores/peblob/peblob.model';
 import { PixiMapComponent } from './pixi-map/pixi-map.component';
 import { PeblobComponent } from '../../shared/components/peblob/peblob.component';
 import { MessageService } from '../../services/message/message.service';
+import { TooltipComponent } from '../../shared/components/tooltip/tooltip.component';
+import { TranslateService } from '@ngx-translate/core';
+import { WorldError, worldErrorTranslationKey } from '../../core/stores/world/world-error';
 
 @Component({
   selector: 'app-world',
@@ -37,7 +42,8 @@ import { MessageService } from '../../services/message/message.service';
     MatSlideToggleModule,
     PeblobComponent,
     PixiMapComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TooltipComponent
   ],
   templateUrl: './world.component.html',
   styleUrl: './world.component.scss'
@@ -46,6 +52,7 @@ export class WorldComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly actionsSubject = inject(ActionsSubject);
   private readonly messageService = inject(MessageService);
+  private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
 
   @ViewChild(MatMenuTrigger)
@@ -54,6 +61,12 @@ export class WorldComponent implements OnInit, OnDestroy {
   @ViewChild('placementForm', { read: ElementRef })
   private placementForm?: ElementRef<HTMLElement>;
 
+  @ViewChild('cellTooltip')
+  private cellTooltip?: TemplateRef<unknown>;
+
+  @ViewChild(TooltipComponent)
+  private tooltip?: TooltipComponent;
+
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private closePlacementTimeout?: ReturnType<typeof setTimeout>;
 
@@ -61,22 +74,39 @@ export class WorldComponent implements OnInit, OnDestroy {
   loading$ = this.store.select(selectWorldLoading);
   connected$ = this.store.select(selectIsConnected);
   error$ = this.store.select(selectWorldError);
-  peblobs$ = this.store.select(selectPeblobs);
+  peblobs$ = this.store.select(selectMapPeblobs);
+  placementPeblobs$ = this.store.select(selectPeblobs);
+  user$ = this.store.select(selectUser);
   selectedCell: { x: number; y: number } | null = null;
+  selectedCellOccupied = false;
   placementFormOpen = false;
   placementPending = false;
+  contextMenuOpen = false;
   mapZoom = 1;
   showAxes = true;
   private isDestroyed = false;
   menuPosition = { left: '0px', top: '0px' };
   placementPeblobControl = new FormControl<PeblobEntity | string>('', { nonNullable: true });
+  hasAvailablePeblob$ = combineLatest([this.placementPeblobs$, this.cells$]).pipe(
+    map(([peblobs, cells]) => {
+      const placedPeblobIds = new Set(cells.flatMap(cell => cell.occupants));
+      return peblobs.some(peblob => !placedPeblobIds.has(peblob._id));
+    })
+  );
+  canPlace$ = combineLatest([this.user$, this.hasAvailablePeblob$]).pipe(
+    map(([user, hasAvailablePeblob]) => Boolean(user && user.actionPoints >= 2 && hasAvailablePeblob))
+  );
   filteredPeblobs$: Observable<PeblobEntity[]> = combineLatest([
-    this.peblobs$,
+    this.placementPeblobs$,
+    this.cells$,
     this.placementPeblobControl.valueChanges.pipe(startWith(''))
   ]).pipe(
-    map(([peblobs, value]) => {
+    map(([peblobs, cells, value]) => {
       const query = typeof value === 'string' ? value.toLowerCase() : value._id.toLowerCase();
-      return peblobs.filter(peblob => peblob._id.toLowerCase().includes(query));
+      const placedPeblobIds = new Set(cells.flatMap(cell => cell.occupants));
+      return peblobs.filter(peblob =>
+        !placedPeblobIds.has(peblob._id) && peblob._id.toLowerCase().includes(query)
+      );
     })
   );
 
@@ -84,6 +114,17 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.actionsSubject
       .pipe(takeUntil(this.destroy$))
       .subscribe(action => {
+        if (action.type === WorldActions.loadSnapshotFailure.type) {
+          const error = 'error' in action
+            ? action.error as WorldError
+            : { code: 'WORLD_LOAD_FAILED', status: 0 } as WorldError;
+          this.messageService.openSnackBar(
+            this.translate.instant(worldErrorTranslationKey(error)),
+            true
+          );
+          return;
+        }
+
         if (!this.placementPending) {
           return;
         }
@@ -96,16 +137,21 @@ export class WorldComponent implements OnInit, OnDestroy {
 
         if (action.type === WorldActions.placeOnCellFailure.type) {
           this.placementPending = false;
-          const error = 'error' in action && typeof action.error === 'string'
-            ? action.error
-            : 'Le péblob n’a pas pu être placé sur la carte.';
-          this.messageService.openSnackBar(error, true);
+          const error = 'error' in action
+            ? action.error as WorldError
+            : { code: 'PLACEMENT_FAILED', status: 0 } as WorldError;
+          this.messageService.openSnackBar(
+            this.translate.instant(worldErrorTranslationKey(error)),
+            true
+          );
         }
       });
   }
 
-  selectCell(cell: { x: number; y: number; clientX: number; clientY: number }): void {
+  selectCell(cell: { x: number; y: number; occupied: boolean; clientX: number; clientY: number }): void {
+    this.hideCellTooltip();
     this.selectedCell = cell;
+    this.selectedCellOccupied = cell.occupied;
     this.placementFormOpen = false;
     this.placementPeblobControl.reset('');
     this.menuPosition = {
@@ -120,6 +166,10 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   openPlacementForm(): void {
+    if (this.selectedCellOccupied) {
+      return;
+    }
+
     this.placementFormOpen = true;
     this.placementPeblobControl.reset('');
     this.menuTrigger?.closeMenu();
@@ -129,6 +179,16 @@ export class WorldComponent implements OnInit, OnDestroy {
         formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
+  }
+
+  onContextMenuOpened(): void {
+    this.contextMenuOpen = true;
+    this.hideCellTooltip();
+  }
+
+  onContextMenuClosed(): void {
+    this.contextMenuOpen = false;
+    this.hideCellTooltip();
   }
 
   cancelPlacement(): void {
@@ -146,13 +206,20 @@ export class WorldComponent implements OnInit, OnDestroy {
 
   private finishCancelPlacement(): void {
     this.selectedCell = null;
+    this.selectedCellOccupied = false;
     this.placementFormOpen = false;
     this.placementPeblobControl.reset('');
   }
 
   placePeblob(): void {
     const selectedPeblob = this.placementPeblobControl.value;
-    if (!this.selectedCell || typeof selectedPeblob === 'string' || !selectedPeblob || this.placementPending) {
+    if (
+      !this.selectedCell ||
+      this.selectedCellOccupied ||
+      typeof selectedPeblob === 'string' ||
+      !selectedPeblob ||
+      this.placementPending
+    ) {
       return;
     }
 
@@ -188,6 +255,36 @@ export class WorldComponent implements OnInit, OnDestroy {
     }
     this.destroy$.next();
     this.destroy$.complete();
+    this.hideCellTooltip();
     this.store.dispatch(WorldActions.disconnectWs());
+  }
+
+  showCellTooltip(cell: {
+    x: number;
+    y: number;
+    clientX: number;
+    clientY: number;
+    peblob?: PeblobEntity;
+  }): void {
+    if (this.contextMenuOpen) {
+      return;
+    }
+
+    if (!this.cellTooltip) {
+      return;
+    }
+
+    this.tooltip?.show(
+      this.cellTooltip,
+      {
+        ...cell,
+        ownerName: cell.peblob?.ownerName ?? 'Propriétaire inconnu'
+      },
+      { x: cell.clientX, y: cell.clientY }
+    );
+  }
+
+  hideCellTooltip(): void {
+    this.tooltip?.hide();
   }
 }

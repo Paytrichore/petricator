@@ -13,6 +13,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { provideRouter } from '@angular/router';
 
 const storeMock = { select: jasmine.createSpy('select').and.returnValue(of(null)) };
 
@@ -39,6 +40,7 @@ describe('NavComponent', () => {
         { provide: Store, useValue: storeMock },
         { provide: TranslateService, useValue: translateServiceMock },
         { provide: BreakpointObserver, useValue: breakpointObserverMock },
+        provideRouter([]),
         provideHttpClient(),
       ]
     });

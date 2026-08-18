@@ -33,6 +33,8 @@
         [peblobs]="(peblobs$ | async) ?? []"
         [zoom]="mapZoom"
         [showAxes]="showAxes"
+        (cellHovered)="showCellTooltip($event)"
+        (cellHoverEnded)="hideCellTooltip()"
         (cellSelected)="selectCell($event)"></app-pixi-map>
     </mat-card-content>
   </mat-card>
@@ -44,15 +46,38 @@
     [style.left]="menuPosition.left"
     [style.top]="menuPosition.top"
     [matMenuTriggerFor]="cellMenu"
+    (menuOpened)="onContextMenuOpened()"
+    (menuClosed)="onContextMenuClosed()"
     aria-label="Ouvrir les actions de la cellule sélectionnée">
   </button>
 
   <mat-menu #cellMenu="matMenu">
-    <button mat-menu-item type="button" (click)="openPlacementForm()">
+    <div class="world__menu-coordinate" role="presentation">
+      Cellule ({{ selectedCell?.x }}, {{ selectedCell?.y }})
+    </div>
+    <button
+      mat-menu-item
+      type="button"
+      [disabled]="placementPending || selectedCellOccupied || !(canPlace$ | async)"
+      (click)="openPlacementForm()">
       <mat-icon>add_location_alt</mat-icon>
       <span>Placer</span>
     </button>
   </mat-menu>
+
+  <ng-template #cellTooltip let-cell>
+    <div class="world-cell-tooltip">
+      <div class="world-cell-tooltip__coordinate">Cellule ({{ cell.x }}, {{ cell.y }})</div>
+      @if (cell.peblob; as peblob) {
+        <div class="world-cell-tooltip__peblob">
+          <app-peblob [composed]="peblob.structure"></app-peblob>
+          <div class="world-cell-tooltip__owner">Joueur : {{ cell.ownerName }}</div>
+        </div>
+      }
+    </div>
+  </ng-template>
+
+  <app-tooltip></app-tooltip>
 
   @if (placementFormOpen && selectedCell; as cell) {
     <mat-card #placementForm appearance="outlined" class="placement-card">

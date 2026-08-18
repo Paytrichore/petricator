@@ -13,8 +13,11 @@ export const createPeblobFailure = createAction('[Peblob] Create Peblob Failure'
 
 // Load peblobs by IDs (nouveau)
 export const loadPeblobsByUserIds = createAction('[Peblob] Load Peblobs By user IDs', props<{ userId: string }>());
+export const loadMapPeblobsByIds = createAction('[Peblob] Load Map Peblobs By IDs', props<{ ids: string[] }>());
 
 export const loadPeblobsSuccess = createAction('[Peblob] Load Peblobs Success', props<{ peblobs: PeblobEntity[] }>());
 export const loadPeblobsFailure = createAction('[Peblob] Load Peblobs Failure', props<{ error: any }>());
+export const loadMapPeblobsSuccess = createAction('[Peblob] Load Map Peblobs Success', props<{ peblobs: PeblobEntity[] }>());
+export const loadMapPeblobsFailure = createAction('[Peblob] Load Map Peblobs Failure', props<{ error: any }>());
 
 export const resetStore = createAction('[Peblob] Reset Store');
