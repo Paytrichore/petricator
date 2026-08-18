@@ -1,7 +1,7 @@
 <div class="peblob">
-    @for (group of composed; track group) {
+    @for (group of composed; track $index) {
       <div class="peblob__line">
-        @for (color of group; track color) {
+        @for (color of group; track $index) {
           <div class="peblob__item"
                [style.background]="'rgb(' + color.r + ',' + color.g + ',' + color.b + ')'">
           </div>

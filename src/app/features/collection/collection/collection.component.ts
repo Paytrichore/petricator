@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { filter, map, Observable, skipWhile, Subject, take, takeUntil } from 'rxjs';
-import { ComposedPeblob } from '../../../shared/interfaces/peblob';
+import { filter, Observable, skipWhile, Subject, take, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectPeblobs } from '../../../core/stores/peblob/peblob.selectors';
 import { AsyncPipe } from '@angular/common';
@@ -8,6 +7,7 @@ import { PeblobComponent } from '../../../shared/components/peblob/peblob.compon
 import { selectUser } from '../../../core/stores/user/user.selectors';
 import { User } from '../../../core/stores/user/user.model';
 import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
+import { PeblobEntity } from '../../../core/stores/peblob/peblob.model';
 
 @Component({
   selector: 'app-collection',
@@ -19,12 +19,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
   constructor(private store: Store) {
     this.peblobs$ = this.store.select(selectPeblobs).pipe(
       skipWhile(peblobs => peblobs.length === 0),
-      map(peblobs => peblobs.map(peblob => peblob.structure) ?? []),
       takeUntil(this.destroy$),
     );
   }
 
-  public peblobs$: Observable<ComposedPeblob[]>;
+  public peblobs$: Observable<PeblobEntity[]>;
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {

@@ -56,6 +56,14 @@
       "world": "Monde"
     }
   },
+  "playerStatus": {
+    "actionPoints": "Points d'action",
+    "nextDla": "Prochaine DLA",
+    "unavailable": "Indisponible",
+    "loading": "Chargement du statut joueur...",
+    "minimize": "Réduire le statut joueur",
+    "expand": "Développer le statut joueur"
+  },
   "peblobDraft": {
     "button": "Adopter ce Peblob",
     "event": "Quelques Peblobs sont intrigués par ton comportement...",
@@ -63,6 +71,18 @@
   },
   "actionChecked": {
     "captured": "Peblob capturé !"
+  },
+  "world": {
+    "errors": {
+      "CELL_OCCUPIED": "Cette case est déjà occupée.",
+      "PEBLOB_ALREADY_PLACED": "Ce péblob est déjà placé sur la carte.",
+      "PEBLOB_NOT_FOUND": "Ce péblob n'est plus disponible.",
+      "INSUFFICIENT_ACTION_POINTS": "Tu n'as pas assez de points d'action pour placer ce péblob.",
+      "DRAFT_ALREADY_DONE": "La draft a déjà été effectuée pour cette DLA.",
+      "PLACEMENT_DEPENDENCY_UNAVAILABLE": "Le placement est temporairement indisponible. Réessaie dans un instant.",
+      "PLACEMENT_FAILED": "Le péblob n'a pas pu être placé sur la carte.",
+      "WORLD_LOAD_FAILED": "Le monde n'a pas pu être chargé. Réessaie dans un instant."
+    }
   }
 }
 

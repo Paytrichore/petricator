@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Application, Container, FederatedPointerEvent, Graphics, Text } from 'pixi.js';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Application, Container, FederatedPointerEvent, Graphics } from 'pixi.js';
 import { PeblobEntity } from '../../../core/stores/peblob/peblob.model';
 import { Cell } from '../../../shared/interfaces/world.interface';
 
@@ -24,18 +24,32 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() peblobs: PeblobEntity[] = [];
   @Input() zoom = 1;
   @Input() showAxes = true;
-  @Output() cellSelected = new EventEmitter<{ x: number; y: number; clientX: number; clientY: number }>();
+  @Output() cellSelected = new EventEmitter<{
+    x: number;
+    y: number;
+    occupied: boolean;
+    clientX: number;
+    clientY: number;
+  }>();
+  @Output() cellHovered = new EventEmitter<{
+    x: number;
+    y: number;
+    clientX: number;
+    clientY: number;
+    peblob?: PeblobEntity;
+  }>();
+  @Output() cellHoverEnded = new EventEmitter<void>();
 
   @ViewChild('canvas', { static: true })
   private readonly canvasRef!: ElementRef<HTMLCanvasElement>;
   private application: Application | null = null;
   private mapContainer: Container | null = null;
+  private viewportSize = { width: 0, height: 0 };
   private isDestroyed = false;
   private isDragging = false;
   private didDrag = false;
   private lastPointer = { x: 0, y: 0 };
   private pointerDown = { x: 0, y: 0 };
-  private tooltip: Text | null = null;
   private defaultCellLayer: Graphics | null = null;
   private axisLayer: Graphics | null = null;
   private interactionLayer: Graphics | null = null;
@@ -47,8 +61,7 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     await application.init({
       canvas,
       backgroundAlpha: 0,
-      antialias: false,
-      resizeTo: canvas.parentElement ?? undefined
+      antialias: false
     });
 
     if (this.isDestroyed) {
@@ -66,6 +79,7 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     application.stage.addChild(this.mapContainer);
     this.createInteractionLayer();
     this.drawCells();
+    this.resizeViewport();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -116,15 +130,23 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
   }
 
+  onCanvasLeave(): void {
+    this.cellHoverEnded.emit();
+  }
+
   ngOnDestroy(): void {
     this.isDestroyed = true;
     this.application?.destroy(true);
     this.application = null;
     this.mapContainer = null;
-    this.tooltip = null;
     this.defaultCellLayer = null;
     this.axisLayer = null;
     this.interactionLayer = null;
+  }
+
+  @HostListener('window:petricator-nav-resized')
+  onNavigationLayoutResized(): void {
+    this.resizeViewport();
   }
 
   private drawCells(): void {
@@ -153,7 +175,7 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       } else {
         const graphics = new Graphics();
         graphics
-          .rect(cell.x * CELL_PITCH, cell.y * CELL_PITCH, CELL_SIZE, CELL_SIZE)
+          .rect(cell.x * CELL_PITCH, this.screenY(cell.y), CELL_SIZE, CELL_SIZE)
           .fill(this.occupantColor(cell.occupants.length));
         this.mapContainer.addChild(graphics);
       }
@@ -174,7 +196,7 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     for (let y = MIN_COORDINATE; y <= MAX_COORDINATE; y += 1) {
       for (let x = MIN_COORDINATE; x <= MAX_COORDINATE; x += 1) {
         this.defaultCellLayer
-          .rect(x * CELL_PITCH, y * CELL_PITCH, CELL_SIZE, CELL_SIZE)
+          .rect(x * CELL_PITCH, this.screenY(y), CELL_SIZE, CELL_SIZE)
           .fill(defaultColor);
       }
     }
@@ -222,19 +244,34 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.interactionLayer.eventMode = 'static';
     this.interactionLayer.cursor = 'pointer';
     this.interactionLayer.on('pointermove', (event: FederatedPointerEvent) => this.onMapHover(event));
-    this.interactionLayer.on('pointerout', () => this.hideTooltip());
+    this.interactionLayer.on('pointerout', () => this.cellHoverEnded.emit());
     this.interactionLayer.on('pointertap', (event: FederatedPointerEvent) => this.onMapClick(event));
     this.mapContainer.addChild(this.interactionLayer);
   }
 
   private onMapHover(event: FederatedPointerEvent): void {
-    const cell = this.cellFromEvent(event);
-    if (!cell || this.occupiedCells.has(`${cell.x}_${cell.y}`)) {
-      this.hideTooltip();
+    if (!this.isInsideCanvas(event)) {
+      this.cellHoverEnded.emit();
       return;
     }
 
-    this.showTooltip(cell.x, cell.y);
+    const cell = this.cellFromEvent(event);
+    if (!cell) {
+      this.cellHoverEnded.emit();
+      return;
+    }
+
+    const bounds = this.canvasRef.nativeElement.getBoundingClientRect();
+    const occupiedCell = this.occupiedCells.get(`${cell.x}_${cell.y}`);
+    const peblob = occupiedCell
+      ? this.peblobs.find(candidate => occupiedCell.occupants.includes(candidate._id))
+      : undefined;
+    this.cellHovered.emit({
+      ...cell,
+      clientX: bounds.left + event.global.x,
+      clientY: bounds.top + event.global.y,
+      peblob
+    });
   }
 
   private onMapClick(event: FederatedPointerEvent): void {
@@ -243,13 +280,14 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
 
     const cell = this.cellFromEvent(event);
-    if (!cell || this.occupiedCells.has(`${cell.x}_${cell.y}`)) {
+    if (!cell) {
       return;
     }
 
     const bounds = this.canvasRef.nativeElement.getBoundingClientRect();
     this.cellSelected.emit({
       ...cell,
+      occupied: this.occupiedCells.has(`${cell.x}_${cell.y}`),
       clientX: bounds.left + event.global.x,
       clientY: bounds.top + event.global.y
     });
@@ -262,15 +300,54 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
     const local = this.mapContainer.toLocal(event.global);
     const x = Math.floor(local.x / CELL_PITCH);
-    const y = Math.floor(local.y / CELL_PITCH);
-    if (local.x - x * CELL_PITCH >= CELL_SIZE || local.y - y * CELL_PITCH >= CELL_SIZE) {
+    const screenY = Math.floor(local.y / CELL_PITCH);
+    if (local.x - x * CELL_PITCH >= CELL_SIZE || local.y - screenY * CELL_PITCH >= CELL_SIZE) {
       return null;
     }
+    const y = -screenY;
     return this.isInBounds(x, y) ? { x, y } : null;
+  }
+
+  private isInsideCanvas(event: FederatedPointerEvent): boolean {
+    const application = this.application;
+    if (!application) {
+      return false;
+    }
+
+    return event.global.x >= 0
+      && event.global.y >= 0
+      && event.global.x <= application.screen.width
+      && event.global.y <= application.screen.height;
   }
 
   private isInBounds(x: number, y: number): boolean {
     return x >= MIN_COORDINATE && x <= MAX_COORDINATE && y >= MIN_COORDINATE && y <= MAX_COORDINATE;
+  }
+
+  private resizeViewport(): void {
+    if (!this.application || !this.mapContainer || this.isDestroyed) {
+      return;
+    }
+
+    const viewport = this.canvasRef.nativeElement.parentElement ?? this.canvasRef.nativeElement;
+    const width = viewport.clientWidth;
+    const height = viewport.clientHeight;
+    if (!width || !height) {
+      return;
+    }
+
+    if (this.viewportSize.width === width && this.viewportSize.height === height) {
+      return;
+    }
+
+    this.viewportSize = { width, height };
+
+    this.application.renderer.resize(width, height);
+    this.mapContainer.position.set(
+      width / 2 - MAP_CENTER_OFFSET * this.zoom,
+      height / 2 - MAP_CENTER_OFFSET * this.zoom
+    );
+    this.clampMapPosition();
   }
 
   private clampMapPosition(): void {
@@ -287,26 +364,11 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.mapContainer.position.y = Math.min(centerY + limit, Math.max(centerY - limit, this.mapContainer.position.y));
   }
 
-  private showTooltip(x: number, y: number): void {
-    this.hideTooltip();
-    this.tooltip = new Text({
-      text: `(${x}, ${y})`,
-      style: { fill: 0xffffff, fontSize: 11, padding: 3 }
-    });
-    this.tooltip.position.set(x * CELL_PITCH + CELL_SIZE + 2, y * CELL_PITCH - 12);
-    this.mapContainer?.addChild(this.tooltip);
-  }
-
-  private hideTooltip(): void {
-    this.tooltip?.destroy();
-    this.tooltip = null;
-  }
-
   private drawPeblob(cell: Cell, peblob: PeblobEntity): void {
     const structureSize = Math.max(peblob.structure.length, 1);
     const pixelSize = CELL_SIZE / structureSize;
     const originX = cell.x * CELL_PITCH;
-    const originY = cell.y * CELL_PITCH;
+    const originY = this.screenY(cell.y);
 
     peblob.structure.forEach((row, rowIndex) => {
       row.forEach((pixel, columnIndex) => {
@@ -320,15 +382,17 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private occupantColor(occupantCount: number): number {
-    const intensity = Math.min(1, Math.max(0, (occupantCount - 1) / 9));
-    const red = Math.round(64 + intensity * 191);
-    const green = Math.round(220 - intensity * 180);
-    return (red << 16) | (green << 8) | 64;
+    void occupantCount;
+    return 0x000000;
   }
 
   private rgbColor(red: number, green: number, blue: number): number {
     const clamp = (value: number) => Math.min(255, Math.max(0, Math.round(value)));
     return (clamp(red) << 16) | (clamp(green) << 8) | clamp(blue);
+  }
+
+  private screenY(coordinateY: number): number {
+    return -coordinateY * CELL_PITCH;
   }
 
   private cssColor(variable: string, fallback: string): string {

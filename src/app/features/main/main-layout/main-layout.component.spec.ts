@@ -6,6 +6,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 const storeMock = { select: jasmine.createSpy('select').and.returnValue(of(null)) };
 
@@ -21,6 +22,7 @@ describe('MainLayoutComponent', () => {
         { provide: Store, useValue: storeMock },
         { provide: TranslateService, useValue: translateServiceMock },
         { provide: ActivatedRoute, useValue: {} },
+        provideRouter([]),
       ]
     })
     .compileComponents();

@@ -1,0 +1,109 @@
+:host {
+  display: block;
+  flex: 0 0 auto;
+  margin-top: 12px;
+  padding: 0 26px;
+}
+
+.player-status-toolbar {
+  align-items: center;
+  background: var(--mat-sys-surface-container);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  border-left: 1px solid var(--mat-sys-outline-variant);
+  border-right: 1px solid var(--mat-sys-outline-variant);
+  border-top-left-radius: var(--mat-card-outlined-container-shape, var(--mat-sys-corner-medium));
+  border-top-right-radius: var(--mat-card-outlined-container-shape, var(--mat-sys-corner-medium));
+  box-sizing: border-box;
+  gap: 24px;
+  min-height: 76px;
+  padding: 12px 26px;
+  position: relative;
+  z-index: 2000;
+}
+
+.player-status-toolbar__content {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 32px;
+  min-width: 0;
+  justify-content: space-between;
+}
+
+.player-status-toolbar__points {
+  flex: 1 1 280px;
+  max-width: 320px;
+  min-width: 160px;
+}
+
+.player-status-toolbar__dla {
+  align-items: baseline;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.player-status-toolbar__label-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.player-status-toolbar__label {
+  font-size: 14px;
+  font-weight: 100;
+}
+
+.player-status-toolbar__points-value {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.player-status-toolbar__dla-value {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.player-status-toolbar__toggle {
+  flex: 0 0 auto;
+}
+
+.player-status-toolbar__loading {
+  flex: 1;
+}
+
+.player-status-toolbar--minimized {
+  min-height: 52px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+}
+
+@media (max-width: 600px) {
+  .player-status-toolbar {
+    gap: 8px;
+    min-height: 92px;
+    padding: 10px 16px;
+  }
+
+  .player-status-toolbar__content {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .player-status-toolbar__points {
+    flex-basis: auto;
+    max-width: none;
+  }
+
+  .player-status-toolbar__dla {
+    gap: 2px;
+  }
+
+  .player-status-toolbar--minimized {
+    min-height: 52px;
+  }
+}

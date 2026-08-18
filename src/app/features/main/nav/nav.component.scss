@@ -5,6 +5,8 @@
 }
 
 .mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
   height: 100%;
 
   & main {
@@ -59,7 +61,7 @@ mat-nav-list {
     height: 100%;
   }
 
-  &__content, &__title {
+  &__content, &__title, &__player-status {
     background: var(--mat-sys-surface);
     margin-left: 300px;
     transition: margin-left 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -78,6 +80,7 @@ mat-nav-list {
 
   &__title {
     transition:
+      margin-left 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
       margin-top 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
       margin-bottom 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 
@@ -98,11 +101,13 @@ mat-nav-list {
 
   &__content {
     box-sizing: border-box;
-    height: calc(100vh - 124px);
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
     overflow-y: auto;
 
     @media (max-width: 600px) {
-      height: calc(100vh - 96px);
+      height: auto;
     }
   }
 

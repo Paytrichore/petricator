@@ -4,6 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { GlobalLoaderComponent } from './global-loader.component';
 import { LoadingService } from '../../../core/services/loading/loading.service';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
+import { Router } from '@angular/router';
+import { EMPTY } from 'rxjs';
 
 describe('GlobalLoaderComponent', () => {
   let component: GlobalLoaderComponent;
@@ -16,6 +18,7 @@ describe('GlobalLoaderComponent', () => {
       providers: [
         provideAnimations(),
         { provide: TranslateService, useValue: translateServiceMock },
+        { provide: Router, useValue: { url: '/login', events: EMPTY } },
       ],
     }).compileComponents();
 

@@ -6,10 +6,12 @@ export interface PeblobEntity {
   structure: ComposedPeblob;
   createdAt: Date;
   updatedAt: Date;
+  ownerName?: string;
 }
 
 export interface PeblobState {
   peblobs: PeblobEntity[];
+  mapPeblobs: PeblobEntity[];
   loading: boolean;
   error: any;
 }

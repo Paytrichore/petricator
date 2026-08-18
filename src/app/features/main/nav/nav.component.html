@@ -56,6 +56,7 @@
     <app-logout></app-logout>
   </mat-sidenav>
   <mat-sidenav-content>
+    <app-global-loader></app-global-loader>
     <mat-toolbar
       color="primary"
       class="nav__title"
@@ -75,8 +76,14 @@
     <main
       class="nav__content"
       [class.nav__content--minify]="mini"
+      (transitionend)="onContentTransitionEnd($event)"
       (scroll)="onContentScroll($event)">
       <router-outlet></router-outlet>
     </main>
+    <app-player-status-toolbar
+      class="nav__player-status"
+      [canMinimize]="(isHandset$ | async) ?? false"
+      [class.nav__player-status--minify]="mini">
+    </app-player-status-toolbar>
   </mat-sidenav-content>
 </mat-sidenav-container>

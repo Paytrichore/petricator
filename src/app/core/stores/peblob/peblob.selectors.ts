@@ -8,6 +8,11 @@ export const selectPeblobs = createSelector(
   (state: PeblobState) => state.peblobs
 );
 
+export const selectMapPeblobs = createSelector(
+  selectPeblobState,
+  (state: PeblobState) => state.mapPeblobs
+);
+
 export const selectPeblobsLoading = createSelector(
   selectPeblobState,
   (state: PeblobState) => state.loading

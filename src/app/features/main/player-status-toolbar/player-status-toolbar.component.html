@@ -1,0 +1,57 @@
+<mat-toolbar
+  class="player-status-toolbar"
+  [class.player-status-toolbar--minimized]="isToolbarMinimized">
+  @if (user$ | async; as user) {
+    <div class="player-status-toolbar__content">
+      @if (!isToolbarMinimized) {
+        <section class="player-status-toolbar__dla" aria-labelledby="player-status-dla-label">
+          <span id="player-status-dla-label" class="player-status-toolbar__label">
+            {{ 'playerStatus.nextDla' | translate }}
+          </span>
+          @if (isValidDla(user.nextDLA)) {
+            <time class="player-status-toolbar__dla-value" [dateTime]="user.nextDLA">
+              {{ user.nextDLA | date: 'dd/MM/yyyy HH:mm' }}
+            </time>
+          } @else {
+            <span class="player-status-toolbar__dla-value">
+              {{ 'playerStatus.unavailable' | translate }}
+            </span>
+          }
+        </section>
+      }
+      <section class="player-status-toolbar__points" aria-labelledby="player-status-points-label">
+        <div class="player-status-toolbar__label-row">
+          <span id="player-status-points-label" class="player-status-toolbar__label">
+            {{ 'playerStatus.actionPoints' | translate }}
+          </span>
+          <strong class="player-status-toolbar__points-value pixel-font">
+            {{ user.actionPoints }}/{{ maxActionPoints }}
+          </strong>
+        </div>
+        @if (!isToolbarMinimized) {
+          <mat-progress-bar
+            mode="determinate"
+            [value]="getProgressValue(user.actionPoints)"
+            [attr.aria-label]="'playerStatus.actionPoints' | translate">
+          </mat-progress-bar>
+        }
+      </section>
+    </div>
+  } @else {
+    <span class="player-status-toolbar__loading">
+      {{ 'playerStatus.loading' | translate }}
+    </span>
+  }
+
+  @if (canMinimize) {
+    <button
+      mat-icon-button
+      type="button"
+      class="player-status-toolbar__toggle"
+      [attr.aria-label]="(isToolbarMinimized ? 'playerStatus.expand' : 'playerStatus.minimize') | translate"
+      [matTooltip]="(isToolbarMinimized ? 'playerStatus.expand' : 'playerStatus.minimize') | translate"
+      (click)="toggleMinimized()">
+      <mat-icon>{{ isToolbarMinimized ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </button>
+  }
+</mat-toolbar>

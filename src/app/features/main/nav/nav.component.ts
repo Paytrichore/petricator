@@ -13,6 +13,8 @@ import { Store } from '@ngrx/store';
 import { selectUser } from '../../../core/stores/user/user.selectors';
 import { LogoutComponent } from '../../../shared/components/logout/logout.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { PlayerStatusToolbarComponent } from '../player-status-toolbar/player-status-toolbar.component';
+import { GlobalLoaderComponent } from '../../../shared/components/global-loader/global-loader.component';
 
 @Component({
   selector: 'app-nav',
@@ -29,7 +31,9 @@ import { TranslateModule } from '@ngx-translate/core';
     MatListModule,
     MatIconModule,
     TranslateModule,
-    LogoutComponent
+    LogoutComponent,
+    PlayerStatusToolbarComponent,
+    GlobalLoaderComponent,
   ]
 })
 export class NavComponent {
@@ -69,5 +73,11 @@ export class NavComponent {
 
   onContentScroll(event: Event): void {
     this.isScrolled = (event.target as HTMLElement).scrollTop > 0;
+  }
+
+  onContentTransitionEnd(event: TransitionEvent): void {
+    if (event.propertyName === 'margin-left') {
+      window.dispatchEvent(new Event('petricator-nav-resized'));
+    }
   }
 }

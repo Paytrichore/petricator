@@ -60,6 +60,18 @@ a {
   }
 }
 
+.cdk-overlay-container:has(.snackbar--authenticated) {
+  z-index: 2300;
+}
+
+.snackbar--authenticated .mat-mdc-snackbar-surface {
+  transform: translateY(-76px);
+
+  @media (max-width: 600px) {
+    transform: translateY(-92px);
+  }
+}
+
 ::ng-deep .mat-mdc-card-title {
   font-family: 'Jersey 15', sans-serif !important;
   font-weight: 400 !important;
