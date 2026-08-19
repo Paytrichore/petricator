@@ -6,17 +6,20 @@ import { LoadingService } from '../../../core/services/loading/loading.service';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
 describe('GlobalLoaderComponent', () => {
   let component: GlobalLoaderComponent;
   let fixture: ComponentFixture<GlobalLoaderComponent>;
   let loadingService: LoadingService;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GlobalLoaderComponent],
       providers: [
         provideAnimations(),
+        provideMockStore({ initialState: { peblob: { mapLoading: false } } }),
         { provide: TranslateService, useValue: translateServiceMock },
         { provide: Router, useValue: { url: '/login', events: EMPTY } },
       ],
@@ -25,6 +28,7 @@ describe('GlobalLoaderComponent', () => {
     fixture = TestBed.createComponent(GlobalLoaderComponent);
     component = fixture.componentInstance;
     loadingService = TestBed.inject(LoadingService);
+    store = TestBed.inject(MockStore);
     loadingService.reset();
     fixture.detectChanges();
   });
@@ -48,5 +52,14 @@ describe('GlobalLoaderComponent', () => {
 
     expect(overlay).not.toBeNull();
     expect(pixels.length).toBe(9);
+  });
+
+  it('should show loader when map peblobs are loading', () => {
+    store.setState({ peblob: { mapLoading: true } });
+    fixture.detectChanges();
+
+    const overlay = fixture.nativeElement.querySelector('.global-loader') as HTMLElement | null;
+
+    expect(overlay).not.toBeNull();
   });
 });

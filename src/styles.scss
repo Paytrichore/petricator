@@ -65,10 +65,10 @@ a {
 }
 
 .snackbar--authenticated .mat-mdc-snackbar-surface {
-  transform: translateY(-76px);
+  transform: translate(calc(-1 * var(--player-status-toolbar-horizontal-padding) + 7px), -76px);
 
   @media (max-width: 600px) {
-    transform: translateY(-92px);
+    transform: translate(calc(-1 * var(--player-status-toolbar-horizontal-padding) + 7px), -92px);
   }
 }
 
@@ -79,6 +79,8 @@ a {
 }
 
 :root {
+  --player-status-toolbar-horizontal-padding: 26px;
+
   --palette-morning-1: rgba(255, 179, 71, 1);
   --palette-morning-2: rgba(255, 204, 51, 1);
   --palette-morning-3: rgba(255, 192, 77, 1);
@@ -114,4 +116,10 @@ a {
   --palette-night-6: rgba(58, 90, 140, 1);
   --palette-night-7: rgba(78, 78, 183, 1);
   --palette-night-8: rgba(108, 78, 183, 1);
+}
+
+@media (max-width: 600px) {
+  :root {
+    --player-status-toolbar-horizontal-padding: 16px;
+  }
 }

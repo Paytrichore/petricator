@@ -13,5 +13,6 @@ export interface PeblobState {
   peblobs: PeblobEntity[];
   mapPeblobs: PeblobEntity[];
   loading: boolean;
+  mapLoading: boolean;
   error: any;
 }

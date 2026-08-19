@@ -32,7 +32,7 @@ describe('MessageService', () => {
     tick(500);
     
     expect(snackBarSpy.open).toHaveBeenCalledWith('Erreur', 'Fermer', {
-      duration: 4000,
+      duration: 6000,
       horizontalPosition: 'right',
       verticalPosition: 'bottom',
       panelClass: ['snackbar--error']
@@ -46,7 +46,7 @@ describe('MessageService', () => {
     tick(500);
     
     expect(snackBarSpy.open).toHaveBeenCalledWith('OK', 'Fermer', {
-      duration: 4000,
+      duration: 6000,
       horizontalPosition: 'right',
       verticalPosition: 'bottom',
       panelClass: ['snackbar--success']

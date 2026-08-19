@@ -5,7 +5,7 @@
   gap: 10px;
   pointer-events: none;
   position: fixed;
-  right: 20px;
+  right: calc(var(--player-status-toolbar-horizontal-padding) + 1px);
   z-index: 1900;
 
   &--authenticated {

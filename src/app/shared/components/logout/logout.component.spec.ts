@@ -5,8 +5,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
+import { signal } from '@angular/core';
 
-const storeMock = { select: jasmine.createSpy('select').and.returnValue(of(null)) };
+const storeMock = {
+  select: jasmine.createSpy('select').and.returnValue(of(null)),
+  selectSignal: jasmine.createSpy('selectSignal').and.returnValue(signal(false)),
+};
 
 describe('LogoutComponent', () => {
   let component: LogoutComponent;

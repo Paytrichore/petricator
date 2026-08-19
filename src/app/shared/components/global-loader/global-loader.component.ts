@@ -4,6 +4,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoadingService } from '../../../core/services/loading/loading.service';
+import { selectMapPeblobsLoading } from '../../../core/stores/peblob/peblob.selectors';
+import { Store } from '@ngrx/store';
 import loadingData from '../../../../assets/i18n/loading-fr.json';
 
 @Component({
@@ -27,6 +29,8 @@ export class GlobalLoaderComponent implements OnInit {
 
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly store = inject(Store);
+  public readonly mapPeblobsLoading = this.store.selectSignal(selectMapPeblobsLoading);
 
   constructor(
     public loadingService: LoadingService,

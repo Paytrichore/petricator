@@ -1,4 +1,4 @@
-@if (loadingService.isLoading()) {
+@if (loadingService.isLoading() || mapPeblobsLoading()) {
   <div
     class="global-loader"
     [class.global-loader--authenticated]="isAuthenticatedRoute()"

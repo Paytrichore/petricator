@@ -18,5 +18,6 @@ export const initialState: PeblobState = {
   peblobs: [mockPeblob],
   mapPeblobs: [],
   loading: false,
+  mapLoading: false,
   error: null
 };

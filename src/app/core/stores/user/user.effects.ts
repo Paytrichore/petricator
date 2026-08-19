@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as UserActions from './user.actions';
 import { map, switchMap, catchError, tap, filter } from 'rxjs/operators';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, of, timer } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService, mapUserFromApi } from '../../../services/auth/auth.service';
@@ -114,6 +114,32 @@ export class UserEffects {
         );
       })
     )
+  );
+
+  refreshUserStatusOnDlaExpiry$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        UserActions.setUser,
+        UserActions.updateUserSuccess,
+        UserActions.clearUser,
+        UserActions.disconnectUserEvents,
+      ),
+      switchMap(action => {
+        if (!('user' in action)) {
+          return EMPTY;
+        }
+
+        const dlaTimestamp = Date.parse(action.user.nextDLA);
+        if (!Number.isFinite(dlaTimestamp)) {
+          return EMPTY;
+        }
+
+        const delay = Math.max(dlaTimestamp - Date.now() + 500, 1000);
+        return timer(delay).pipe(
+          map(() => UserActions.refreshUserStatus()),
+        );
+      }),
+    ),
   );
 
   connectUserEvents$ = createEffect(() =>

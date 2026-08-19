@@ -15,7 +15,7 @@ export class MessageService {
     setTimeout(() => {
       const isAuthenticated = this.isAuthenticatedRoute();
       this.snackBar.open(message, 'Fermer', {
-        duration: 4000,
+        duration: 6000,
         horizontalPosition: 'right',
         verticalPosition: 'bottom',
         panelClass: [

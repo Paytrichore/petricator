@@ -2,7 +2,7 @@
   display: block;
   flex: 0 0 auto;
   margin-top: 12px;
-  padding: 0 26px;
+  padding: 0 var(--player-status-toolbar-horizontal-padding);
 }
 
 .player-status-toolbar {
@@ -85,7 +85,7 @@
   .player-status-toolbar {
     gap: 8px;
     min-height: 92px;
-    padding: 10px 16px;
+    padding: 10px var(--player-status-toolbar-horizontal-padding);
   }
 
   .player-status-toolbar__content {

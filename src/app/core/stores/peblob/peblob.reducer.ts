@@ -7,6 +7,7 @@ export const initialPeblobState: PeblobState = {
   peblobs: [],
   mapPeblobs: [],
   loading: false,
+  mapLoading: false,
   error: null
 };
 
@@ -73,11 +74,18 @@ export const peblobReducer = createReducer(
     return {
       ...state,
       mapPeblobs: [...knownPeblobs.values()],
+      mapLoading: false,
       error: null
     };
   }),
+  on(PeblobActions.loadMapPeblobsByIds, (state) => ({
+    ...state,
+    mapLoading: true,
+    error: null
+  })),
   on(PeblobActions.loadMapPeblobsFailure, (state, { error }) => ({
     ...state,
+    mapLoading: false,
     error
   })),
 

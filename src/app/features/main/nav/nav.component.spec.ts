@@ -14,8 +14,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
 
-const storeMock = { select: jasmine.createSpy('select').and.returnValue(of(null)) };
+const storeMock = {
+  select: jasmine.createSpy('select').and.returnValue(of(null)),
+  selectSignal: jasmine.createSpy('selectSignal').and.returnValue(signal(false)),
+};
 
 describe('NavComponent', () => {
   let component: NavComponent;
