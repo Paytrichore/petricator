@@ -84,6 +84,7 @@ export class WorldComponent implements OnInit, OnDestroy {
   contextMenuOpen = false;
   mapZoom = 1;
   showAxes = true;
+  showMyPeblobs = true;
   private isDestroyed = false;
   menuPosition = { left: '0px', top: '0px' };
   placementPeblobControl = new FormControl<PeblobEntity | string>('', { nonNullable: true });
@@ -102,10 +103,10 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.placementPeblobControl.valueChanges.pipe(startWith(''))
   ]).pipe(
     map(([peblobs, cells, value]) => {
-      const query = typeof value === 'string' ? value.toLowerCase() : value._id.toLowerCase();
+      const query = typeof value === 'string' ? value.toLowerCase() : value.name?.toLowerCase() ?? '';
       const placedPeblobIds = new Set(cells.flatMap(cell => cell.occupants));
       return peblobs.filter(peblob =>
-        !placedPeblobIds.has(peblob._id) && peblob._id.toLowerCase().includes(query)
+        !placedPeblobIds.has(peblob._id) && (peblob.name?.toLowerCase() ?? '').includes(query)
       );
     })
   );
@@ -170,6 +171,7 @@ export class WorldComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.hideCellTooltip();
     this.placementFormOpen = true;
     this.placementPeblobControl.reset('');
     this.menuTrigger?.closeMenu();
@@ -232,7 +234,12 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   displayPeblob(peblob: PeblobEntity | string | null): string {
-    return typeof peblob === 'string' ? peblob : peblob?._id ?? '';
+    return typeof peblob === 'string' ? peblob : peblob?.name ?? '';
+  }
+
+  selectedPlacementPeblob(): PeblobEntity | null {
+    const peblob = this.placementPeblobControl.value;
+    return typeof peblob === 'string' ? null : peblob;
   }
 
   trackPeblob(_: number, peblob: PeblobEntity): string {
@@ -266,7 +273,7 @@ export class WorldComponent implements OnInit, OnDestroy {
     clientY: number;
     peblob?: PeblobEntity;
   }): void {
-    if (this.contextMenuOpen) {
+    if (this.contextMenuOpen || this.placementFormOpen) {
       return;
     }
 

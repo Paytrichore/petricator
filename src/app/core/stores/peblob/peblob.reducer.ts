@@ -8,7 +8,11 @@ export const initialPeblobState: PeblobState = {
   mapPeblobs: [],
   loading: false,
   mapLoading: false,
-  error: null
+  error: null,
+  total: 0,
+  page: 1,
+  pageSize: 20,
+  renamingPeblobIds: []
 };
 
 export const peblobReducer = createReducer(
@@ -49,6 +53,28 @@ export const peblobReducer = createReducer(
     loading: false,
     error
   })),
+
+  on(PeblobActions.renamePeblob, (state, { peblobId }) => ({
+    ...state,
+    renamingPeblobIds: state.renamingPeblobIds.includes(peblobId)
+      ? state.renamingPeblobIds
+      : [...state.renamingPeblobIds, peblobId],
+    error: null
+  })),
+
+  on(PeblobActions.renamePeblobSuccess, (state, { peblob }) => ({
+    ...state,
+    renamingPeblobIds: state.renamingPeblobIds.filter(id => id !== peblob._id),
+    peblobs: state.peblobs.map(current => current._id === peblob._id ? peblob : current),
+    mapPeblobs: state.mapPeblobs.map(current => current._id === peblob._id ? peblob : current),
+    error: null
+  })),
+
+  on(PeblobActions.renamePeblobFailure, (state, { peblobId, error }) => ({
+    ...state,
+    renamingPeblobIds: state.renamingPeblobIds.filter(id => id !== peblobId),
+    error
+  })),
   
   on(PeblobActions.loadPeblobsByUserIds, (state) => ({
     ...state,
@@ -56,9 +82,12 @@ export const peblobReducer = createReducer(
     error: null
   })),
  
-  on(PeblobActions.loadPeblobsSuccess, (state, { peblobs }) => ({
+  on(PeblobActions.loadPeblobsSuccess, (state, { peblobs, total, page, pageSize }) => ({
     ...state,
     peblobs,
+    total,
+    page,
+    pageSize,
     loading: false,
     error: null
   })),

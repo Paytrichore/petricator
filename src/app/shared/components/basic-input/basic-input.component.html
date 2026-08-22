@@ -1,4 +1,6 @@
-<mat-form-field class="basic-input">
+<mat-form-field
+  class="basic-input"
+  [class.basic-input--hint-hidden]="!showHint">
   <mat-label>{{ label }}</mat-label>
   <input
     #input
@@ -9,9 +11,11 @@
     [(ngModel)]="value"
     (input)="onChange(input.value)"
   />
-  <mat-hint class="basic-input__hint-wrapper">
-    <ng-content select=".basic-input__hint--start"></ng-content>
-  </mat-hint>
+  @if (showHint) {
+    <mat-hint class="basic-input__hint-wrapper">
+      <ng-content select=".basic-input__hint--start"></ng-content>
+    </mat-hint>
+  }
   <span class="basic-input__suffix" matSuffix>
     <ng-content select=".basic-input__suffix"></ng-content>
     @if (isPassword) {

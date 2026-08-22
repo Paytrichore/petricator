@@ -134,11 +134,12 @@ describe('PeblobService', () => {
     const mockPeblobs: PeblobEntity[] = [
       { _id: 'p1', userId, structure: [[{ r: 1, g: 2, b: 3 }]], createdAt: new Date(), updatedAt: new Date() }
     ];
-    httpSpy.get.and.returnValue(of(mockPeblobs));
+    const mockPage = { items: mockPeblobs, total: 1, page: 1, pageSize: 20 };
+    httpSpy.get.and.returnValue(of(mockPage));
 
     service.loadPeblobsByUserId(userId).subscribe(result => {
-      expect(httpSpy.get).toHaveBeenCalledWith(jasmine.any(String));
-      expect(result).toEqual(mockPeblobs);
+      expect(httpSpy.get).toHaveBeenCalledWith(jasmine.any(String), jasmine.objectContaining({ params: jasmine.anything() }));
+      expect(result).toEqual(mockPage);
       done();
     });
   });

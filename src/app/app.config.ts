@@ -1,4 +1,6 @@
-import { ApplicationConfig, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZonelessChangeDetection } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -18,6 +20,8 @@ import { appReducer } from './core/stores/app/app.reducer';
 import { AuthInterceptor } from './core/interceptors.ts/auth.interceptor';
 import { LoadingInterceptor } from './core/interceptors.ts/loading.interceptor';
 
+registerLocaleData(localeFr);
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/i18n/', '.json');
 }
@@ -25,6 +29,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
     provideRouter(routes),
     provideHttpClient(
       withFetch(),

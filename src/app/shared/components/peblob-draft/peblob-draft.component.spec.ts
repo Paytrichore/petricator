@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PeblobDraftComponent } from './peblob-draft.component';
+import { GeneratedPeblob, Tint } from '../../interfaces/peblob';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,7 +16,10 @@ describe('PeblobDraftComponent', () => {
   let fixture: ComponentFixture<PeblobDraftComponent>;
   let actionsSubject: ActionsSubject;
   let messageServiceSpy: jasmine.SpyObj<MessageService>;
-  const fakePeblob = [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]];
+  const fakePeblob: GeneratedPeblob = {
+    structure: [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]],
+    dominantColor: Tint.ORANGE,
+  };
 
   beforeEach(async () => {
     messageServiceSpy = jasmine.createSpyObj('MessageService', ['openSnackBar']);
@@ -84,7 +88,8 @@ describe('PeblobDraftComponent', () => {
     expect(component.draftAnimState).toBe('clicked');
     expect((component as any).store.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
       userId: 'user123',
-      structure: fakePeblob
+      structure: fakePeblob.structure,
+      dominantColor: fakePeblob.dominantColor,
     }));
 
     actionsSubject.next(PeblobActions.createPeblobSuccess({ peblob: {

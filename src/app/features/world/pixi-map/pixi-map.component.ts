@@ -24,6 +24,8 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() peblobs: PeblobEntity[] = [];
   @Input() zoom = 1;
   @Input() showAxes = true;
+  @Input() showMyPeblobs = true;
+  @Input() currentUserId: string | null = null;
   @Output() cellSelected = new EventEmitter<{
     x: number;
     y: number;
@@ -54,6 +56,7 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private axisLayer: Graphics | null = null;
   private interactionLayer: Graphics | null = null;
   private occupiedCells = new Map<string, Cell>();
+  private myPeblobCellKeys = new Set<string>();
 
   async ngAfterViewInit(): Promise<void> {
     const canvas = this.canvasRef.nativeElement;
@@ -93,7 +96,7 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.drawAxes();
     }
 
-    if ((changes['cells'] || changes['peblobs']) && this.application) {
+    if ((changes['cells'] || changes['peblobs'] || changes['showMyPeblobs'] || changes['currentUserId']) && this.application) {
       this.drawCells();
     }
   }
@@ -162,6 +165,11 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
 
     this.occupiedCells = new Map(this.cells.map(cell => [`${cell.x}_${cell.y}`, cell]));
+    this.myPeblobCellKeys = new Set(
+      this.cells
+        .filter(cell => this.isMyPeblobCell(cell))
+        .map(cell => `${cell.x}_${cell.y}`)
+    );
     this.drawDefaultCells();
 
     for (const cell of this.occupiedCells.values()) {
@@ -379,6 +387,38 @@ export class PixiMapComponent implements AfterViewInit, OnChanges, OnDestroy {
         this.mapContainer?.addChild(graphics);
       });
     });
+
+    if (this.showMyPeblobs && this.isMyPeblobCell(cell)) {
+      const border = new Graphics();
+      const lineWidth = 1 / this.mapContainer!.scale.x;
+      const borderExtension = CELL_GAP / 2;
+      const hasCell = (x: number, y: number) => this.myPeblobCellKeys.has(`${x}_${y}`);
+
+      if (!hasCell(cell.x, cell.y + 1)) {
+        border.moveTo(originX - borderExtension, originY - borderExtension)
+          .lineTo(originX + CELL_SIZE + borderExtension, originY - borderExtension);
+      }
+      if (!hasCell(cell.x, cell.y - 1)) {
+        border.moveTo(originX - borderExtension, originY + CELL_SIZE + borderExtension)
+          .lineTo(originX + CELL_SIZE + borderExtension, originY + CELL_SIZE + borderExtension);
+      }
+      if (!hasCell(cell.x - 1, cell.y)) {
+        border.moveTo(originX - borderExtension, originY - borderExtension)
+          .lineTo(originX - borderExtension, originY + CELL_SIZE + borderExtension);
+      }
+      if (!hasCell(cell.x + 1, cell.y)) {
+        border.moveTo(originX + CELL_SIZE + borderExtension, originY - borderExtension)
+          .lineTo(originX + CELL_SIZE + borderExtension, originY + CELL_SIZE + borderExtension);
+      }
+      border.stroke({ color: 0xffffff, width: lineWidth });
+      this.mapContainer?.addChild(border);
+    }
+  }
+
+  private isMyPeblobCell(cell: Cell): boolean {
+    return cell.occupants.some(occupantId =>
+      this.peblobs.some(peblob => peblob._id === occupantId && peblob.userId === this.currentUserId)
+    );
   }
 
   private occupantColor(occupantCount: number): number {

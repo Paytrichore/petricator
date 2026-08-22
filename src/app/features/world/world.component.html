@@ -1,7 +1,7 @@
+<h1 class="title">Monde</h1>
 <div class="world">
   <mat-card appearance="outlined" class="world__map-card">
     <mat-card-header>
-      <mat-card-title>Monde</mat-card-title>
       <mat-card-subtitle>
         {{ (connected$ | async) ? 'Monde connecté' : 'Connexion au monde...' }}
         @if (loading$ | async) {
@@ -25,6 +25,12 @@
           aria-label="Afficher les axes de la carte">
           Axes
         </mat-slide-toggle>
+        <mat-slide-toggle
+          [checked]="showMyPeblobs"
+          (change)="showMyPeblobs = $event.checked"
+          aria-label="Afficher mes Péblobs">
+          Mes Péblobs
+        </mat-slide-toggle>
       </div>
     </mat-card-header>
     <mat-card-content>
@@ -33,6 +39,8 @@
         [peblobs]="(peblobs$ | async) ?? []"
         [zoom]="mapZoom"
         [showAxes]="showAxes"
+        [showMyPeblobs]="showMyPeblobs"
+        [currentUserId]="(user$ | async)?._id ?? null"
         (cellHovered)="showCellTooltip($event)"
         (cellHoverEnded)="hideCellTooltip()"
         (cellSelected)="selectCell($event)"></app-pixi-map>
@@ -66,15 +74,13 @@
   </mat-menu>
 
   <ng-template #cellTooltip let-cell>
-    <div class="world-cell-tooltip">
-      <div class="world-cell-tooltip__coordinate">Cellule ({{ cell.x }}, {{ cell.y }})</div>
-      @if (cell.peblob; as peblob) {
-        <div class="world-cell-tooltip__peblob">
-          <app-peblob [composed]="peblob.structure"></app-peblob>
-          <div class="world-cell-tooltip__owner">Joueur : {{ cell.ownerName }}</div>
-        </div>
-      }
-    </div>
+    <div class="world-cell-tooltip__coordinate">Cellule ({{ cell.x }}, {{ cell.y }})</div>
+    @if (cell.peblob; as peblob) {
+      <div class="world-cell-tooltip__peblob">
+        <app-peblob [composed]="peblob.structure"></app-peblob>
+        <div class="world-cell-tooltip__owner">Joueur : {{ cell.ownerName }}</div>
+      </div>
+    }
   </ng-template>
 
   <app-tooltip></app-tooltip>
@@ -86,7 +92,7 @@
         <mat-card-subtitle>Case sélectionnée : ({{ cell.x }}, {{ cell.y }}) · 2 PA</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <mat-form-field appearance="outline" class="placement-card__field">
+        <mat-form-field appearance="fill" class="placement-card__field">
           <mat-label>Péblob</mat-label>
           <input
             matInput
@@ -94,6 +100,11 @@
             [formControl]="placementPeblobControl"
             [matAutocomplete]="peblobAutocomplete"
             placeholder="Rechercher un péblob">
+          @if (selectedPlacementPeblob(); as selectedPeblob) {
+            <span matPrefix class="placement-card__selected-preview">
+              <app-peblob [composed]="selectedPeblob.structure" [size]="32"></app-peblob>
+            </span>
+          }
           <mat-autocomplete
             #peblobAutocomplete="matAutocomplete"
             [displayWith]="displayPeblob">
@@ -101,7 +112,7 @@
               <mat-option [value]="peblob">
                 <span class="peblob-option">
                   <app-peblob [composed]="peblob.structure"></app-peblob>
-                  <span>{{ peblob._id }}</span>
+                  <span>{{ peblob.name || '' }}</span>
                 </span>
               </mat-option>
             }

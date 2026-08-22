@@ -1,7 +1,135 @@
+<h1 class="title">Mes Péblobs</h1>
+<div class="collection__filters">
+  <mat-form-field appearance="fill">
+    <mat-label>{{ 'collection.filters.color' | translate }}</mat-label>
+    <mat-select [formControl]="colorControl">
+      <mat-option value="">{{ 'collection.filters.allColors' | translate }}</mat-option>
+      @for (color of colors; track color) {
+      <mat-option [value]="color">
+        {{ ('collection.tints.' + color) | translate }}
+      </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>{{ 'collection.filters.status' | translate }}</mat-label>
+    <mat-select [formControl]="statusControl">
+      <mat-option value="">{{ 'collection.filters.allStatuses' | translate }}</mat-option>
+      <mat-option [value]="peblobStatus.AVAILABLE">{{ 'collection.status.available' | translate }}</mat-option>
+      <mat-option [value]="peblobStatus.ON_MAP">{{ 'collection.status.onMap' | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>{{ 'collection.filters.sort' | translate }}</mat-label>
+    <mat-select [formControl]="sortOrderControl">
+      <mat-option value="desc">{{ 'collection.filters.recent' | translate }}</mat-option>
+      <mat-option value="asc">{{ 'collection.filters.oldest' | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
 @if (peblobs$ | async; as peblobs) {
-  <div class="flex justify-center gap-12 wrap">
-    @for (peblob of peblobs; track peblob._id) {
-      <app-peblob [composed]="peblob.structure"></app-peblob>
-    }
-  </div>
+  @if (peblobs.length) {
+    <mat-accordion>
+      @for (peblob of peblobs; track peblob._id) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <app-peblob
+                class="collection__preview"
+                [composed]="peblob.structure"
+                [size]="36"
+              ></app-peblob>
+                {{ peblob.name || ('collection.unnamed' | translate) }}
+            </mat-panel-title>
+            <mat-panel-description>
+                <span class="collection__status-label">
+                  {{ peblob.status === peblobStatus.ON_MAP ? ('collection.status.onMap' | translate) : ('collection.status.available' | translate) }}
+                </span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="collection__expanded">
+
+            <div class="collection__preview-column">
+              <app-peblob
+                [composed]="peblob.structure"
+                [size]="120"
+                [showRgbText]="isRgbTextEnabled(peblob._id)"
+                (colorHovered)="isRgbTextEnabled(peblob._id) ? null : showRgbTooltip($event)"
+                (colorHoverEnded)="isRgbTextEnabled(peblob._id) ? null : hideRgbTooltip()"
+              ></app-peblob>
+            </div>
+
+            <div class="collection__details">
+              <div class="collection__name-row">
+                <app-basic-input
+                  [label]="'collection.name' | translate"
+                  [showHint]="false"
+                  [formControl]="getNameControl(peblob)">
+                </app-basic-input>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  class="collection__name-row-button"
+                  [disabled]="(renamingPeblobIds$ | async)?.includes(peblob._id)"
+                  (click)="saveName(peblob, getNameControl(peblob).value)"
+                >
+                  {{ 'collection.save' | translate }}
+                </button>
+              </div>
+              <div class="collection__detail">
+                <span class="collection__detail-label">
+                  {{ 'collection.filters.color' | translate }} :
+                </span>
+
+                @if (peblob.dominantColor; as dominantColor) {
+                  <span>{{ ('collection.tints.' + dominantColor) | translate }}</span>
+                } @else {
+                  <span>{{ 'collection.tints.unknown' | translate }}</span>
+                }
+              </div>
+              <div class="collection__detail">
+                <span class="collection__detail-label">{{ 'collection.filters.date' | translate }} :</span>
+                <span>{{ peblob.createdAt | date:'short' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="collection__actions">
+            <mat-slide-toggle
+              [checked]="isRgbTextEnabled(peblob._id)"
+              (change)="toggleRgbText(peblob._id, $event.checked)"
+            >
+              {{ 'collection.rgbValues' | translate }}
+            </mat-slide-toggle>
+            <div class="collection__action">
+              {{ 'collection.action' | translate }}
+            </div>
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  } @else {
+    <p>{{ 'collection.empty' | translate }}</p>
+  }
 }
+
+@if (error$ | async) {
+  <p class="collection__status collection__status--error">{{ 'collection.error' | translate }}</p>
+  <button mat-stroked-button type="button" (click)="retry()">{{ 'collection.retry' | translate }}</button>
+}
+
+<mat-paginator
+  [length]="(total$ | async) || 0"
+  [pageIndex]="page - 1"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 20, 50]"
+  (page)="changePage($event)"
+></mat-paginator>
+
+<app-tooltip></app-tooltip>
+<ng-template #rgbTooltip let-color>
+  <app-rgb-values [color]="color"></app-rgb-values>
+</ng-template>

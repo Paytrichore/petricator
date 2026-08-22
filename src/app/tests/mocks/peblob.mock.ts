@@ -19,5 +19,9 @@ export const initialState: PeblobState = {
   mapPeblobs: [],
   loading: false,
   mapLoading: false,
-  error: null
+  error: null,
+  total: 1,
+  page: 1,
+  pageSize: 20,
+  renamingPeblobIds: []
 };

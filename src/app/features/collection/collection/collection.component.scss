@@ -1,0 +1,117 @@
+.collection__filters {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin-bottom: 24px;
+
+	::ng-deep .mat-mdc-form-field-subscript-wrapper {
+		display: none;
+	}
+}
+
+.collection__preview {
+	flex: 0 0 48px;
+	margin-right: 12px;
+	pointer-events: none;
+}
+
+.collection__preview-column {
+	display: flex;
+	flex: 0 0 120px;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.collection__expanded {
+	align-items: flex-start;
+	box-sizing: border-box;
+	display: flex;
+	gap: 16px;
+	padding: 16px 0;
+	width: 100%;
+}
+
+.collection__details {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 9px;
+	min-width: 0;
+	width: 100%;
+}
+
+.collection__name-row {
+	align-items: center;
+	display: flex;
+	gap: 12px;
+	width: 100%;
+
+	app-basic-input {
+		flex: 1;
+		min-width: 0;
+	}
+}
+
+.collection__detail {
+	display: flex;
+	gap: 4px;
+}
+
+.collection__detail-label {
+	font-weight: 600;
+}
+
+.collection__action {
+	border: 1px dashed currentColor;
+	flex: 1;
+	padding: 16px;
+	text-align: center;
+}
+
+.collection__actions {
+	align-items: center;
+	display: flex;
+	gap: 16px;
+	width: 100%;
+}
+
+.collection__status {
+	margin: 12px 0;
+}
+
+.collection__status--error {
+	color: #b3261e;
+}
+
+@media (max-width: 600px) {
+	.collection__filters {
+		mat-form-field {
+			width: 100%;
+		}
+	}
+
+	.collection__expanded {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.collection__name-row {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.collection__preview-column {
+		flex-basis: auto;
+		width: 100%;
+	}
+
+	.collection__actions {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.collection__action {
+		width: 100%;
+	}
+}

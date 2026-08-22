@@ -11,6 +11,10 @@
 
   & main {
     padding: 0 26px;
+
+    @media (max-width: 600px) {
+      padding: 0 16px;
+    }
   }
 }
 
@@ -85,7 +89,7 @@ mat-nav-list {
       margin-bottom 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 
     &--scrolled {
-      margin-bottom: 0;
+      margin-bottom: 10px;
       margin-top: 10px;
 
       & h1 {

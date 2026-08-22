@@ -1,9 +1,14 @@
-<div class="peblob">
+<div class="peblob" [style.--peblob-size.px]="size">
     @for (group of composed; track $index) {
       <div class="peblob__line">
         @for (color of group; track $index) {
           <div class="peblob__item"
-               [style.background]="'rgb(' + color.r + ',' + color.g + ',' + color.b + ')'">
+            [style.background]="'rgb(' + color.r + ',' + color.g + ',' + color.b + ')'"
+            (mouseenter)="onColorHovered(color, $event)"
+            (mouseleave)="colorHoverEnded.emit()">
+            @if (showRgbText) {
+              <app-rgb-values [color]="color" format="xs"></app-rgb-values>
+            }
           </div>
         }
       </div>
