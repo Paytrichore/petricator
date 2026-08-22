@@ -101,17 +101,12 @@
 		flex-direction: column;
 	}
 
-	.collection__preview-column {
-		flex-basis: auto;
-		width: 100%;
-	}
-
 	.collection__actions {
 		align-items: stretch;
 		flex-direction: column;
 	}
 
-	.collection__action {
-		width: 100%;
-	}
+    .collection__preview-column {
+        margin: auto;
+    }
 }
