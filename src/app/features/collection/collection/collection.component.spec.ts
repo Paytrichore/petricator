@@ -2,12 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { CollectionComponent } from './collection.component';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { selectPeblobs } from '../../../core/stores/peblob/peblob.selectors';
+import { selectPeblobs, selectPeblobsTotal } from '../../../core/stores/peblob/peblob.selectors';
 import { PeblobEntity } from '../../../core/stores/peblob/peblob.model';
 import { mockPeblobs } from '../../../tests/mocks/peblob.mock';
 import { selectUser } from '../../../core/stores/user/user.selectors';
 import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
 import { PeblobComponent } from '../../../shared/components/peblob/peblob.component';
+import { TranslateService } from '@ngx-translate/core';
+import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
+import { of } from 'rxjs';
 
 describe('CollectionComponent', () => {
   let component: CollectionComponent;
@@ -41,6 +44,10 @@ describe('CollectionComponent', () => {
               value: collectionPeblobs
             },
             {
+              selector: selectPeblobsTotal,
+              value: collectionPeblobs.length
+            },
+            {
               selector: selectUser,
               value: {
                 _id: 'user-123',
@@ -56,7 +63,8 @@ describe('CollectionComponent', () => {
               }
             }
           ]
-        })
+        }),
+        { provide: TranslateService, useValue: translateServiceMock }
       ]
     }).compileComponents();
 
@@ -110,7 +118,25 @@ describe('CollectionComponent', () => {
 
   it('should dispatch peblob load on init when user exists', () => {
     expect(store.dispatch).toHaveBeenCalledWith(
-      PeblobActions.loadPeblobsByUserIds({ userId: 'user-123' })
+      PeblobActions.loadPeblobsByUserIds({
+        userId: 'user-123',
+        page: 1,
+        pageSize: 20,
+        color: undefined,
+        sortOrder: 'desc',
+        status: undefined,
+      })
+    );
+  });
+
+  it('should dispatch a rename action when saving a name', () => {
+    component.saveName(collectionPeblobs[0], '  Blue  ');
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      PeblobActions.renamePeblob({
+        peblobId: 'peblob-1',
+        name: '  Blue  ',
+      })
     );
   });
 });

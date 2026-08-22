@@ -11,7 +11,7 @@
     <div class="flex justify-center gap-36 wrap my-36">
       @for (peblob of peblobDraft; track peblob) {
         <app-peblob
-          [composed]="peblob"
+          [composed]="peblob.structure"
           (click)="selectPeblob(peblob)"
           [class.selected]="peblob === selectedPeblob"
         ></app-peblob>

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AdventureComponent } from './adventure.component';
 import { PeblobService } from '../../../services/peblob/peblob.service';
-import { ComposedPeblob } from '../../../shared/interfaces/peblob';
+import { GeneratedPeblob, Tint } from '../../../shared/interfaces/peblob';
 
 describe('AdventureComponent', () => {
   let component: AdventureComponent;
@@ -10,14 +10,17 @@ describe('AdventureComponent', () => {
   let peblobService: jasmine.SpyObj<PeblobService>;
 
   beforeEach(async () => {
-    const peblobMock: ComposedPeblob = [
-      [{ r: 1, g: 2, b: 3 }],
-      [{ r: 4, g: 5, b: 6 }],
-      [{ r: 7, g: 8, b: 9 }],
-    ];
+    const peblobMock: GeneratedPeblob = {
+      structure: [
+        [{ r: 1, g: 2, b: 3 }],
+        [{ r: 4, g: 5, b: 6 }],
+        [{ r: 7, g: 8, b: 9 }],
+      ],
+      dominantColor: Tint.ORANGE,
+    };
 
-    peblobService = jasmine.createSpyObj('PeblobService', ['composedPeblobGenerator']);
-    peblobService.composedPeblobGenerator.and.returnValue(peblobMock);
+    peblobService = jasmine.createSpyObj('PeblobService', ['generatePeblob']);
+    peblobService.generatePeblob.and.returnValue(peblobMock);
 
     await TestBed.configureTestingModule({
       imports: [AdventureComponent],
@@ -44,7 +47,7 @@ describe('AdventureComponent', () => {
     expect(component.peblobDraft.length).toBe(3);
     expect(component.storyDone).toBeTrue();
     expect(component.story).toEqual(choice);
-    expect(peblobService.composedPeblobGenerator).toHaveBeenCalledTimes(3);
+    expect(peblobService.generatePeblob).toHaveBeenCalledTimes(3);
   });
 
   it('should keep story result after choice selection', () => {

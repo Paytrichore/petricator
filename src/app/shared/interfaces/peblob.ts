@@ -6,6 +6,11 @@ export interface Peblob {
 
 export type ComposedPeblob = Array<Array<Peblob>>;
 
+export interface GeneratedPeblob {
+  structure: ComposedPeblob;
+  dominantColor: Tint;
+}
+
 export enum Tint {
     ORANGE = 'orange',
     GREEN = 'green',

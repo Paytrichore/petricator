@@ -2,13 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { EMPTY, concat, of } from 'rxjs';
+import { EMPTY, Observable, concat, of } from 'rxjs';
 import * as PeblobActions from './peblob.actions';
 import * as UserActions from '../user/user.actions';
 import * as WorldActions from '../world/world.actions';
 import { selectMapPeblobs } from './peblob.selectors';
 import { Cell } from '../../../shared/interfaces/world.interface';
 import { PeblobService } from '../../../services/peblob/peblob.service';
+import { PeblobEntity } from './peblob.model';
 
 @Injectable()
 export class PeblobEffects {
@@ -34,8 +35,8 @@ export class PeblobEffects {
   createPeblob$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PeblobActions.createPeblob),
-      switchMap(({ userId, structure }) =>
-        this.peblobService.createPeblob(userId, structure).pipe(
+      switchMap(({ userId, structure, dominantColor }) =>
+        this.peblobService.createPeblob(userId, structure, dominantColor).pipe(
           switchMap((peblob) => {
             return [
               PeblobActions.createPeblobSuccess({ peblob }),
@@ -48,38 +49,69 @@ export class PeblobEffects {
     )
   );
 
+  renamePeblob$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PeblobActions.renamePeblob),
+      switchMap(({ peblobId, name }) => this.peblobService.updatePeblobName(peblobId, name).pipe(
+        map((peblob) => PeblobActions.renamePeblobSuccess({ peblob })),
+        catchError((error) => of(PeblobActions.renamePeblobFailure({ peblobId, error })))
+      ))
+    )
+  );
+
   loadPeblobs$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PeblobActions.loadPeblobsByUserIds),
-      switchMap(({ userId }) => {
-        const cacheKey = `peblobs_${userId}`;
-        let cachedPeblobs: any[] | null = null;
+      switchMap(({ userId, page, pageSize, color, sortOrder, status }) => {
+        const cacheKey = `peblobs_${userId}_${page ?? 1}_${pageSize ?? 20}_${color ?? 'all'}_${sortOrder ?? 'desc'}_${status ?? 'all'}`;
+        let cachedPage: unknown = null;
 
         try {
           const raw = localStorage.getItem(cacheKey);
           if (raw) {
             const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed)) {
-              cachedPeblobs = parsed;
-            }
+            cachedPage = parsed;
           }
         } catch {
-          cachedPeblobs = null;
+          cachedPage = null;
         }
 
-        const cached$ = cachedPeblobs
-          ? of(PeblobActions.loadPeblobsSuccess({ peblobs: cachedPeblobs }))
-          : EMPTY;
+        let cachedSuccess: Observable<ReturnType<typeof PeblobActions.loadPeblobsSuccess>> = EMPTY;
+        if (cachedPage && typeof cachedPage === 'object' && 'items' in cachedPage) {
+          const pageResult = cachedPage as {
+            items: PeblobEntity[];
+            total: number;
+            page: number;
+            pageSize: number;
+          };
+          cachedSuccess = of(PeblobActions.loadPeblobsSuccess({
+            peblobs: pageResult.items,
+            total: pageResult.total,
+            page: pageResult.page,
+            pageSize: pageResult.pageSize,
+          }));
+        }
 
-        const revalidate$ = this.peblobService.loadPeblobsByUserId(userId).pipe(
-          map((peblobs) => {
-            localStorage.setItem(cacheKey, JSON.stringify(peblobs));
-            return PeblobActions.loadPeblobsSuccess({ peblobs });
+        const revalidate$ = this.peblobService.loadPeblobsByUserId(userId, {
+          page,
+          pageSize,
+          color,
+          sortOrder,
+          status,
+        }).pipe(
+          map((result) => {
+            localStorage.setItem(cacheKey, JSON.stringify(result));
+            return PeblobActions.loadPeblobsSuccess({
+              peblobs: result.items,
+              total: result.total,
+              page: result.page,
+              pageSize: result.pageSize,
+            });
           }),
           catchError((error) => of(PeblobActions.loadPeblobsFailure({ error })))
         );
 
-        return concat(cached$, revalidate$);
+        return concat(cachedSuccess, revalidate$);
       })
     )
   );

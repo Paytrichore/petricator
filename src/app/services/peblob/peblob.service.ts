@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ComposedPeblob, Peblob, Tint } from '../../shared/interfaces/peblob';
+import { ComposedPeblob, GeneratedPeblob, Peblob, Tint } from '../../shared/interfaces/peblob';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { PeblobEntity } from '../../core/stores/peblob/peblob.model';
+import { PeblobEntity, PeblobStatus } from '../../core/stores/peblob/peblob.model';
+import { PeblobPage } from '../../core/stores/peblob/peblob.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,39 +14,54 @@ export class PeblobService {
 
   private readonly peblobApiUrl = environment.peblobApiUrl;
 
-  public createPeblob(userId: string, structure: ComposedPeblob): Observable<PeblobEntity> {
+  public createPeblob(userId: string, structure: ComposedPeblob, dominantColor?: Tint): Observable<PeblobEntity> {
     const body = {
       userId: userId,
-      structure: structure
+      structure: structure,
+      ...(dominantColor ? { dominantColor } : {})
     };
     
     return this.http.post<PeblobEntity>(`${this.peblobApiUrl}/peblob`, body);
   }
 
-  public loadPeblobsByUserId(userId: string): Observable<PeblobEntity[]> {
-    return this.http.get<PeblobEntity[]>(`${this.peblobApiUrl}/peblob/user/${userId}`);
+  public loadPeblobsByUserId(userId: string, query: {
+    page?: number;
+    pageSize?: number;
+    color?: Tint;
+    sortOrder?: 'asc' | 'desc';
+    status?: PeblobStatus;
+  } = {}): Observable<PeblobPage> {
+    let params = new HttpParams();
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined) {
+        params = params.set(key, String(value));
+      }
+    });
+
+    return this.http.get<PeblobPage>(`${this.peblobApiUrl}/peblob/user/${userId}`, { params });
   }
 
   public loadPeblobsByIds(peblobIds: string[]): Observable<PeblobEntity[]> {
     return this.http.post<PeblobEntity[]>(`${this.peblobApiUrl}/peblob/by-ids`, { ids: peblobIds });
   }
 
+  public updatePeblobName(peblobId: string, name: string): Observable<PeblobEntity> {
+    return this.http.patch<PeblobEntity>(`${this.peblobApiUrl}/peblob/${peblobId}`, {
+      name: name.trim() || undefined,
+    });
+  }
+
+  public generatePeblob(tint?: Tint): GeneratedPeblob {
+    const dominantColor = tint ?? this.randomTint();
+
+    return {
+      structure: this.composedPeblobGenerator(dominantColor),
+      dominantColor,
+    };
+  }
+
   public composedPeblobGenerator(tint?: Tint): ComposedPeblob {
-    if (!tint) {
-      const rand = Math.random();
-      if (rand < 0.75) {
-        // 75% : yellow, red, blue
-        const mainTints = [Tint.YELLOW, Tint.RED, Tint.BLUE];
-        tint = mainTints[Math.floor(Math.random() * mainTints.length)];
-      } else if (rand < 0.95) {
-        // 20% : violet, green, orange
-        const secondaryTints = [Tint.PURPLE, Tint.GREEN, Tint.ORANGE];
-        tint = secondaryTints[Math.floor(Math.random() * secondaryTints.length)];
-      } else {
-        // 5% : pink
-        tint = Tint.PINK;
-      }
-    }
+    tint ??= this.randomTint();
 
     const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -68,6 +84,21 @@ export class PeblobService {
     ];
 
     return composed;
+  }
+
+  private randomTint(): Tint {
+    const rand = Math.random();
+    if (rand < 0.75) {
+      const mainTints = [Tint.YELLOW, Tint.RED, Tint.BLUE];
+      return mainTints[Math.floor(Math.random() * mainTints.length)];
+    }
+
+    if (rand < 0.95) {
+      const secondaryTints = [Tint.PURPLE, Tint.GREEN, Tint.ORANGE];
+      return secondaryTints[Math.floor(Math.random() * secondaryTints.length)];
+    }
+
+    return Tint.PINK;
   }
 
   // Helper pour générer une couleur dans la teinte

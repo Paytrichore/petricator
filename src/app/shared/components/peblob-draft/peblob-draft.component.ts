@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ComposedPeblob } from '../../interfaces/peblob';
+import { GeneratedPeblob } from '../../interfaces/peblob';
 import { PeblobComponent } from '../peblob/peblob.component';
 import { MatButtonModule } from '@angular/material/button';
 import { sequencedFadeInAnimation } from '../../animations/sequenced-fade-in.animation';
@@ -26,10 +26,10 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
     private messageService: MessageService,
   ) {}
 
-  @Input() peblobDraft!: Array<ComposedPeblob>;
+  @Input() peblobDraft!: Array<GeneratedPeblob>;
   @Output() draftDone = new EventEmitter<boolean>();
 
-  public selectedPeblob?: ComposedPeblob;
+  public selectedPeblob?: GeneratedPeblob;
   public draftAnimState: 'default' | 'clicked' = 'default';
   private userId?: string;
   private draftSubmissionPending = false;
@@ -63,7 +63,7 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
       });
   }
 
-  public selectPeblob(peblob: ComposedPeblob) {
+  public selectPeblob(peblob: GeneratedPeblob) {
     this.selectedPeblob = peblob;
   }
 
@@ -75,7 +75,8 @@ export class PeblobDraftComponent implements OnDestroy, OnInit {
     this.draftSubmissionPending = true;
     this.store.dispatch(PeblobActions.createPeblob({
       userId: this.userId,
-      structure: this.selectedPeblob
+      structure: this.selectedPeblob.structure,
+      dominantColor: this.selectedPeblob.dominantColor,
     }));
   }
 

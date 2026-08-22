@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { StoryComponent } from '../../../shared/components/story/story.component';
 import { PeblobDraftComponent } from '../../../shared/components/peblob-draft/peblob-draft.component';
-import { ComposedPeblob, tintMap } from '../../../shared/interfaces/peblob';
+import { GeneratedPeblob, tintMap } from '../../../shared/interfaces/peblob';
 import { PeblobService } from '../../../services/peblob/peblob.service';
 import { shuffleArray } from '../../../shared/helpers/array.helpers';
 
@@ -13,7 +13,7 @@ import { shuffleArray } from '../../../shared/helpers/array.helpers';
   styleUrl: './adventure.component.scss',
 })
 export class AdventureComponent {
-  public peblobDraft!: Array<ComposedPeblob>;
+  public peblobDraft!: Array<GeneratedPeblob>;
   public storyDone = false;
   public story?: { color: string; action: string; result: string };
 
@@ -21,9 +21,9 @@ export class AdventureComponent {
 
   onChoiceSelected(choice: { color: string; action: string; result: string }) {
     this.peblobDraft = [
-      this.peblobService.composedPeblobGenerator(tintMap[choice.color.toLowerCase()]),
-      this.peblobService.composedPeblobGenerator(),
-      this.peblobService.composedPeblobGenerator(),
+      this.peblobService.generatePeblob(tintMap[choice.color.toLowerCase()]),
+      this.peblobService.generatePeblob(),
+      this.peblobService.generatePeblob(),
     ];
     this.peblobDraft = shuffleArray(this.peblobDraft);
     this.storyDone = true;

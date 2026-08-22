@@ -56,6 +56,41 @@
       "world": "Monde"
     }
   },
+  "collection": {
+    "filters": {
+      "color": "Type",
+      "allColors": "Tous",
+      "sort": "Trier par",
+      "date": "Date de capture",
+      "status": "Statut",
+      "allStatuses": "Tous",
+      "recent": "Plus récents",
+      "oldest": "Plus anciens"
+    },
+    "tints": {
+      "yellow": "Curieux",
+      "red": "Puissant",
+      "blue": "Spirituel",
+      "green": "Serein",
+      "purple": "Harmonieux",
+      "orange": "Créatif",
+      "pink": "Doux",
+      "unknown": "Inconnu"
+    },
+    "unnamed": "Sans nom",
+        "status": {
+          "available": "Libre",
+          "onMap": "Placé"
+        },
+    "name": "Nom",
+    "save": "Enregistrer",
+    "rgbValues": "Valeurs RGB",
+    "action": "Action",
+    "empty": "Aucun Peblob ne correspond à ces critères.",
+    "loading": "Chargement...",
+    "error": "Le chargement des Peblobs a échoué.",
+    "retry": "Réessayer"
+  },
   "playerStatus": {
     "actionPoints": "Points d'action",
     "nextDla": "Prochaine DLA",
