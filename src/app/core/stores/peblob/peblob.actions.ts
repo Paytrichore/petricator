@@ -1,6 +1,6 @@
 import { PeblobEntity, PeblobStatus } from './peblob.model';
 import { createAction, props } from '@ngrx/store';
-import { ComposedPeblob, Tint } from '../../../shared/interfaces/peblob';
+import { ComposedPeblob, RGBEffect, Tint } from '../../../shared/interfaces/peblob';
 
 // Set peblobs from user login
 export const setPeblobs = createAction('[Peblob] Set Peblobs', props<{ peblobs: PeblobEntity[] }>());
@@ -18,6 +18,22 @@ export const renamePeblob = createAction('[Peblob] Rename Peblob', props<{
 }>());
 export const renamePeblobSuccess = createAction('[Peblob] Rename Peblob Success', props<{ peblob: PeblobEntity }>());
 export const renamePeblobFailure = createAction('[Peblob] Rename Peblob Failure', props<{ peblobId: string; error: any }>());
+
+// Apply a story to one peblob. The API atomically applies the effect and charges 1 AP.
+export const applyStory = createAction('[Peblob] Apply Story', props<{
+	peblobId: string;
+	storyId: string;
+	effect: RGBEffect;
+}>());
+export const applyStorySuccess = createAction('[Peblob] Apply Story Success', props<{ peblob: PeblobEntity }>());
+export const applyStoryFailure = createAction('[Peblob] Apply Story Failure', props<{ peblobId: string; error: any }>());
+
+export const purchasePower = createAction('[Peblob] Purchase Power', props<{
+	peblobId: string;
+	powerId: string;
+}>());
+export const purchasePowerSuccess = createAction('[Peblob] Purchase Power Success', props<{ peblob: PeblobEntity }>());
+export const purchasePowerFailure = createAction('[Peblob] Purchase Power Failure', props<{ peblobId: string; error: any }>());
 
 // Load peblobs by IDs (nouveau)
 export const loadPeblobsByUserIds = createAction('[Peblob] Load Peblobs By user IDs', props<{

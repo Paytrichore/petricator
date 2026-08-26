@@ -6,6 +6,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { userMock } from '../../tests/mocks/user.mock';
 import { User } from '../../core/stores/user/user.model';
 import { fakeAsync, tick } from '@angular/core/testing';
+import { PeblobService } from '../../services/peblob/peblob.service';
+import { of } from 'rxjs';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -28,6 +30,10 @@ describe('HomeComponent', () => {
             }
           ]
         }),
+        {
+          provide: PeblobService,
+          useValue: { getCurrentDraft: () => of(null) },
+        },
         provideAnimations()
       ]
     }).compileComponents();
@@ -46,6 +52,15 @@ describe('HomeComponent', () => {
     component.showAdventure();
 
     expect(component.isAdventureVisible).toBeTrue();
+  });
+
+  it('should show the status skeleton while refreshing after draft completion', () => {
+    component.isDraftLoading = false;
+
+    component.onDraftDone();
+
+    expect(component.isDraftLoading).toBeTrue();
+    expect(component.isAdventureVisible).toBeFalse();
   });
 
   it('should compute a real-time countdown from nextDLA for drafted users', fakeAsync(() => {

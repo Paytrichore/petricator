@@ -1,0 +1,184 @@
+{
+  "pink": [
+    {
+      "situation": "Une vieille souche repose seule au bord du chemin.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "T'asseoir près d'elle et rester un moment.",
+          "result": "Tu imagines les saisons qu'elle a traversées avant de tomber."
+        },
+        {
+          "color": "green",
+          "action": "Observer les petites plantes qui poussent autour d'elle.",
+          "result": "La vie continue doucement autour du vieux bois."
+        }
+      ]
+    },
+    {
+      "situation": "Une feuille tombe lentement d'un arbre.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "La suivre du regard jusqu'au sol.",
+          "result": "Son voyage est bref, mais tu as l'impression d'avoir assisté à quelque chose d'important."
+        },
+        {
+          "color": "yellow",
+          "action": "Te demander pourquoi elle est tombée avant les autres.",
+          "result": "Tu examines l'arbre et remarques quelques feuilles déjà jaunies."
+        }
+      ]
+    },
+    {
+      "situation": "Un petit chemin envahi par l'herbe semble ne plus être emprunté.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "Le suivre lentement.",
+          "result": "Le chemin te mène jusqu'à un endroit qui semble avoir été oublié depuis longtemps."
+        },
+        {
+          "color": "yellow",
+          "action": "Chercher où il pouvait autrefois mener.",
+          "result": "Tu découvres les restes d'un ancien passage sous les herbes."
+        }
+      ]
+    },
+    {
+      "situation": "Une vieille balançoire bouge doucement dans le vent.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "T'asseoir dessus et te laisser bercer.",
+          "result": "Le mouvement lent fait remonter en toi une sensation familière."
+        },
+        {
+          "color": "green",
+          "action": "Rester simplement à côté et écouter son grincement.",
+          "result": "Le vieux bois accompagne doucement le souffle du vent."
+        }
+      ]
+    },
+    {
+      "situation": "Une fleur fanée tient encore debout.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "La regarder jusqu'à ce que le vent emporte ses derniers pétales.",
+          "result": "Tu la regardes disparaître sans chercher à la retenir."
+        },
+        {
+          "color": "green",
+          "action": "Observer les nouvelles pousses autour d'elle.",
+          "result": "À ses pieds, de petites feuilles commencent déjà à apparaître."
+        }
+      ]
+    },
+    {
+      "situation": "Une pluie douce tombe sur une prairie silencieuse.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "Rester sous la pluie et écouter son murmure.",
+          "result": "La pluie semble envelopper le paysage d'une douce mélancolie."
+        },
+        {
+          "color": "blue",
+          "action": "Fermer les yeux et écouter profondément.",
+          "result": "Chaque goutte semble rejoindre une immense musique silencieuse."
+        }
+      ]
+    },
+    {
+      "situation": "Un vieux chemin de pierres traverse la forêt.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "Imaginer ceux qui l'ont emprunté autrefois.",
+          "result": "Pendant un instant, le chemin semble rempli de pas invisibles."
+        },
+        {
+          "color": "yellow",
+          "action": "Suivre le chemin pour découvrir où il mène.",
+          "result": "Le sentier finit par déboucher sur une clairière oubliée."
+        }
+      ]
+    },
+    {
+      "situation": "Un arbre immense porte encore quelques fruits malgré l'hiver.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "Les laisser sur l'arbre.",
+          "result": "Tu te demandes combien de saisons cet arbre a déjà connues."
+        },
+        {
+          "color": "green",
+          "action": "Observer les branches qui attendent le retour du printemps.",
+          "result": "Sous l'écorce immobile, la vie semble simplement attendre son heure."
+        }
+      ]
+    },
+    {
+      "situation": "Une rivière emporte doucement des feuilles mortes.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "Suivre leur voyage du regard.",
+          "result": "Les feuilles disparaissent peu à peu au détour de la rivière."
+        },
+        {
+          "color": "blue",
+          "action": "Te demander où l'eau les emportera.",
+          "result": "La rivière continue son voyage bien au-delà de ce que tu peux voir."
+        }
+      ]
+    },
+    {
+      "situation": "Le soleil se couche derrière une forêt silencieuse.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "Rester jusqu'à ce que la dernière lumière disparaisse.",
+          "result": "Le ciel devient sombre avec une lenteur presque rassurante."
+        },
+        {
+          "color": "purple",
+          "action": "Observer les différentes couleurs se mélanger.",
+          "result": "Le jour et la nuit semblent se rencontrer dans un équilibre parfait."
+        }
+      ]
+    },
+    {
+      "situation": "Une petite fleur pousse au milieu d'un endroit autrefois ravagé par le feu.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "La contempler en silence.",
+          "result": "Sa fragilité contraste avec les traces du passé qui l'entourent."
+        },
+        {
+          "color": "green",
+          "action": "Observer les autres plantes qui commencent à revenir.",
+          "result": "La vie reprend doucement possession du sol noirci."
+        }
+      ]
+    },
+    {
+      "situation": "La neige recouvre un paysage que tu connaissais.",
+      "choices": [
+        {
+          "color": "rose",
+          "action": "Rester immobile et contempler ce monde devenu différent.",
+          "result": "Tout semble familier et pourtant étrangement nouveau."
+        },
+        {
+          "color": "yellow",
+          "action": "Explorer les traces laissées dans la neige.",
+          "result": "Tu suis plusieurs empreintes qui racontent les passages de la nuit."
+        }
+      ]
+    }
+  ]
+}

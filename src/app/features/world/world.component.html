@@ -74,11 +74,19 @@
   </mat-menu>
 
   <ng-template #cellTooltip let-cell>
-    <div class="world-cell-tooltip__coordinate">Cellule ({{ cell.x }}, {{ cell.y }})</div>
+    <div class="world-cell-tooltip__coordinate">
+      Cellule ({{ cell.x }}, {{ cell.y }})
+      @if (cell.peblob; as peblob) {
+        @if (peblob.name?.trim(); as peblobName) {
+          <span class="world-cell-tooltip__name">occupée par {{ peblobName }}</span>
+          <div class="world-cell-tooltip__owner">Joueur : {{ cell.ownerName }}</div>
+        }
+      }
+    </div>
     @if (cell.peblob; as peblob) {
       <div class="world-cell-tooltip__peblob">
         <app-peblob [composed]="peblob.structure"></app-peblob>
-        <div class="world-cell-tooltip__owner">Joueur : {{ cell.ownerName }}</div>
+
       </div>
     }
   </ng-template>

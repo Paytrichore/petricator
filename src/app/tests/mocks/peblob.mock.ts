@@ -23,5 +23,6 @@ export const initialState: PeblobState = {
   total: 1,
   page: 1,
   pageSize: 20,
-  renamingPeblobIds: []
+  renamingPeblobIds: [],
+  applyingStoryPeblobIds: []
 };

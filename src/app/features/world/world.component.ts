@@ -69,6 +69,7 @@ export class WorldComponent implements OnInit, OnDestroy {
 
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private closePlacementTimeout?: ReturnType<typeof setTimeout>;
+  private currentUser?: User;
 
   cells$ = this.store.select(selectAllCells);
   loading$ = this.store.select(selectWorldLoading);
@@ -247,6 +248,10 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.user$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+      this.currentUser = user ?? undefined;
+    });
+
     const token = localStorage.getItem('access_token');
     if (token) {
       this.store.dispatch(WorldActions.connectWs({ token }));
@@ -285,10 +290,22 @@ export class WorldComponent implements OnInit, OnDestroy {
       this.cellTooltip,
       {
         ...cell,
-        ownerName: cell.peblob?.ownerName ?? 'Propriétaire inconnu'
+        ownerName: this.getPeblobOwnerName(cell.peblob)
       },
       { x: cell.clientX, y: cell.clientY }
     );
+  }
+
+  getPeblobOwnerName(peblob?: PeblobEntity): string {
+    if (peblob?.ownerName) {
+      return peblob.ownerName;
+    }
+
+    if (peblob?.userId === this.currentUser?._id) {
+      return this.currentUser?.username ?? 'Propriétaire inconnu';
+    }
+
+    return 'Propriétaire inconnu';
   }
 
   hideCellTooltip(): void {

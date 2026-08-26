@@ -144,6 +144,26 @@ describe('PeblobService', () => {
     });
   });
 
+  it('should send story RGB effect fields at the request root', (done) => {
+    const mockPeblob: PeblobEntity = {
+      _id: 'peblob123',
+      userId: 'user123',
+      structure: [[{ r: 5, g: 6, b: 7 }]],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    httpSpy.post.and.returnValue(of(mockPeblob));
+
+    service.applyStory('peblob123', 'story-2', { r: 4, g: 0, b: 4 }).subscribe(result => {
+      expect(httpSpy.post).toHaveBeenCalledWith(
+        `${service['peblobApiUrl']}/peblob/peblob123/stories`,
+        { storyId: 'story-2', r: 4, g: 0, b: 4 }
+      );
+      expect(result).toEqual(mockPeblob);
+      done();
+    });
+  });
+
   it('should call HttpClient.get and return an Observable for loadPeblobsByIds', (done) => {
     const ids = ['p1', 'p2'];
     const mockPeblobs: PeblobEntity[] = [

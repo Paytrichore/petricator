@@ -1,5 +1,7 @@
 import { StoryService } from './story.service';
 import storyData from '../../../assets/i18n/story-fr.json';
+import { PeblobEntity } from '../../core/stores/peblob/peblob.model';
+import { Tint } from '../../shared/interfaces/peblob';
 
 describe('PeblobService', () => {
   let service: StoryService;
@@ -51,5 +53,30 @@ describe('PeblobService', () => {
       stories.add(JSON.stringify(service.getRandomStory()));
     }
     expect(stories.size).toBeGreaterThan(1);
+  });
+
+  it('should select the first unread story in sequence', () => {
+    const peblob: PeblobEntity = {
+      _id: 'peblob-1',
+      userId: 'user-1',
+      structure: [[{ r: 1, g: 1, b: 1 }]],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      dominantColor: Tint.RED,
+      playedStoryIds: ['story-1', 'story-2', 'story-3'],
+    };
+    const stories = Array.from({ length: 12 }, (_, index) => ({
+      situation: `Situation ${index + 1}`,
+      choices: [],
+    }));
+
+    const story = service['selectStory'](stories, peblob);
+
+    expect(story).not.toBeNull();
+    if (!story) {
+      return;
+    }
+    expect(story.id).toBe('story-4');
+    expect(peblob.playedStoryIds).not.toContain(story.id);
   });
 });

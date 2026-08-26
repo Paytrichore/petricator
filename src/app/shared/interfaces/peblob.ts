@@ -4,6 +4,17 @@ export interface Peblob {
   b: number;
 }
 
+export interface RGBEffect {
+  r: number;
+  g: number;
+  b: number;
+}
+
+export interface PeblobMetrics {
+  maturity: number;
+  balance: number;
+}
+
 export type ComposedPeblob = Array<Array<Peblob>>;
 
 export interface GeneratedPeblob {

@@ -1,0 +1,184 @@
+{
+  "purple": [
+    {
+      "situation": "Deux branches se croisent au-dessus d'un sentier.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Observer la manière dont elles se soutiennent.",
+          "result": "Les deux branches grandissent dans des directions différentes tout en formant un même abri."
+        },
+        {
+          "color": "red",
+          "action": "Écarter les branches pour ouvrir davantage le passage.",
+          "result": "Le chemin s'élargit, mais les branches perdent leur équilibre."
+        }
+      ]
+    },
+    {
+      "situation": "Deux ruisseaux coulent dans des directions différentes.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Chercher l'endroit où leurs eaux pourraient se rejoindre.",
+          "result": "Plus loin, les deux cours d'eau finissent par se mêler."
+        },
+        {
+          "color": "yellow",
+          "action": "Suivre chacun des deux ruisseaux pour comprendre leur origine.",
+          "result": "Tu découvres deux chemins très différents qui prennent pourtant leur source dans la même montagne."
+        }
+      ]
+    },
+    {
+      "situation": "Une forêt entière semble bouger sous le vent.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Observer le mouvement de tous les arbres comme une seule danse.",
+          "result": "Chaque arbre semble suivre son propre rythme tout en participant au mouvement général."
+        },
+        {
+          "color": "green",
+          "action": "Te mettre à l'abri et attendre.",
+          "result": "La tempête passe et la forêt retrouve lentement son calme."
+        }
+      ]
+    },
+    {
+      "situation": "Trois oiseaux chantent des mélodies différentes.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Écouter les trois chants ensemble.",
+          "result": "Leurs mélodies différentes finissent par former une étrange harmonie."
+        },
+        {
+          "color": "orange",
+          "action": "Imiter chacun des chants à ton tour.",
+          "result": "Les oiseaux répondent à tes essais et la forêt se remplit de sons."
+        }
+      ]
+    },
+    {
+      "situation": "Des fleurs de couleurs différentes poussent côte à côte.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Les observer comme un seul jardin.",
+          "result": "Leurs couleurs différentes semblent se renforcer mutuellement."
+        },
+        {
+          "color": "yellow",
+          "action": "Examiner chacune d'elles séparément.",
+          "result": "Chaque fleur possède une forme et une texture qui lui sont propres."
+        }
+      ]
+    },
+    {
+      "situation": "Un groupe de Péblobs avance sans parvenir à trouver le même rythme.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Adapter ton rythme à chacun d'eux.",
+          "result": "Peu à peu, le groupe trouve une cadence commune."
+        },
+        {
+          "color": "red",
+          "action": "Imposer ton propre rythme au groupe.",
+          "result": "Certains suivent, d'autres restent en arrière."
+        }
+      ]
+    },
+    {
+      "situation": "Une branche morte repose entre deux arbres vivants.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Observer comment les arbres ont grandi autour d'elle.",
+          "result": "Au lieu de lutter contre l'obstacle, ils ont trouvé chacun leur chemin autour de lui."
+        },
+        {
+          "color": "orange",
+          "action": "Imaginer ce que tu pourrais construire avec le bois.",
+          "result": "Le vieux bois devient dans ton imagination la pièce centrale d'une étrange construction."
+        }
+      ]
+    },
+    {
+      "situation": "Une pluie fine tombe sur une mare.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Observer les cercles se rencontrer à la surface.",
+          "result": "Chaque goutte crée son propre mouvement, mais tous finissent par se mêler."
+        },
+        {
+          "color": "blue",
+          "action": "Écouter le rythme régulier de la pluie.",
+          "result": "Les milliers de gouttes semblent former une seule voix."
+        }
+      ]
+    },
+    {
+      "situation": "Une vieille souche accueille plusieurs petites plantes.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Observer comment chacune trouve sa place.",
+          "result": "Aucune plante ne semble prendre toute la place, et pourtant toutes grandissent."
+        },
+        {
+          "color": "green",
+          "action": "Protéger la souche du vent.",
+          "result": "Les petites plantes restent à l'abri jusqu'à ce que le vent tombe."
+        }
+      ]
+    },
+    {
+      "situation": "Le coucher du soleil colore le ciel de plusieurs teintes.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Contempler la transition entre les couleurs.",
+          "result": "Aucune couleur ne semble dominer les autres."
+        },
+        {
+          "color": "pink",
+          "action": "Rester immobile jusqu'à ce que la dernière lumière disparaisse.",
+          "result": "Le ciel s'efface doucement, laissant derrière lui une sensation de douceur."
+        }
+      ]
+    },
+    {
+      "situation": "Une rivière rencontre un énorme rocher au milieu de son cours.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "Observer comment l'eau se divise autour de lui.",
+          "result": "Le courant change de forme sans jamais cesser d'avancer."
+        },
+        {
+          "color": "red",
+          "action": "Imaginer que la rivière pourrait finir par briser le rocher.",
+          "result": "Tu restes fasciné par cette force patiente qui ne cesse jamais d'agir."
+        }
+      ]
+    },
+    {
+      "situation": "Au milieu d'une clairière, plusieurs espèces de fleurs poussent ensemble.",
+      "choices": [
+        {
+          "color": "purple",
+          "action": "T'asseoir au centre et contempler l'ensemble.",
+          "result": "La clairière semble plus belle précisément parce que rien n'y est identique."
+        },
+        {
+          "color": "yellow",
+          "action": "Chercher combien d'espèces différentes composent la clairière.",
+          "result": "Tu en trouves bien plus que tu ne l'aurais imaginé."
+        }
+      ]
+    }
+  ]
+}

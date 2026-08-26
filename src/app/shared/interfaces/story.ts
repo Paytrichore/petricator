@@ -3,9 +3,13 @@ export enum StoryType {
     SECONDARY = 'secondary',
     PINK = 'pink',
 }
+
+export type StoryChoice = { color: string; action: string; result: string };
+
 export type Story = {
+  id?: string;
   situation: string;
-  choices: Array<{ color: string; action: string; result: string }>;
+  choices: StoryChoice[];
 };
 
 export interface StoryData {

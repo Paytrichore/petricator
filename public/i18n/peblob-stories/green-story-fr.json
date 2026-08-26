@@ -1,0 +1,184 @@
+{
+  "green": [
+    {
+      "situation": "Une clairière calme s'ouvre devant toi.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "T'allonger dans l'herbe et ne plus bouger.",
+          "result": "Le monde semble ralentir autour de toi."
+        },
+        {
+          "color": "yellow",
+          "action": "Explorer les recoins de la clairière.",
+          "result": "Tu découvres de petites traces de vie entre les herbes."
+        }
+      ]
+    },
+    {
+      "situation": "Un ruisseau coule très lentement entre les pierres.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "T'asseoir au bord de l'eau.",
+          "result": "Le murmure du ruisseau apaise progressivement ton esprit."
+        },
+        {
+          "color": "orange",
+          "action": "Faire ricocher quelques petits cailloux.",
+          "result": "Les cercles à la surface de l'eau viennent troubler puis retrouver leur calme."
+        }
+      ]
+    },
+    {
+      "situation": "Le vent se lève dans une prairie.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "Te laisser doucement bercer par les herbes.",
+          "result": "Tu bouges au rythme du vent sans chercher à lui résister."
+        },
+        {
+          "color": "red",
+          "action": "Rester fermement ancré au sol.",
+          "result": "Le vent souffle fort, mais tu ne bouges pas."
+        }
+      ]
+    },
+    {
+      "situation": "Une petite créature blessée se cache sous un buisson.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "T'installer près d'elle sans la brusquer.",
+          "result": "Après quelques instants, la créature cesse de trembler."
+        },
+        {
+          "color": "pink",
+          "action": "Rester près d'elle jusqu'à ce qu'elle reprenne confiance.",
+          "result": "Elle finit par sortir doucement de sa cachette."
+        }
+      ]
+    },
+    {
+      "situation": "Une tempête approche au loin.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "Chercher un endroit sûr où attendre.",
+          "result": "Tu trouves un abri naturel entre les racines d'un grand arbre."
+        },
+        {
+          "color": "red",
+          "action": "Continuer malgré la tempête qui approche.",
+          "result": "Le vent se renforce et chaque pas devient plus difficile."
+        }
+      ]
+    },
+    {
+      "situation": "Une fleur fragile pousse entre deux rochers.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "La protéger du vent avec ton corps.",
+          "result": "La fleur reste immobile à l'abri pendant que le vent passe."
+        },
+        {
+          "color": "yellow",
+          "action": "Observer comment elle a réussi à pousser ici.",
+          "result": "Ses racines ont trouvé un minuscule espace entre les pierres."
+        }
+      ]
+    },
+    {
+      "situation": "Un arbre immense étend ses branches au-dessus de toi.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "T'asseoir à son pied.",
+          "result": "Son ombre forme autour de toi un refuge silencieux."
+        },
+        {
+          "color": "blue",
+          "action": "Fermer les yeux et écouter son bruissement.",
+          "result": "Le vieil arbre semble respirer lentement avec la forêt."
+        }
+      ]
+    },
+    {
+      "situation": "La rivière devient agitée après la pluie.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "Attendre que son courant retrouve son calme.",
+          "result": "Quelques instants plus tard, l'eau commence déjà à ralentir."
+        },
+        {
+          "color": "red",
+          "action": "Traverser malgré la force du courant.",
+          "result": "L'eau te repousse violemment avant que tu ne retrouves la rive."
+        }
+      ]
+    },
+    {
+      "situation": "Les feuilles mortes recouvrent entièrement le sol.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "Marcher lentement pour ne pas troubler leur silence.",
+          "result": "Tes pas deviennent presque silencieux."
+        },
+        {
+          "color": "orange",
+          "action": "Les déplacer pour dessiner une forme dans les feuilles.",
+          "result": "Une grande spirale apparaît sur le sol avant que le vent ne l'efface."
+        }
+      ]
+    },
+    {
+      "situation": "Un petit étang reflète les arbres qui l'entourent.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "T'asseoir et regarder la surface immobile.",
+          "result": "Ton reflet se mêle doucement à celui des arbres."
+        },
+        {
+          "color": "blue",
+          "action": "Regarder profondément ton reflet.",
+          "result": "Pendant un instant, tu as l'impression d'observer quelqu'un d'autre."
+        }
+      ]
+    },
+    {
+      "situation": "Un sentier est envahi par de hautes herbes.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "Écarter doucement les herbes et avancer.",
+          "result": "Le chemin réapparaît peu à peu sous tes pas."
+        },
+        {
+          "color": "red",
+          "action": "Traverser directement à travers les herbes.",
+          "result": "Les tiges se plient brutalement derrière toi."
+        }
+      ]
+    },
+    {
+      "situation": "Le soleil descend lentement derrière les arbres.",
+      "choices": [
+        {
+          "color": "green",
+          "action": "Rester là jusqu'à la tombée de la nuit.",
+          "result": "La forêt s'assombrit progressivement et tu accueilles chaque changement sans résistance."
+        },
+        {
+          "color": "pink",
+          "action": "Garder en toi le souvenir de cette lumière.",
+          "result": "Lorsque le soleil disparaît, il reste en toi une sensation de chaleur douce."
+        }
+      ]
+    }
+  ]
+}

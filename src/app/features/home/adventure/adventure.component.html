@@ -1,7 +1,12 @@
 @if (!storyDone) {
-  <app-story (choiceSelected)="onChoiceSelected($event)"></app-story>
+  <app-story
+    [externalStory]="question"
+    (storyReady)="onStoryReady($event)"
+    (choiceSelected)="onChoiceSelected($event)"></app-story>
 } @else {
-  <app-peblob-draft [peblobDraft]="peblobDraft">
-    <h2>{{ story?.result }}</h2>
-  </app-peblob-draft>
+  @if (draftSession; as session) {
+    <app-peblob-draft [draftSession]="session" (draftDone)="draftDone.emit($event)">
+      <h2>{{ story?.result }}</h2>
+    </app-peblob-draft>
+  }
 }

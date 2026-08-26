@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+.dialog-layout__close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+mat-dialog-content {
+  padding-top: 8px;
+}

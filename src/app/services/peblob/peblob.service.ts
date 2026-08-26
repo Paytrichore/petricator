@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ComposedPeblob, GeneratedPeblob, Peblob, Tint } from '../../shared/interfaces/peblob';
+import { ComposedPeblob, GeneratedPeblob, Peblob, RGBEffect, Tint } from '../../shared/interfaces/peblob';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { PeblobEntity, PeblobStatus } from '../../core/stores/peblob/peblob.model';
+import { DraftSession, PeblobEntity, PeblobStatus } from '../../core/stores/peblob/peblob.model';
+import { Story, StoryChoice } from '../../shared/interfaces/story';
 import { PeblobPage } from '../../core/stores/peblob/peblob.model';
 
 @Injectable({
@@ -22,6 +23,22 @@ export class PeblobService {
     };
     
     return this.http.post<PeblobEntity>(`${this.peblobApiUrl}/peblob`, body);
+  }
+
+  public startDraft(userId: string, question: Story): Observable<DraftSession> {
+    return this.http.post<DraftSession>(`${this.peblobApiUrl}/peblob/drafts`, { userId, question });
+  }
+
+  public answerDraft(draftId: string, choice: StoryChoice): Observable<DraftSession> {
+    return this.http.post<DraftSession>(`${this.peblobApiUrl}/peblob/drafts/${draftId}/answer`, choice);
+  }
+
+  public getCurrentDraft(userId: string): Observable<DraftSession | null> {
+    return this.http.get<DraftSession | null>(`${this.peblobApiUrl}/peblob/drafts/current/${userId}`);
+  }
+
+  public selectDraft(draftId: string, choiceIndex: number): Observable<PeblobEntity> {
+    return this.http.post<PeblobEntity>(`${this.peblobApiUrl}/peblob/drafts/${draftId}/select`, { choiceIndex });
   }
 
   public loadPeblobsByUserId(userId: string, query: {
@@ -49,6 +66,17 @@ export class PeblobService {
     return this.http.patch<PeblobEntity>(`${this.peblobApiUrl}/peblob/${peblobId}`, {
       name: name.trim() || undefined,
     });
+  }
+
+  public applyStory(peblobId: string, storyId: string, effect: RGBEffect): Observable<PeblobEntity> {
+    return this.http.post<PeblobEntity>(`${this.peblobApiUrl}/peblob/${peblobId}/stories`, {
+      storyId,
+      ...effect,
+    });
+  }
+
+  public purchasePower(peblobId: string, powerId: string): Observable<PeblobEntity> {
+    return this.http.post<PeblobEntity>(`${this.peblobApiUrl}/peblob/${peblobId}/powers`, { powerId });
   }
 
   public generatePeblob(tint?: Tint): GeneratedPeblob {
