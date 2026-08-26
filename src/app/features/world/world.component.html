@@ -79,8 +79,8 @@
       @if (cell.peblob; as peblob) {
         @if (peblob.name?.trim(); as peblobName) {
           <span class="world-cell-tooltip__name">occupée par {{ peblobName }}</span>
-          <div class="world-cell-tooltip__owner">Joueur : {{ cell.ownerName }}</div>
         }
+        <div class="world-cell-tooltip__owner">Joueur : {{ cell.ownerName }}</div>
       }
     </div>
     @if (cell.peblob; as peblob) {
