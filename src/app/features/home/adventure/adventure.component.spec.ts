@@ -5,6 +5,8 @@ import { PeblobService } from '../../../services/peblob/peblob.service';
 import { DraftStatus, DraftSession } from '../../../core/stores/peblob/peblob.model';
 import { Story } from '../../../shared/interfaces/story';
 import { of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 
 describe('AdventureComponent', () => {
   let component: AdventureComponent;
@@ -32,6 +34,7 @@ describe('AdventureComponent', () => {
       imports: [AdventureComponent],
       providers: [
         { provide: PeblobService, useValue: peblobService },
+        { provide: TranslateService, useValue: translateServiceMock },
         provideAnimations(),
       ],
     }).compileComponents();
