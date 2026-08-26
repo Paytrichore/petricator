@@ -1,0 +1,184 @@
+{
+  "blue": [
+    {
+      "situation": "Le silence devient soudain profond autour de toi.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Fermer les yeux et écouter ce silence.",
+          "result": "Dans le silence, tu perçois des sons minuscules que tu n'avais jamais remarqués."
+        },
+        {
+          "color": "yellow",
+          "action": "Chercher ce qui a provoqué ce changement.",
+          "result": "Tu découvres que même les plus petits mouvements semblaient s'être arrêtés."
+        }
+      ]
+    },
+    {
+      "situation": "Une rivière reflète parfaitement le ciel.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Contempler le reflet sans toucher l'eau.",
+          "result": "Le ciel et la rivière semblent ne former qu'un seul espace."
+        },
+        {
+          "color": "orange",
+          "action": "Troubler la surface pour observer les transformations.",
+          "result": "Les reflets se brisent puis se recomposent en formes nouvelles."
+        }
+      ]
+    },
+    {
+      "situation": "Un rayon de lumière traverse les nuages.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Rester immobile sous la lumière.",
+          "result": "Une sensation de calme profond t'envahit."
+        },
+        {
+          "color": "red",
+          "action": "Courir jusqu'à l'endroit où la lumière touche le sol.",
+          "result": "Tu traverses la clairière comme si quelque chose t'appelait."
+        }
+      ]
+    },
+    {
+      "situation": "Un animal sauvage s'approche sans crainte.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Ne pas bouger et accueillir sa présence.",
+          "result": "L'animal reste près de toi quelques instants avant de repartir."
+        },
+        {
+          "color": "pink",
+          "action": "T'abaisser doucement pour être à sa hauteur.",
+          "result": "L'animal s'approche encore, puis pose brièvement son regard sur toi."
+        }
+      ]
+    },
+    {
+      "situation": "Le vent fait chanter les arbres autour de toi.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Écouter comme s'il cherchait à te parler.",
+          "result": "Chaque souffle semble porter un murmure différent."
+        },
+        {
+          "color": "green",
+          "action": "Te laisser bercer par le mouvement des branches.",
+          "result": "Ton esprit se calme au rythme lent des arbres."
+        }
+      ]
+    },
+    {
+      "situation": "Une pluie fine commence à tomber.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Rester sous la pluie et sentir chaque goutte.",
+          "result": "La pluie semble effacer peu à peu tout ce qui t'entoure."
+        },
+        {
+          "color": "green",
+          "action": "T'abriter sous un arbre.",
+          "result": "Le bruissement de la pluie contre les feuilles crée un refuge paisible."
+        }
+      ]
+    },
+    {
+      "situation": "Une étoile particulièrement brillante apparaît dans le ciel.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "La contempler en silence.",
+          "result": "L'immensité du ciel te donne l'impression d'être relié à quelque chose de bien plus grand."
+        },
+        {
+          "color": "yellow",
+          "action": "Chercher les autres étoiles qui l'entourent.",
+          "result": "Tu découvres une constellation que tu n'avais jamais remarquée."
+        }
+      ]
+    },
+    {
+      "situation": "Tu trouves une source parfaitement claire au milieu de la forêt.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "T'asseoir près de l'eau et observer son mouvement.",
+          "result": "Le mouvement de l'eau semble suivre un rythme ancien et immuable."
+        },
+        {
+          "color": "orange",
+          "action": "Faire danser quelques feuilles à sa surface.",
+          "result": "Les feuilles tournent lentement, dessinant des formes inattendues."
+        }
+      ]
+    },
+    {
+      "situation": "Une ancienne pierre se trouve seule au sommet d'une colline.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Poser ta main dessus et rester silencieux.",
+          "result": "La pierre semble porter le poids d'un temps qui te dépasse."
+        },
+        {
+          "color": "yellow",
+          "action": "Chercher à comprendre pourquoi elle se trouve ici.",
+          "result": "Tu remarques autour d'elle des traces qui semblent très anciennes."
+        }
+      ]
+    },
+    {
+      "situation": "Deux ruisseaux se rejoignent au fond d'une vallée.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Observer leur rencontre.",
+          "result": "Deux courants différents deviennent peu à peu une seule rivière."
+        },
+        {
+          "color": "purple",
+          "action": "Suivre leur cours commun.",
+          "result": "Les deux eaux semblent avoir toujours su où elles devaient se rejoindre."
+        }
+      ]
+    },
+    {
+      "situation": "Une brume lumineuse apparaît au-dessus d'un lac.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Entrer lentement dans la brume.",
+          "result": "Le monde devient silencieux et diffus autour de toi."
+        },
+        {
+          "color": "pink",
+          "action": "Rester au bord et contempler le spectacle.",
+          "result": "La brume flotte doucement sur l'eau comme un souvenir qui refuse de disparaître."
+        }
+      ]
+    },
+    {
+      "situation": "Le ciel nocturne semble exceptionnellement proche.",
+      "choices": [
+        {
+          "color": "blue",
+          "action": "Lever les yeux et méditer sur cette immensité.",
+          "result": "Tu te sens minuscule, mais étrangement à ta place."
+        },
+        {
+          "color": "purple",
+          "action": "Chercher les liens invisibles entre les étoiles.",
+          "result": "Les étoiles semblent former un immense réseau suspendu au-dessus de toi."
+        }
+      ]
+    }
+  ]
+}

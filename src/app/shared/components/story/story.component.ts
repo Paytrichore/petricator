@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { StoryService } from '../../../services/story/story.service';
-import { Story } from '../../interfaces/story';
+import { Story, StoryChoice } from '../../interfaces/story';
 import { MatButtonModule } from '@angular/material/button';
 import { shuffleArray } from '../../helpers/array.helpers';
 import { sequencedFadeInAnimation } from '../../animations/sequenced-fade-in.animation';
@@ -15,20 +15,27 @@ import { sequencedFadeInAnimation } from '../../animations/sequenced-fade-in.ani
   ],
 })
 export class StoryComponent implements OnInit {
+  @Input() externalStory?: Story;
+
   public story!: Story;
-  public shuffledChoices: Array<{ color: string; action: string; result: string }> = [];
+
+  public shuffledChoices: StoryChoice[] = [];
   public storyAnimState: 'default' | 'clicked' = 'default';
 
-  @Output() choiceSelected = new EventEmitter<{ color: string; action: string; result: string }>();
+  @Output() choiceSelected = new EventEmitter<StoryChoice>();
+  @Output() storyReady = new EventEmitter<Story>();
 
   constructor(private storyService: StoryService) {}
 
   ngOnInit(): void {
-    this.story = this.storyService.getRandomStory();
+    this.story = this.externalStory ?? this.storyService.getRandomStory();
     this.shuffledChoices = shuffleArray(this.story.choices);
+    if (!this.externalStory) {
+      this.storyReady.emit(this.story);
+    }
   }
 
-  onChoiceClick(choice: { color: string; action: string; result: string }) {
+  onChoiceClick(choice: StoryChoice): void {
     this.storyAnimState = 'clicked';
     setTimeout(() => {
       this.choiceSelected.emit(choice);

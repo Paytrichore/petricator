@@ -1,0 +1,184 @@
+{
+  "orange": [
+    {
+      "situation": "Une branche tordue repose au milieu du chemin.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "La ramasser et imaginer ce qu'elle pourrait devenir.",
+          "result": "Entre tes mains, la branche devient le début d'une forme étrange et nouvelle."
+        },
+        {
+          "color": "green",
+          "action": "La laisser là où elle est.",
+          "result": "Tu contournes simplement l'obstacle et poursuis ton chemin."
+        }
+      ]
+    },
+    {
+      "situation": "Une flaque reflète les nuages.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Troubler l'eau pour créer de nouvelles formes.",
+          "result": "Les nuages se transforment en silhouettes étranges à la surface."
+        },
+        {
+          "color": "blue",
+          "action": "Contempler le reflet sans le toucher.",
+          "result": "Le ciel reste parfaitement immobile dans l'eau."
+        }
+      ]
+    },
+    {
+      "situation": "Des feuilles de formes très différentes couvrent le sol.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Les assembler pour créer quelque chose.",
+          "result": "Une étrange créature apparaît sous tes mains."
+        },
+        {
+          "color": "yellow",
+          "action": "Les examiner une par une.",
+          "result": "Tu découvres des formes et des nervures étonnamment différentes."
+        }
+      ]
+    },
+    {
+      "situation": "Une rivière coule entre deux falaises.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Imaginer un nouveau chemin que pourrait prendre l'eau.",
+          "result": "Dans ton esprit, la rivière dessine une nouvelle vallée à travers la roche."
+        },
+        {
+          "color": "red",
+          "action": "Chercher comment franchir les falaises.",
+          "result": "Tu repères un passage étroit dans la paroi."
+        }
+      ]
+    },
+    {
+      "situation": "Une vieille souche est couverte de mousse.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Transformer mentalement la souche en quelque chose d'autre.",
+          "result": "Tu lui imagines mille formes avant de t'arrêter sur la plus étrange."
+        },
+        {
+          "color": "green",
+          "action": "Laisser la nature poursuivre son œuvre.",
+          "result": "La mousse continue doucement de recouvrir le vieux bois."
+        }
+      ]
+    },
+    {
+      "situation": "Le vent fait tomber des graines dans toutes les directions.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Inventer un moyen de les faire voyager encore plus loin.",
+          "result": "Tu imagines les graines portées par des feuilles, des oiseaux et même les nuages."
+        },
+        {
+          "color": "yellow",
+          "action": "Suivre une graine pour découvrir où elle finira.",
+          "result": "Elle voyage jusqu'à une petite parcelle de terre humide."
+        }
+      ]
+    },
+    {
+      "situation": "Une grotte est remplie de cristaux de formes différentes.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Imaginer les sons que produiraient les cristaux.",
+          "result": "Dans ton esprit, la grotte devient un immense instrument."
+        },
+        {
+          "color": "purple",
+          "action": "Observer comment les cristaux se répondent dans la lumière.",
+          "result": "Leurs reflets semblent se mélanger en une harmonie silencieuse."
+        }
+      ]
+    },
+    {
+      "situation": "Une pluie abondante transforme le sol en boue.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Tracer des formes dans la boue.",
+          "result": "Tes mouvements donnent naissance à un motif qui disparaîtra avec la prochaine pluie."
+        },
+        {
+          "color": "yellow",
+          "action": "Observer les traces que la pluie révèle.",
+          "result": "Tu découvres les passages récents de nombreuses petites créatures."
+        }
+      ]
+    },
+    {
+      "situation": "Une fleur pousse dans une fissure du rocher.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Imaginer ce qui pourrait pousser dans une fissure encore plus étroite.",
+          "result": "Ton esprit invente une forêt entière cachée dans les pierres."
+        },
+        {
+          "color": "green",
+          "action": "Laisser la fleur pousser tranquillement.",
+          "result": "Tu t'éloignes en prenant soin de ne pas toucher ses pétales."
+        }
+      ]
+    },
+    {
+      "situation": "Des pierres plates sont éparpillées au bord d'un lac.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Les empiler pour créer quelque chose.",
+          "result": "Une petite construction bancale se dresse bientôt au bord de l'eau."
+        },
+        {
+          "color": "purple",
+          "action": "Chercher une disposition où elles semblent toutes avoir leur place.",
+          "result": "Les pierres finissent par former un équilibre étonnamment stable."
+        }
+      ]
+    },
+    {
+      "situation": "Une toile d'araignée scintille sous le soleil.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Imaginer une toile assez grande pour capturer les rayons du soleil.",
+          "result": "Dans ton imagination, la forêt entière devient un immense réseau de lumière."
+        },
+        {
+          "color": "blue",
+          "action": "Observer la toile sans la toucher.",
+          "result": "Chaque fil semble relier délicatement un morceau du monde à un autre."
+        }
+      ]
+    },
+    {
+      "situation": "Un champ entièrement vide s'étend devant toi.",
+      "choices": [
+        {
+          "color": "orange",
+          "action": "Imaginer ce que tu pourrais créer ici.",
+          "result": "En quelques instants, le champ devient dans ton esprit un lieu foisonnant de formes et de couleurs."
+        },
+        {
+          "color": "yellow",
+          "action": "Chercher ce qui pourrait déjà se cacher dans l'herbe.",
+          "result": "Tu découvres que le champ est loin d'être aussi vide qu'il en avait l'air."
+        }
+      ]
+    }
+  ]
+}

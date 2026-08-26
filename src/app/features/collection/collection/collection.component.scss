@@ -16,6 +16,13 @@
 	pointer-events: none;
 }
 
+.collection__name {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .collection__preview-column {
 	display: flex;
 	flex: 0 0 120px;
@@ -58,8 +65,19 @@
 	gap: 4px;
 }
 
+.collection__detail--progress {
+	display: block;
+}
+
 .collection__detail-label {
 	font-weight: 600;
+}
+
+.collection__detail-label-row {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 6px;
 }
 
 .collection__action {
@@ -67,6 +85,22 @@
 	flex: 1;
 	padding: 16px;
 	text-align: center;
+}
+
+.collection__progress {
+	flex: 1;
+	height: 8px;
+	min-width: 80px;
+}
+
+.collection__stories-progress {
+	flex: 1;
+	height: 8px;
+	min-width: 80px;
+}
+
+.collection__action--finished {
+	font-weight: 600;
 }
 
 .collection__actions {
@@ -85,6 +119,21 @@
 }
 
 @media (max-width: 600px) {
+	mat-panel-title {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	mat-panel-description {
+		flex: 0 1 145px;
+		min-width: 0;
+	}
+
+	.collection__preview {
+		flex-basis: 40px;
+		margin-right: 8px;
+	}
+
 	.collection__filters {
 		mat-form-field {
 			width: 100%;
@@ -99,6 +148,10 @@
 	.collection__name-row {
 		align-items: stretch;
 		flex-direction: column;
+	}
+
+	.collection__detail-progress {
+		min-width: 0;
 	}
 
 	.collection__actions {

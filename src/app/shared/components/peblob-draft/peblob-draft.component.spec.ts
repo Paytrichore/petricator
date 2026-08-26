@@ -5,43 +5,47 @@ import { GeneratedPeblob, Tint } from '../../interfaces/peblob';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 import { TranslateService } from '@ngx-translate/core';
-import { provideMockStore } from '@ngrx/store/testing';
-import { userStoreMock } from '../../../tests/mocks/user.mock';
-import { ActionsSubject } from '@ngrx/store';
-import * as PeblobActions from '../../../core/stores/peblob/peblob.actions';
 import { MessageService } from '../../../services/message/message.service';
+import { PeblobService } from '../../../services/peblob/peblob.service';
+import { DraftStatus, DraftSession } from '../../../core/stores/peblob/peblob.model';
+import { of } from 'rxjs';
 
 describe('PeblobDraftComponent', () => {
   let component: PeblobDraftComponent;
   let fixture: ComponentFixture<PeblobDraftComponent>;
-  let actionsSubject: ActionsSubject;
   let messageServiceSpy: jasmine.SpyObj<MessageService>;
+  let peblobServiceSpy: jasmine.SpyObj<PeblobService>;
   const fakePeblob: GeneratedPeblob = {
     structure: [[{ r: 1, g: 2, b: 3 }], [{ r: 4, g: 5, b: 6 }], [{ r: 7, g: 8, b: 9 }]],
     dominantColor: Tint.ORANGE,
   };
+  const draftSession: DraftSession = {
+    _id: 'draft-1',
+    userId: 'user-1',
+    question: { situation: 's', choices: [] },
+    choices: [fakePeblob, fakePeblob, fakePeblob],
+    status: DraftStatus.IN_PROGRESS,
+  };
 
   beforeEach(async () => {
     messageServiceSpy = jasmine.createSpyObj('MessageService', ['openSnackBar']);
+    peblobServiceSpy = jasmine.createSpyObj('PeblobService', ['selectDraft']);
+    peblobServiceSpy.selectDraft.and.returnValue(of({} as any));
 
     await TestBed.configureTestingModule({
       imports: [PeblobDraftComponent],
       providers: [
         { provide: TranslateService, useValue: translateServiceMock },
         { provide: MessageService, useValue: messageServiceSpy },
+        { provide: PeblobService, useValue: peblobServiceSpy },
         provideAnimations(),
-        provideMockStore(userStoreMock),
-        {
-          provide: ActionsSubject,
-          useFactory: () => new ActionsSubject(),
-        },
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(PeblobDraftComponent);
     component = fixture.componentInstance;
-    actionsSubject = TestBed.inject(ActionsSubject);
+    component.draftSession = draftSession;
     fixture.detectChanges();
   });
 
@@ -50,7 +54,7 @@ describe('PeblobDraftComponent', () => {
   });
 
   it('should set selectedPeblob when selectPeblob is called', () => {
-    component.selectPeblob(fakePeblob);
+    component.selectPeblob(fakePeblob, 0);
     expect(component.selectedPeblob).toBe(fakePeblob);
   });
 
@@ -77,54 +81,27 @@ describe('PeblobDraftComponent', () => {
     expect(component.confirmSelection).toHaveBeenCalled();
   });
 
-  it('should dispatch createPeblob and emit draftDone on create success action', () => {
-    component.selectedPeblob = fakePeblob;
-    (component as any).userId = 'user123';
-    spyOn((component as any).store, 'dispatch');
+  it('should select the chosen draft and emit draftDone on success', () => {
+    component.selectPeblob(fakePeblob, 1);
     spyOn(component.draftDone, 'emit');
 
     component.confirmSelection();
 
     expect(component.draftAnimState).toBe('clicked');
-    expect((component as any).store.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
-      userId: 'user123',
-      structure: fakePeblob.structure,
-      dominantColor: fakePeblob.dominantColor,
-    }));
-
-    actionsSubject.next(PeblobActions.createPeblobSuccess({ peblob: {
-      _id: 'peblob-1',
-      userId: 'user123',
-      structure: fakePeblob as any,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } }));
+    expect(peblobServiceSpy.selectDraft).toHaveBeenCalledWith('draft-1', 1);
 
     expect(messageServiceSpy.openSnackBar).toHaveBeenCalledWith('Le péblob a été capturé.');
     expect(component.draftDone.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should not dispatch or emit if selectedPeblob is undefined', () => {
+  it('should not select or emit if selectedPeblob is undefined', () => {
   component.selectedPeblob = undefined;
-  (component as any).userId = 'user123';
-  spyOn((component as any).store, 'dispatch');
   spyOn(component.draftDone, 'emit');
 
   component.confirmSelection();
 
-  expect((component as any).store.dispatch).not.toHaveBeenCalled();
+  expect(peblobServiceSpy.selectDraft).not.toHaveBeenCalled();
   expect(component.draftDone.emit).not.toHaveBeenCalled();
 });
 
-it('should not dispatch or emit if userId is undefined', () => {
-  component.selectedPeblob = fakePeblob;
-  (component as any).userId = undefined;
-  spyOn((component as any).store, 'dispatch');
-  spyOn(component.draftDone, 'emit');
-
-  component.confirmSelection();
-
-  expect((component as any).store.dispatch).not.toHaveBeenCalled();
-  expect(component.draftDone.emit).not.toHaveBeenCalled();
-});
 });

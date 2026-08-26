@@ -1,0 +1,184 @@
+{
+  "yellow": [
+    {
+      "situation": "Une étrange lumière filtre entre les arbres.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "T'approcher pour découvrir d'où elle vient.",
+          "result": "Derrière les feuillages, une petite clairière baignée de lumière s'offre à toi."
+        },
+        {
+          "color": "green",
+          "action": "Rester à distance et observer calmement.",
+          "result": "Tu ne comprends pas encore ce que tu vois, mais quelque chose dans cette lumière t'apaise."
+        }
+      ]
+    },
+    {
+      "situation": "Des traces inconnues apparaissent dans la boue.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "Les suivre pour découvrir où elles mènent.",
+          "result": "Les traces serpentent entre les arbres et disparaissent près d'un petit ruisseau."
+        },
+        {
+          "color": "blue",
+          "action": "T'asseoir près des traces et imaginer ce qui a pu les laisser.",
+          "result": "Ton imagination donne peu à peu une histoire à ces empreintes mystérieuses."
+        }
+      ]
+    },
+    {
+      "situation": "Une fleur inconnue pousse seule au milieu du chemin.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "L'observer sous tous les angles.",
+          "result": "Ses pétales cachent de minuscules motifs que tu n'avais pas remarqués."
+        },
+        {
+          "color": "pink",
+          "action": "La contourner délicatement pour ne pas l'abîmer.",
+          "result": "Tu poursuis ton chemin en laissant derrière toi la petite fleur intacte."
+        }
+      ]
+    },
+    {
+      "situation": "Un bruit étrange provient d'une grotte.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "Entrer pour découvrir ce qui se cache à l'intérieur.",
+          "result": "Chaque pas révèle de nouveaux échos et de nouvelles formes dans l'obscurité."
+        },
+        {
+          "color": "red",
+          "action": "Entrer sans hésiter, prêt à affronter ce qui pourrait s'y trouver.",
+          "result": "Ton assurance résonne contre les parois de la grotte."
+        }
+      ]
+    },
+    {
+      "situation": "Une rivière disparaît soudainement sous la terre.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "Chercher où l'eau réapparaît.",
+          "result": "Après quelques détours, tu découvres une source cachée entre les rochers."
+        },
+        {
+          "color": "purple",
+          "action": "Suivre le murmure de l'eau sans chercher à comprendre.",
+          "result": "Le murmure devient une mélodie qui semble guider naturellement tes pas."
+        }
+      ]
+    },
+    {
+      "situation": "Un arbre porte des fruits d'une couleur inhabituelle.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "T'approcher pour les examiner.",
+          "result": "Sous leur peau étrange, les fruits semblent parcourus de fines nervures lumineuses."
+        },
+        {
+          "color": "green",
+          "action": "Les laisser sur l'arbre et poursuivre ton chemin.",
+          "result": "La forêt reprend doucement son silence autour de toi."
+        }
+      ]
+    },
+    {
+      "situation": "Un chemin se divise en trois sentiers inconnus.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "Choisir celui qui semble le moins fréquenté.",
+          "result": "Le sentier s'enfonce dans une partie de la forêt que tu ne connaissais pas."
+        },
+        {
+          "color": "blue",
+          "action": "Fermer les yeux et choisir celui qui t'attire instinctivement.",
+          "result": "Tu avances sans savoir pourquoi, avec l'étrange impression que le chemin t'attendait."
+        }
+      ]
+    },
+    {
+      "situation": "Une pluie soudaine révèle des formes étranges sur les pierres.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "Examiner les formes avant que la pluie ne cesse.",
+          "result": "Tu découvres de minuscules dessins gravés dans la roche."
+        },
+        {
+          "color": "orange",
+          "action": "Imaginer ce que ces formes pourraient représenter.",
+          "result": "Dans ton esprit, les pierres deviennent les fragments d'une histoire fantastique."
+        }
+      ]
+    },
+    {
+      "situation": "Un oiseau laisse tomber une petite graine devant toi.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "La suivre pour voir où l'oiseau l'a trouvée.",
+          "result": "L'oiseau t'entraîne jusqu'à un arbre couvert de graines identiques."
+        },
+        {
+          "color": "pink",
+          "action": "Planter la graine près du chemin.",
+          "result": "Tu recouvres doucement la graine de terre et reprends ta route."
+        }
+      ]
+    },
+    {
+      "situation": "Une brume épaisse recouvre une partie de la forêt.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "T'avancer dans la brume pour découvrir ce qu'elle dissimule.",
+          "result": "Chaque pas fait apparaître un morceau différent du paysage."
+        },
+        {
+          "color": "green",
+          "action": "Attendre que la brume se dissipe.",
+          "result": "Peu à peu, les arbres réapparaissent autour de toi."
+        }
+      ]
+    },
+    {
+      "situation": "Une pierre parfaitement ronde repose au bord d'un ruisseau.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "La retourner pour découvrir ce qui se trouve dessous.",
+          "result": "Une petite cavité apparaît sous la pierre, remplie de minuscules cristaux."
+        },
+        {
+          "color": "orange",
+          "action": "La faire rouler dans l'eau pour observer son parcours.",
+          "result": "La pierre rebondit sur les rochers et trace un chemin imprévisible dans le courant."
+        }
+      ]
+    },
+    {
+      "situation": "Au sommet d'une colline, tu aperçois quelque chose que tu n'avais jamais vu auparavant.",
+      "choices": [
+        {
+          "color": "yellow",
+          "action": "Descendre immédiatement pour aller voir.",
+          "result": "L'inconnu t'attire irrésistiblement vers l'horizon."
+        },
+        {
+          "color": "blue",
+          "action": "Rester au sommet et contempler ce paysage nouveau.",
+          "result": "Tu réalises que parfois, comprendre n'est pas nécessaire pour être émerveillé."
+        }
+      ]
+    }
+  ]
+}

@@ -42,11 +42,17 @@
                 [composed]="peblob.structure"
                 [size]="36"
               ></app-peblob>
+              <span class="collection__name">
                 {{ peblob.name || ('collection.unnamed' | translate) }}
+              </span>
             </mat-panel-title>
             <mat-panel-description>
                 <span class="collection__status-label">
-                  {{ peblob.status === peblobStatus.ON_MAP ? ('collection.status.onMap' | translate) : ('collection.status.available' | translate) }}
+                  @if (peblob.status === peblobStatus.ON_MAP && peblob.mapPosition; as position) {
+                    En ({{ position.x }}, {{ position.y }})
+                  } @else {
+                    {{ 'collection.status.available' | translate }}
+                  }
                 </span>
             </mat-panel-description>
           </mat-expansion-panel-header>
@@ -94,6 +100,52 @@
                 <span class="collection__detail-label">{{ 'collection.filters.date' | translate }} :</span>
                 <span>{{ peblob.createdAt | date:'short' }}</span>
               </div>
+              @if (peblob.maturity !== undefined) {
+                <div class="collection__detail collection__detail--progress">
+                  <div class="collection__detail-label-row">
+                    <span class="collection__detail-label">Maturité :</span>
+                    <strong>{{ peblob.maturity * 100 | number:'1.0-0' }}%</strong>
+                  </div>
+                  <mat-progress-bar
+                    class="collection__progress"
+                    mode="determinate"
+                    [value]="peblob.maturity * 100"
+                    [attr.aria-label]="'Maturité du Péblob'">
+                  </mat-progress-bar>
+                </div>
+              }
+              @if (peblob.balance !== undefined) {
+                <div class="collection__detail collection__detail--progress">
+                  <div class="collection__detail-label-row">
+                    <span class="collection__detail-label">Équilibre :</span>
+                    <strong>{{ peblob.balance * 100 | number:'1.0-0' }}%</strong>
+                  </div>
+                  <mat-progress-bar
+                    class="collection__progress"
+                    mode="determinate"
+                    [value]="peblob.balance * 100"
+                    [attr.aria-label]="'Équilibre du Péblob'">
+                  </mat-progress-bar>
+                </div>
+              }
+              <div class="collection__detail collection__detail--progress">
+                <div class="collection__detail-label-row">
+                  <span class="collection__detail-label">Histoires :</span>
+                  <strong>{{ getPlayedStoryCount(peblob) }} / 12</strong>
+                </div>
+                <mat-progress-bar
+                  class="collection__stories-progress"
+                  mode="determinate"
+                  [value]="getPlayedStoryCount(peblob) * 100 / 12"
+                  [attr.aria-label]="'Histoires jouées'">
+                </mat-progress-bar>
+              </div>
+              @if (peblob.unlockedPowerCount !== undefined) {
+                <div class="collection__detail">
+                  <span class="collection__detail-label">Points de pouvoir disponibles :</span>
+                  <span>{{ peblob.unlockedPowerCount }} / 3</span>
+                </div>
+              }
             </div>
           </div>
 
@@ -104,9 +156,15 @@
             >
               {{ 'collection.rgbValues' | translate }}
             </mat-slide-toggle>
-            <div class="collection__action">
-              {{ 'collection.action' | translate }}
-            </div>
+            @if (isStoryFinished(peblob)) {
+              <span class="collection__action collection__action--finished">Aventure finie</span>
+            } @else {
+              <button mat-stroked-button type="button" class="collection__action"
+                [disabled]="actionPoints < 1 || isStoryLoading(peblob._id)"
+                (click)="loadStory(peblob)">
+                {{ isStoryLoading(peblob._id) ? 'Chargement...' : 'Aventure' }}
+              </button>
+            }
           </div>
         </mat-expansion-panel>
       }

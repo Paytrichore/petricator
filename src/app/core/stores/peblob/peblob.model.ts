@@ -1,9 +1,28 @@
 import { ComposedPeblob } from '../../../shared/interfaces/peblob';
 import { Tint } from '../../../shared/interfaces/peblob';
+import { Story } from '../../../shared/interfaces/story';
 
 export enum PeblobStatus {
   AVAILABLE = 'AVAILABLE',
   ON_MAP = 'ON_MAP',
+}
+
+export enum DraftStatus {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}
+
+export interface DraftSession {
+  _id: string;
+  userId: string;
+  question: Story;
+  story?: { color: string; action: string; result: string };
+  choices: Array<{
+    structure: ComposedPeblob;
+    dominantColor: Tint;
+  }>;
+  status: DraftStatus;
+  selectedIndex?: number;
 }
 
 export interface PeblobEntity {
@@ -15,7 +34,17 @@ export interface PeblobEntity {
   ownerName?: string;
   name?: string;
   dominantColor?: Tint;
+  maturity?: number;
+  balance?: number;
+  earnedPowerCount?: number;
+  unlockedPowerCount?: number;
+  purchasedPowerIds?: string[];
+  playedStoryIds?: string[];
   status?: PeblobStatus;
+  mapPosition?: {
+    x: number;
+    y: number;
+  };
 }
 
 export interface PeblobPage {
@@ -35,4 +64,5 @@ export interface PeblobState {
   page: number;
   pageSize: number;
   renamingPeblobIds: string[];
+  applyingStoryPeblobIds: string[];
 }

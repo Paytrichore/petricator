@@ -1,0 +1,184 @@
+{
+  "red": [
+    {
+      "situation": "Une pierre bloque ton chemin. Elle semble trop lourde pour être déplacée.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Prendre appui et pousser de toutes tes forces.",
+          "result": "La pierre finit par céder. Ton corps tremble encore de l'effort."
+        },
+        {
+          "color": "yellow",
+          "action": "Faire le tour pour chercher un autre passage.",
+          "result": "Un détour étroit te conduit vers un chemin que tu n'aurais jamais remarqué autrement."
+        }
+      ]
+    },
+    {
+      "situation": "Une branche basse barre ton passage.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "La repousser d'un coup sec.",
+          "result": "La branche plie brutalement avant de revenir lentement à sa place."
+        },
+        {
+          "color": "green",
+          "action": "Te faufiler doucement entre les feuilles.",
+          "result": "Les feuilles glissent contre toi sans presque faire de bruit."
+        }
+      ]
+    },
+    {
+      "situation": "Une rafale violente manque de te faire tomber.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Te camper solidement et résister au vent.",
+          "result": "La rafale se brise contre ta résistance. Tu restes debout."
+        },
+        {
+          "color": "blue",
+          "action": "Céder au mouvement et suivre le rythme du vent.",
+          "result": "Pendant un instant, tu as l'impression de ne plus lutter contre lui, mais de bouger avec lui."
+        }
+      ]
+    },
+    {
+      "situation": "Un autre Péblob te bouscule accidentellement.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Le repousser pour lui montrer que tu ne te laisseras pas faire.",
+          "result": "Il recule, surpris. L'espace autour de toi semble soudain plus calme."
+        },
+        {
+          "color": "pink",
+          "action": "Rester près de lui pour vérifier qu'il ne s'est pas fait mal.",
+          "result": "Il hésite un instant, puis se détend peu à peu."
+        }
+      ]
+    },
+    {
+      "situation": "Un arbre déraciné bloque le passage d'un petit groupe de Péblobs.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Tenter de déplacer le tronc pour ouvrir le chemin.",
+          "result": "Le bois grince sous ton effort. Petit à petit, un passage apparaît."
+        },
+        {
+          "color": "purple",
+          "action": "Chercher avec les autres comment déplacer le tronc ensemble.",
+          "result": "À plusieurs, le mouvement devient plus fluide et le tronc finit par rouler sur le côté."
+        }
+      ]
+    },
+    {
+      "situation": "Un grondement résonne sous le sol.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Avancer vers l'origine du grondement.",
+          "result": "À mesure que tu progresses, le bruit semble répondre à chacun de tes pas."
+        },
+        {
+          "color": "yellow",
+          "action": "Observer le sol pour comprendre ce qui provoque les vibrations.",
+          "result": "Tu remarques de fines fissures qui dessinent un étrange chemin devant toi."
+        }
+      ]
+    },
+    {
+      "situation": "Une créature sauvage protège un passage étroit.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Avancer lentement sans détourner le regard.",
+          "result": "La créature grogne, puis finit par s'écarter lorsque tu refuses de reculer."
+        },
+        {
+          "color": "blue",
+          "action": "Rester immobile et attendre que la créature décide elle-même de partir.",
+          "result": "Après un long silence, elle tourne la tête et disparaît lentement dans les feuillages."
+        }
+      ]
+    },
+    {
+      "situation": "Tu découvres une souche brisée par la tempête.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Briser les morceaux restants pour dégager le sol.",
+          "result": "Le bois cède dans un craquement sec. L'espace autour de toi s'ouvre."
+        },
+        {
+          "color": "orange",
+          "action": "Assembler les morceaux pour leur donner une nouvelle forme.",
+          "result": "Peu à peu, les morceaux deviennent autre chose. Même toi, tu ne sais pas exactement quoi."
+        }
+      ]
+    },
+    {
+      "situation": "Après un violent effort, tu sens ton corps devenir instable.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Continuer malgré la fatigue.",
+          "result": "Tu avances encore, mais chaque mouvement demande davantage d'effort."
+        },
+        {
+          "color": "green",
+          "action": "T'arrêter quelques instants pour retrouver ton calme.",
+          "result": "Progressivement, les tensions quittent ton corps et tes mouvements redeviennent plus stables."
+        }
+      ]
+    },
+    {
+      "situation": "Un groupe de Péblobs hésite devant un passage dangereux.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Prendre les devants et ouvrir la marche.",
+          "result": "Les autres te suivent. Le passage paraît un peu moins inquiétant derrière toi."
+        },
+        {
+          "color": "purple",
+          "action": "Attendre que chacun trouve sa place avant d'avancer ensemble.",
+          "result": "Le groupe progresse lentement, mais personne ne reste derrière."
+        }
+      ]
+    },
+    {
+      "situation": "Une ancienne trace traverse la terre devant toi. Elle semble avoir été laissée par quelque chose de gigantesque.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Poser ta patte dans l'empreinte pour mesurer la différence.",
+          "result": "La trace est immense. Pourtant, tu ressens une étrange envie de devenir assez fort pour la remplir un jour."
+        },
+        {
+          "color": "yellow",
+          "action": "Suivre la trace pour découvrir ce qui l'a laissée.",
+          "result": "La piste s'éloigne dans la nature, promettant des réponses quelque part plus loin."
+        }
+      ]
+    },
+    {
+      "situation": "Devant toi, une jeune pousse a traversé une pierre fendue.",
+      "choices": [
+        {
+          "color": "red",
+          "action": "Toucher la pierre et sentir toute la force qu'il a fallu pour la briser.",
+          "result": "Sous tes doigts, la pierre est froide et immobile. Pourtant, quelque chose en elle te rappelle que même la force peut prendre son temps."
+        },
+        {
+          "color": "green",
+          "action": "Observer la jeune pousse qui continue simplement à grandir.",
+          "result": "Tu restes un moment à la regarder. Sans bruit et sans violence, elle a fini par trouver son chemin."
+        }
+      ]
+    }
+  ]
+}

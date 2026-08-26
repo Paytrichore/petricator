@@ -53,6 +53,11 @@ export const selectRenamingPeblobIds = createSelector(
   (state) => state?.renamingPeblobIds ?? []
 );
 
+export const selectApplyingStoryPeblobIds = createSelector(
+  selectPeblobState,
+  (state) => state?.applyingStoryPeblobIds ?? []
+);
+
 export const selectPeblobById = (id: string) => createSelector(
   selectPeblobs,
   (peblobs) => peblobs.find(peblob => peblob._id === id)

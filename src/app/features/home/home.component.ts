@@ -2,12 +2,15 @@ import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { finalize, Observable, Subject, takeUntil } from 'rxjs';
 import { selectUser, selectIsHydrating } from '../../core/stores/user/user.selectors';
 import { User } from '../../core/stores/user/user.model';
 import { AsyncPipe } from '@angular/common';
 import { AdventureComponent } from './adventure/adventure.component';
 import { AdventureStatusComponent, AdventureCountdown } from './adventure-status/adventure-status.component';
+import { DraftSession } from '../../core/stores/peblob/peblob.model';
+import { PeblobService } from '../../services/peblob/peblob.service';
+import * as UserActions from '../../core/stores/user/user.actions';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +28,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   public user$!: Observable<User | null>;
   public isHydrating$!: Observable<boolean>;
   public isAdventureVisible = false;
+  public isDraftLoading = true;
+  public draftSession?: DraftSession;
   public countdown: AdventureCountdown = {
     hours: 0,
     minutes: 0,
@@ -38,6 +43,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store,
     private cdr: ChangeDetectorRef,
+    private peblobService: PeblobService,
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +53,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
+        if (user) {
+          this.isDraftLoading = true;
+          this.peblobService.getCurrentDraft(user._id).pipe(
+            takeUntil(this.destroy$),
+            finalize(() => {
+              this.isDraftLoading = false;
+              this.cdr.detectChanges();
+            }),
+          ).subscribe(session => {
+            this.draftSession = session ?? undefined;
+            if (session) {
+              this.isAdventureVisible = true;
+            }
+          });
+        }
         if (!user?.drafted) {
           this.clearCountdown();
           this.countdown = { hours: 0, minutes: 0, seconds: 0 };
@@ -75,6 +96,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public showAdventure() {
     this.isAdventureVisible = true;
+  }
+
+  public onDraftDone(): void {
+    this.isDraftLoading = true;
+    this.draftSession = undefined;
+    this.isAdventureVisible = false;
+    this.store.dispatch(UserActions.refreshUserStatus());
   }
 
   private startCountdown(deadline: number) {

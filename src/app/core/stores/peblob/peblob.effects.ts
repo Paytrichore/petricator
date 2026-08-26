@@ -59,6 +59,32 @@ export class PeblobEffects {
     )
   );
 
+  applyStory$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PeblobActions.applyStory),
+      switchMap(({ peblobId, storyId, effect }) => this.peblobService.applyStory(peblobId, storyId, effect).pipe(
+        switchMap((peblob) => [
+          PeblobActions.applyStorySuccess({ peblob }),
+          UserActions.refreshUserStatus(),
+        ]),
+        catchError((error) => of(PeblobActions.applyStoryFailure({ peblobId, error })))
+      ))
+    )
+  );
+
+  purchasePower$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PeblobActions.purchasePower),
+      switchMap(({ peblobId, powerId }) => this.peblobService.purchasePower(peblobId, powerId).pipe(
+        switchMap((peblob) => [
+          PeblobActions.purchasePowerSuccess({ peblob }),
+          UserActions.refreshUserStatus(),
+        ]),
+        catchError((error) => of(PeblobActions.purchasePowerFailure({ peblobId, error })))
+      ))
+    )
+  );
+
   loadPeblobs$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PeblobActions.loadPeblobsByUserIds),

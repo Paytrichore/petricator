@@ -9,16 +9,17 @@
       <span>{{ 'peblobDraft.action' | translate }}</span>
     </div>
     <div class="flex justify-center gap-36 wrap my-36">
-      @for (peblob of peblobDraft; track peblob) {
+      @for (peblob of draftSession.choices; track $index) {
         <app-peblob
           [composed]="peblob.structure"
-          (click)="selectPeblob(peblob)"
+          (click)="selectPeblob(peblob, $index)"
           [class.selected]="peblob === selectedPeblob"
         ></app-peblob>
       }
     </div>
     <div class="flex justify-center">
       <button
+        #confirmButton
         mat-stroked-button
         color="primary"
         (click)="confirmSelection()"

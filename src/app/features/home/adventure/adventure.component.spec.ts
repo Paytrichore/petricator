@@ -1,8 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AdventureComponent } from './adventure.component';
 import { PeblobService } from '../../../services/peblob/peblob.service';
-import { GeneratedPeblob, Tint } from '../../../shared/interfaces/peblob';
+import { DraftStatus, DraftSession } from '../../../core/stores/peblob/peblob.model';
+import { Story } from '../../../shared/interfaces/story';
+import { of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { translateServiceMock } from '../../../tests/mocks/translate.service.mock';
 
 describe('AdventureComponent', () => {
   let component: AdventureComponent;
@@ -10,22 +14,27 @@ describe('AdventureComponent', () => {
   let peblobService: jasmine.SpyObj<PeblobService>;
 
   beforeEach(async () => {
-    const peblobMock: GeneratedPeblob = {
-      structure: [
-        [{ r: 1, g: 2, b: 3 }],
-        [{ r: 4, g: 5, b: 6 }],
-        [{ r: 7, g: 8, b: 9 }],
-      ],
-      dominantColor: Tint.ORANGE,
+    const draftSession: DraftSession = {
+      _id: 'draft-1',
+      userId: 'user-1',
+      question: { situation: 's', choices: [] },
+      choices: [],
+      status: DraftStatus.IN_PROGRESS,
     };
 
-    peblobService = jasmine.createSpyObj('PeblobService', ['generatePeblob']);
-    peblobService.generatePeblob.and.returnValue(peblobMock);
+    peblobService = jasmine.createSpyObj('PeblobService', ['startDraft', 'answerDraft']);
+    peblobService.startDraft.and.returnValue(of(draftSession));
+    peblobService.answerDraft.and.callFake((_draftId, choice) => of({
+      ...draftSession,
+      story: choice,
+      choices: [],
+    }));
 
     await TestBed.configureTestingModule({
       imports: [AdventureComponent],
       providers: [
         { provide: PeblobService, useValue: peblobService },
+        { provide: TranslateService, useValue: translateServiceMock },
         provideAnimations(),
       ],
     }).compileComponents();
@@ -39,22 +48,31 @@ describe('AdventureComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should generate and shuffle peblobDraft when a choice is selected', () => {
-    const choice = { color: 'orange', action: 'a', result: 'r' };
+  it('should start a draft when a story is ready', fakeAsync(() => {
+    const question: Story = { situation: 's', choices: [{ color: 'orange', action: 'a', result: 'r' }] };
+    component.userId = 'user-1';
 
-    component.onChoiceSelected(choice);
+    component.onStoryReady(question);
+    tick();
 
-    expect(component.peblobDraft.length).toBe(3);
-    expect(component.storyDone).toBeTrue();
-    expect(component.story).toEqual(choice);
-    expect(peblobService.generatePeblob).toHaveBeenCalledTimes(3);
-  });
+    expect(component.storyDone).toBeFalse();
+    expect(peblobService.startDraft).toHaveBeenCalledWith('user-1', question);
+  }));
 
-  it('should keep story result after choice selection', () => {
+  it('should keep story result after choice selection', fakeAsync(() => {
     const choice = { color: 'orange', action: 'a', result: 'Le resultat' };
+    component.userId = 'user-1';
+    component.draftSession = {
+      _id: 'draft-1',
+      userId: 'user-1',
+      question: { situation: 's', choices: [choice] },
+      choices: [],
+      status: DraftStatus.IN_PROGRESS,
+    };
 
     component.onChoiceSelected(choice);
+    tick();
 
     expect(component.story?.result).toBe('Le resultat');
-  });
+  }));
 });

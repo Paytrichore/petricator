@@ -12,7 +12,8 @@ export const initialPeblobState: PeblobState = {
   total: 0,
   page: 1,
   pageSize: 20,
-  renamingPeblobIds: []
+  renamingPeblobIds: [],
+  applyingStoryPeblobIds: []
 };
 
 export const peblobReducer = createReducer(
@@ -65,14 +66,60 @@ export const peblobReducer = createReducer(
   on(PeblobActions.renamePeblobSuccess, (state, { peblob }) => ({
     ...state,
     renamingPeblobIds: state.renamingPeblobIds.filter(id => id !== peblob._id),
-    peblobs: state.peblobs.map(current => current._id === peblob._id ? peblob : current),
-    mapPeblobs: state.mapPeblobs.map(current => current._id === peblob._id ? peblob : current),
+    peblobs: state.peblobs.map(current => current._id === peblob._id
+      ? { ...peblob, dominantColor: current.dominantColor ?? peblob.dominantColor }
+      : current),
+    mapPeblobs: state.mapPeblobs.map(current => current._id === peblob._id
+      ? { ...peblob, dominantColor: current.dominantColor ?? peblob.dominantColor }
+      : current),
     error: null
   })),
 
   on(PeblobActions.renamePeblobFailure, (state, { peblobId, error }) => ({
     ...state,
     renamingPeblobIds: state.renamingPeblobIds.filter(id => id !== peblobId),
+    error
+  })),
+
+  on(PeblobActions.applyStory, (state, { peblobId }) => ({
+    ...state,
+    applyingStoryPeblobIds: state.applyingStoryPeblobIds.includes(peblobId)
+      ? state.applyingStoryPeblobIds
+      : [...state.applyingStoryPeblobIds, peblobId],
+    error: null
+  })),
+
+  on(PeblobActions.applyStorySuccess, (state, { peblob }) => ({
+    ...state,
+    applyingStoryPeblobIds: state.applyingStoryPeblobIds.filter(id => id !== peblob._id),
+    peblobs: state.peblobs.map(current => current._id === peblob._id
+      ? { ...peblob, dominantColor: current.dominantColor ?? peblob.dominantColor }
+      : current),
+    mapPeblobs: state.mapPeblobs.map(current => current._id === peblob._id
+      ? { ...peblob, dominantColor: current.dominantColor ?? peblob.dominantColor }
+      : current),
+    error: null
+  })),
+
+  on(PeblobActions.applyStoryFailure, (state, { peblobId, error }) => ({
+    ...state,
+    applyingStoryPeblobIds: state.applyingStoryPeblobIds.filter(id => id !== peblobId),
+    error
+  })),
+
+  on(PeblobActions.purchasePowerSuccess, (state, { peblob }) => ({
+    ...state,
+    peblobs: state.peblobs.map(current => current._id === peblob._id
+      ? { ...peblob, dominantColor: current.dominantColor ?? peblob.dominantColor }
+      : current),
+    mapPeblobs: state.mapPeblobs.map(current => current._id === peblob._id
+      ? { ...peblob, dominantColor: current.dominantColor ?? peblob.dominantColor }
+      : current),
+    error: null
+  })),
+
+  on(PeblobActions.purchasePowerFailure, (state, { error }) => ({
+    ...state,
     error
   })),
   
